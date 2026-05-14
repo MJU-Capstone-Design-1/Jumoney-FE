@@ -12,7 +12,7 @@ export const SurveyDetailButton = ({ children }: SurveyDetailButtonProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div className="flex justify-center w-full">
+    <div className="flex justify-center w-full relative">
       <motion.div
         layout
         onClick={() => setIsExpanded(!isExpanded)}
@@ -20,9 +20,9 @@ export const SurveyDetailButton = ({ children }: SurveyDetailButtonProps) => {
           scale: isExpanded ? [1, 1.05, 1] : 1,
         }}
         className={cn(
-          "relative cursor-pointer flex items-center justify-center overflow-hidden bg-sub4 rounded-[6.25rem] transition-colors shadow-card-shadow font-semibold",
+          "absolute cursor-pointer flex items-center justify-center overflow-hidden bg-sub4 rounded-[6.25rem] transition-colors shadow-card-shadow font-semibold z-10 top-0 left-1/2 -translate-x-1/2",
           isExpanded
-            ? "w-[18.375rem] h-auto py-[0.625rem]"
+            ? "w-[18.375rem] h-auto py-[0.625rem] -translate-y-[1rem]"
             : "w-[4.5rem] h-[1.875rem]",
         )}
         whileTap={{ scale: 0.95 }}
