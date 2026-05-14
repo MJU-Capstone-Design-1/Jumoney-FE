@@ -181,6 +181,45 @@
   --shadow-select-yellow: 0 0 0 4px rgba(255, 206, 92, 0.25);
   --shadow-select-gray: 0 0 0 4px rgba(162, 169, 176, 0.25);
   --shadow-card-shadow: 0 8px 16px 0 rgba(75, 52, 37, 0.05);
+
+  /* 색상 매핑 */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary-1: var(--secondary1);
+  --color-secondary-2: var(--secondary2);
+
+  --color-main-1: var(--main1);
+  --color-main-2: var(--main2);
+  --color-main-3: var(--main3);
+  --color-main-4: var(--main4);
+
+  --color-sub-1: var(--sub1);
+  --color-sub-2: var(--sub2);
+  --color-sub-3: var(--sub3);
+  --color-sub-4: var(--sub4);
+
+  --color-text-main: var(--text-main);
+  --color-text-sub: var(--text-sub);
+  --color-text-up: var(--text-up);
+  --color-text-down: var(--text-down);
+
+  --color-default: var(--default);
+  --color-active: var(--active);
+  --color-inactive: var(--inactive);
+
+  --color-field-it: var(--field-it);
+  --color-field-mobility: var(--field-mobility);
+  --color-field-finance: var(--field-finance);
+  --color-field-bio: var(--field-bio);
+  --color-field-steal: var(--field-steal);
+  --color-field-energy: var(--field-energy);
+  --color-field-communication: var(--field-communication);
+  --color-field-staples: var(--field-staples);
+  --color-field-mechanic: var(--field-mechanic);
+  --color-field-utility: var(--field-utility);
 }
 
 :root {
@@ -227,8 +266,17 @@
 
 /* 3. 기본 베이스 스타일 */
 @layer base {
+  html {
+    background-color: #e5e5e5;
+  }
   body {
     background-color: var(--background);
     color: var(--foreground);
+    max-width: 375px;
+    margin: 1rem auto 0;
+    padding: 1rem 1rem 0 1rem;
+    min-height: 100vh;
+    position: relative;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
   }
 }
