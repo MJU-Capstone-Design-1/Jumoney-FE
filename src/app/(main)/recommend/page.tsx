@@ -7,7 +7,7 @@ const page = () => {
   return (
     <div>
       <RecommendHeader />
-      <body className="pt-[1.5rem]">
+      <div className="pt-[1.5rem]">
         <div className="flex flex-col gap-[3.5rem] pt-[1.5rem]">
           {/* 오늘의 호주머니 ~ 투자 기간 */}
           <div className="items-center flex flex-col gap-[3.25rem] text-center">
@@ -70,7 +70,7 @@ const page = () => {
             </div>
           </div>
         </div>
-      </body>
+      </div>
     </div>
   );
 };
