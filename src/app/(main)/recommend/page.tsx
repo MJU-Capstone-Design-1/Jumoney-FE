@@ -103,7 +103,7 @@ const Page = () => {
           </div>
         </div>
 
-        <Link href="/recommend/purpose">
+        <Link href="/recommend/surveyfirst">
           <BottomButton label="시작하기" />
         </Link>
       </div>
