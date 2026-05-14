@@ -1,0 +1,36 @@
+interface HelpIconProps {
+  color?: "secondary1" | "secondary2";
+}
+
+export const HelpIcon = ({ color = "secondary1" }: HelpIconProps) => {
+  const iconColor =
+    color === "secondary1" ? "var(--secondary1)" : "var(--secondary2)";
+
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+    >
+      <rect
+        x="3"
+        y="3"
+        width="18"
+        height="18"
+        rx="9"
+        stroke={iconColor}
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M9 10C9 9.40666 9.17595 8.82664 9.50559 8.33329C9.83524 7.83994 10.3038 7.45543 10.852 7.22836C11.4001 7.0013 12.0033 6.94189 12.5853 7.05765C13.1672 7.1734 13.7018 7.45912 14.1213 7.87868C14.5409 8.29824 14.8266 8.83279 14.9424 9.41473C15.0581 9.99667 14.9987 10.5999 14.7716 11.1481C14.5446 11.6962 14.1601 12.1648 13.6667 12.4944C12.8552 13.0366 12 13.7912 12 14.7671V15"
+        stroke={iconColor}
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+      <rect x="11" y="16" width="2" height="2" rx="1" fill={iconColor} />
+    </svg>
+  );
+};
