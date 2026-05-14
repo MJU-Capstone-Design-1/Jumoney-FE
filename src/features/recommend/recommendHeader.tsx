@@ -5,7 +5,7 @@ import React, { useState } from "react";
 const RecommendHeader = () => {
   const [toggleValue, setTogglevalue] = useState<"left" | "right">("left");
   return (
-    <div className="bg-primary h-[10.375rem] w-[calc(100%+2rem)] -mx-[1rem] -mt-[1rem] rounded-b-[2.5rem] p-[1rem] gap-full flex flex-col justify-between">
+    <div className="bg-primary h-[10.375rem] w-[calc(100%+2rem)] -mx-[1rem] -mt-[1rem] rounded-[2.5rem] p-[1rem] gap-full flex flex-col justify-between">
       <BackButtonField
         label="원하시는 기능을 선택해주세요"
         color="secondary1"
