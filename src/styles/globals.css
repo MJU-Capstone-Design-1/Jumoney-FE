@@ -1,0 +1,52 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@theme {
+  --color-background: #f7f4f2;
+  --color-foreground: #4b3425;
+
+  --color-primary: #9bb068;
+  --color-primary-foreground: #ffffff;
+
+  --color-secondary1: #ffffff;
+  --color-secondary2: #4b3425;
+
+  --color-main1: #fe814b;
+  --color-main2: #926247;
+  --color-main3: #ffce5c;
+  --color-main4: #a2a9b0;
+
+  --color-sub1: #feaf8f;
+  --color-sub2: #ac836c;
+  --color-sub3: #ffdb8f;
+  --color-sub4: #c1c6cd;
+
+  --color-text1: #1f160fa3;
+  --color-text2: #1f160f7a;
+  --color-text3: #df4b01;
+  --color-text4: #3d16ca;
+
+  --color-default: #e8ddd9;
+  --color-active: #4b3425;
+  --color-inactive: #e8ddd9;
+
+  /* Industry Fields */
+  --color-field-it: #003399;
+  --color-field-mobility: #707070;
+  --color-field-finance: #d4af37;
+  --color-field-bio: #2ecc71;
+  --color-field-steal: #b23133;
+  --color-field-energy: #e67e22;
+  --color-field-communication: #9b59b6;
+  --color-field-staples: #556b2f;
+  --color-field-mechanic: #3498db;
+  --color-field-utility: #cd7f32;
+}
+
+/* 3. 기본 베이스 스타일 */
+@layer base {
+  body {
+    @apply bg-background text-foreground;
+  }
+}
