@@ -4,6 +4,26 @@ const config = {
   content: ["./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
+      fontFamily: {
+        sans: [
+          "Urbanist",
+          "Freesentation",
+          "ui-sans-serif",
+          "system-ui",
+          "sans-serif",
+        ],
+      },
+      fontWeight: {
+        Thin: "100",
+        ExtraLight: "200",
+        Light: "300",
+        Regular: "400",
+        Medium: "500",
+        SemiBold: "600",
+        Bold: "700",
+        ExtraBold: "800",
+        Black: "900",
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
