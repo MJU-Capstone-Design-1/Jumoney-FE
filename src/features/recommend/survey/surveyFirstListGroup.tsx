@@ -9,12 +9,14 @@ interface SurveyOptionProps {
   label: string;
   isSelected: boolean;
   onClick: () => void;
+  onHelpClick?: (e: React.MouseEvent) => void;
 }
 
 export const SurveyOption = ({
   label,
   isSelected,
   onClick,
+  onHelpClick,
 }: SurveyOptionProps) => {
   return (
     <motion.button
@@ -42,7 +44,14 @@ export const SurveyOption = ({
       )}
     >
       <p>{label}</p>
-      <HelpIcon color={isSelected ? "secondary1" : "secondary2"} />
+      <div
+        onClick={(e) => {
+          e.stopPropagation();
+          onHelpClick?.(e);
+        }}
+      >
+        <HelpIcon color={isSelected ? "secondary1" : "secondary2"} />
+      </div>
     </motion.button>
   );
 };
