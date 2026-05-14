@@ -1,6 +1,8 @@
+import BottomButton from "@/components/bottomButton";
 import { ChartIcon } from "@/components/icons/chartIcon";
 import HeartIcon from "@/components/icons/heartIcon";
 import RecommendHeader from "@/features/recommend/recommendHeader";
+import Link from "next/link";
 import React from "react";
 
 const page = () => {
@@ -70,6 +72,10 @@ const page = () => {
             </div>
           </div>
         </div>
+
+        <Link href="/recommend/purpose">
+          <BottomButton label="시작하기" />
+        </Link>
       </div>
     </div>
   );
