@@ -46,23 +46,23 @@ const page = () => {
           {/* 사용자 맞춤, 실시간 데이터 */}
           <div className="flex justify-between gap-[0.875rem]">
             <div className="flex flex-col bg-primary rounded-[2rem] w-full p-[1rem] gap-[3.875rem] shadow-card-shadow">
-              <div className="flex gap-[0.5rem] text-secondary-1 font-bold text-body-lg items-center">
+              <div className="flex gap-[0.5rem] text-secondary1 font-bold text-body-lg items-center">
                 <HeartIcon />
                 <p>Personalized</p>
               </div>
-              <p className="flex text-label-sm text-secondary-1 font-semibold leading-[120%]">
+              <p className="flex text-label-sm text-secondary1 font-semibold leading-[120%]">
                 사용자
                 <br />
                 맞춤
               </p>
             </div>
 
-            <div className="flex flex-col bg-main-1 rounded-[2rem] w-full p-[1rem] gap-[3.875rem] shadow-card-shadow">
-              <div className="flex gap-[0.5rem] text-secondary-1 font-bold text-body-lg items-center">
+            <div className="flex flex-col bg-main1 rounded-[2rem] w-full p-[1rem] gap-[3.875rem] shadow-card-shadow">
+              <div className="flex gap-[0.5rem] text-secondary1 font-bold text-body-lg items-center">
                 <ChartIcon />
                 <p>Live Data</p>
               </div>
-              <p className="flex text-label-sm text-secondary-1 font-semibold leading-[120%]">
+              <p className="flex text-label-sm text-secondary1 font-semibold leading-[120%]">
                 실시간
                 <br />
                 데이터
