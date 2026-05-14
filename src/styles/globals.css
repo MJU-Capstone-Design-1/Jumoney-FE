@@ -188,18 +188,18 @@
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
 
-  --color-secondary-1: var(--secondary1);
-  --color-secondary-2: var(--secondary2);
+  --color-secondary1: var(--secondary1);
+  --color-secondary2: var(--secondary2);
 
-  --color-main-1: var(--main1);
-  --color-main-2: var(--main2);
-  --color-main-3: var(--main3);
-  --color-main-4: var(--main4);
+  --color-main1: var(--main1);
+  --color-main2: var(--main2);
+  --color-main3: var(--main3);
+  --color-main4: var(--main4);
 
-  --color-sub-1: var(--sub1);
-  --color-sub-2: var(--sub2);
-  --color-sub-3: var(--sub3);
-  --color-sub-4: var(--sub4);
+  --color-sub1: var(--sub1);
+  --color-sub2: var(--sub2);
+  --color-sub3: var(--sub3);
+  --color-sub4: var(--sub4);
 
   --color-text-main: var(--text-main);
   --color-text-sub: var(--text-sub);
