@@ -10,9 +10,9 @@ import React from "react";
 
 const Page = () => {
   return (
-    <div>
+    <div className="w-full px-[1rem] pt-[1rem]">
       <RecommendHeader />
-      <div className="pt-[1.5rem]">
+      <div>
         <div className="flex flex-col gap-[3.5rem] pt-[1.5rem]">
           {/* 오늘의 호주머니 ~ 투자 기간 */}
           <motion.div
