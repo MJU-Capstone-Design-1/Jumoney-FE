@@ -51,6 +51,7 @@ const config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
         primary: "var(--primary)",
+        primaryMuted: "var(--primary-muted)",
         secondary1: "var(--secondary1)",
         secondary2: "var(--secondary2)",
         main1: "var(--main1)",
