@@ -1,18 +1,26 @@
+"use client";
+
 import BottomButton from "@/components/bottomButton";
 import { ChartIcon } from "@/components/icons/chartIcon";
 import HeartIcon from "@/components/icons/heartIcon";
 import RecommendHeader from "@/features/recommend/recommendHeader";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import React from "react";
 
-const page = () => {
+const Page = () => {
   return (
     <div>
       <RecommendHeader />
       <div className="pt-[1.5rem]">
         <div className="flex flex-col gap-[3.5rem] pt-[1.5rem]">
           {/* 오늘의 호주머니 ~ 투자 기간 */}
-          <div className="items-center flex flex-col gap-[3.25rem] text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="items-center flex flex-col gap-[3.25rem] text-center"
+          >
             <div className="flex flex-col gap-[0.5rem]">
               <p className="text-label-md font-extrabold">오늘의 호주머니</p>
               <p className="text-body-md font-semibold text-text-main text-center">
@@ -43,11 +51,22 @@ const page = () => {
                 <p className="text-label-md font-extrabold">투자 기간</p>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* 사용자 맞춤, 실시간 데이터 */}
           <div className="flex justify-between gap-[0.875rem]">
-            <div className="flex flex-col bg-primary rounded-[2rem] w-full p-[1rem] gap-[3.875rem] shadow-card-shadow">
+            <motion.div
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{
+                delay: 0.4,
+                duration: 0.5,
+                type: "spring",
+                stiffness: 260,
+                damping: 20,
+              }}
+              className="flex flex-col bg-primary rounded-[2rem] w-full p-[1rem] gap-[3.875rem] shadow-card-shadow"
+            >
               <div className="flex gap-[0.5rem] text-secondary1 font-bold text-body-lg items-center">
                 <HeartIcon />
                 <p>Personalized</p>
@@ -57,9 +76,20 @@ const page = () => {
                 <br />
                 맞춤
               </p>
-            </div>
+            </motion.div>
 
-            <div className="flex flex-col bg-main1 rounded-[2rem] w-full p-[1rem] gap-[3.875rem] shadow-card-shadow">
+            <motion.div
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{
+                delay: 0.6,
+                duration: 0.5,
+                type: "spring",
+                stiffness: 260,
+                damping: 20,
+              }}
+              className="flex flex-col bg-main1 rounded-[2rem] w-full p-[1rem] gap-[3.875rem] shadow-card-shadow"
+            >
               <div className="flex gap-[0.5rem] text-secondary1 font-bold text-body-lg items-center">
                 <ChartIcon />
                 <p>Live Data</p>
@@ -69,7 +99,7 @@ const page = () => {
                 <br />
                 데이터
               </p>
-            </div>
+            </motion.div>
           </div>
         </div>
 
@@ -81,4 +111,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
