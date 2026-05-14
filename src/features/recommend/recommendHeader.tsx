@@ -1,5 +1,5 @@
 import BackButtonField from "@/components/backButtonField";
-import { CustomToggle } from "@/components/ui/customToggle";
+import { CustomToggle } from "@/components/customToggle";
 import React, { useState } from "react";
 
 const RecommendHeader = () => {

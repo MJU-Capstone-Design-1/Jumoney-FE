@@ -82,19 +82,19 @@ const CustomToggle = React.forwardRef<HTMLDivElement, CustomToggleProps>(
       },
       sub1: {
         active: "text-secondary1",
-        inactive: "text-main1",
+        inactive: "text-sub1",
       },
       sub2: {
         active: "text-secondary1",
-        inactive: "text-main2",
+        inactive: "text-sub2",
       },
       sub3: {
         active: "text-secondary1",
-        inactive: "text-main3",
+        inactive: "text-sub3",
       },
       sub4: {
         active: "text-secondary1",
-        inactive: "text-main4",
+        inactive: "text-sub4",
       },
     };
 
@@ -121,7 +121,7 @@ const CustomToggle = React.forwardRef<HTMLDivElement, CustomToggleProps>(
         />
 
         {/* Labels */}
-        <div className="relative z-10 flex w-full h-full items-center">
+        <div className="relative z-10 flex w-full h-full items-center shadow-card-shadow">
           <div
             className={cn(
               "flex-1 text-center font-extrabold text-body-xl transition-colors duration-200",
