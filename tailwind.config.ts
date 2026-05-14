@@ -1,0 +1,96 @@
+import type { Config } from "tailwindcss";
+
+const config = {
+  content: ["./src/**/*.{ts,tsx}"],
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: [
+          "Urbanist",
+          "Freesentation",
+          "ui-sans-serif",
+          "system-ui",
+          "sans-serif",
+        ],
+      },
+      fontWeight: {
+        Thin: "100",
+        ExtraLight: "200",
+        Light: "300",
+        Regular: "400",
+        Medium: "500",
+        SemiBold: "600",
+        Bold: "700",
+        ExtraBold: "800",
+        Black: "900",
+      },
+      fontSize: {
+        "body-sm": "0.75rem",
+        "body-md": "0.875rem",
+        "body-lg": "1rem",
+        "body-xl": "1.125rem",
+        "label-sm": "1.25rem",
+        "label-md": "1.5rem",
+        "label-lg": "1.875rem",
+        "label-xl": "2.25rem",
+        "heading-sm": "3rem",
+        "heading-md": "3.75rem",
+        "heading-lg": "4.5rem",
+      },
+      boxShadow: {
+        "select-green": "0 0 0 4px rgba(155, 176, 104, 0.25)",
+        "select-orange": "0 0 0 4px rgba(254, 129, 75, 0.25)",
+        "select-dark": "0 0 0 4px rgba(75, 52, 37, 0.25)",
+        "select-brown": "0 0 0 4px rgba(146, 98, 71, 0.25)",
+        "select-white": "0 0 0 4px rgba(255, 255, 255, 0.25)",
+        "select-yellow": "0 0 0 4px rgba(255, 206, 92, 0.25)",
+        "select-gray": "0 0 0 4px rgba(162, 169, 176, 0.25)",
+        "card-shadow": "0 8px 16px 0 rgba(75, 52, 37, 0.05)",
+      },
+      colors: {
+        background: "var(--background)",
+        foreground: "var(--foreground)",
+        primary: "var(--primary)",
+        secondary: {
+          1: "var(--secondary1)",
+          2: "var(--secondary2)",
+        },
+        main: {
+          1: "var(--main1)",
+          2: "var(--main2)",
+          3: "var(--main3)",
+          4: "var(--main4)",
+        },
+        sub: {
+          1: "var(--sub1)",
+          2: "var(--sub2)",
+          3: "var(--sub3)",
+          4: "var(--sub4)",
+        },
+        text: {
+          main: "var(--text-main)",
+          sub: "var(--text-sub)",
+          up: "var(--text-up)",
+          down: "var(--text-down)",
+        },
+        default: "var(--default)",
+        active: "var(--active)",
+        inactive: "var(--inactive)",
+        field: {
+          it: "var(--field-it)",
+          mobility: "var(--field-mobility)",
+          finance: "var(--field-finance)",
+          bio: "var(--field-bio)",
+          steal: "var(--field-steal)",
+          energy: "var(--field-energy)",
+          communication: "var(--field-communication)",
+          staples: "var(--field-staples)",
+          mechanic: "var(--field-mechanic)",
+          utility: "var(--field-utility)",
+        },
+      },
+    },
+  },
+} satisfies Config;
+
+export default config;
