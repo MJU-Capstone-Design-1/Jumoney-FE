@@ -11,7 +11,7 @@ const NeturalFaceIcon = ({ className }: IconProps) => (
     viewBox="0 0 48 48"
     fill="none"
   >
-    <rect width="48" height="48" rx="24" fill="var(--main2)" />
+    <rect width="48" height="48" rx="24" fill="var(--sub2)" />
     <path
       fill-rule="evenodd"
       clip-rule="evenodd"

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { motion } from "framer-motion";
 import { RiskSlider } from "./riskSlider";
 import HappyFaceIcon from "./icons/happyFaceIcon";
 import SmileFaceIcon from "./icons/smileFaceIcon";
@@ -44,21 +45,25 @@ export const RiskSelector = ({ value, onChange }: RiskSelectorProps) => {
     <div className="relative flex h-[21rem] w-full items-center justify-center px-[1.25rem]">
       {/* Left Labels */}
       <div className="absolute left-[1.25rem] flex h-full flex-col justify-between py-0">
-        {RISK_LEVELS.map((level) => (
-          <div
-            key={level.val}
-            className={`flex h-[3rem] flex-col justify-center transition-colors duration-300 ${
-              value === level.val ? "text-secondary2" : "text-text-sub"
-            }`}
-          >
-            <span className="whitespace-nowrap text-body-xl font-extrabold leading-tight">
-              {level.title}
-            </span>
-            <span className="whitespace-nowrap text-body-md font-bold mt-[0.25rem]">
-              {level.sub}
-            </span>
-          </div>
-        ))}
+        {RISK_LEVELS.map((level) => {
+          const isActive = value === level.val;
+          return (
+            <motion.div
+              key={level.val}
+              animate={{
+                scale: isActive ? 1.15 : 1,
+                color: isActive ? "var(--secondary2)" : "var(--text-sub)",
+              }}
+              transition={{ type: "spring", stiffness: 500, damping: 15 }}
+              className="flex h-[3rem] flex-col justify-center"
+            >
+              <span className="text-body-xl font-extrabold">{level.title}</span>
+              <span className="text-body-md font-bold mt-[0.125rem]">
+                {level.sub}
+              </span>
+            </motion.div>
+          );
+        })}
       </div>
 
       {/* Center Slider */}
@@ -66,20 +71,23 @@ export const RiskSelector = ({ value, onChange }: RiskSelectorProps) => {
 
       {/* Right Emojis */}
       <div className="absolute right-[1.25rem] flex h-full flex-col justify-between py-0">
-        {RISK_LEVELS.map((level) => (
-          <div
-            key={level.val}
-            className="flex h-[3rem] items-center justify-center"
-          >
-            <level.Icon
-              className={`transition-opacity duration-300 ${
-                value === level.val
-                  ? "opacity-100"
-                  : "opacity-40 grayscale-[0.5]"
-              }`}
-            />
-          </div>
-        ))}
+        {RISK_LEVELS.map((level) => {
+          const isActive = value === level.val;
+          return (
+            <motion.div
+              key={level.val}
+              animate={{
+                scale: isActive ? 1.15 : 1,
+                filter: isActive ? "grayscale(0)" : "grayscale(1)",
+                opacity: isActive ? 1 : 0.4,
+              }}
+              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              className="flex h-[3rem] items-center justify-center"
+            >
+              <level.Icon className="transition-all duration-300" />
+            </motion.div>
+          );
+        })}
       </div>
     </div>
   );
