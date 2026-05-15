@@ -14,7 +14,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" className={cn("h-full", "antialiased")}>
-      <body className="min-h-full flex flex-col font-sans">{children}</body>
+      <body className="min-h-full font-sans">
+        <div vaul-drawer-wrapper="" className="layout-wrapper ">
+          {children}
+        </div>
+      </body>
     </html>
   );
 }
