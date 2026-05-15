@@ -8,6 +8,8 @@ import {
   useMotionValue,
   useTransform,
 } from "framer-motion";
+import { Progress } from "@/components/ui/progress";
+import SliderThumbIcon from "@/components/icons/sliderThumbIcon";
 
 interface RiskSliderProps {
   value: number;
@@ -42,9 +44,9 @@ export const RiskSlider = ({ value, onChange }: RiskSliderProps) => {
 
   const currentValue = useTransform(dragY, [-trackHeightPx, 0], [100, 0]);
 
-  const currentHeight = useTransform(currentValue, (v) => {
+  const currentProgress = useTransform(currentValue, (v) => {
     const offset = (28 / (TRACK_HEIGHT_REM * basePx)) * 100;
-    return `${v * (1 - offset / 50) + offset}%`;
+    return v * (1 - offset / 50) + offset;
   });
 
   const currentColorValue = useTransform(currentValue, (v) => {
@@ -55,10 +57,10 @@ export const RiskSlider = ({ value, onChange }: RiskSliderProps) => {
   });
 
   const getTrackColor = (val: number) => {
-    if (val === 0) return "bg-primary";
-    if (val === 33) return "bg-main3";
-    if (val === 66) return "bg-main2";
-    return "bg-main1";
+    if (val === 0) return "[&>div]:bg-primary";
+    if (val === 33) return "[&>div]:bg-main3";
+    if (val === 66) return "[&>div]:bg-main2";
+    return "[&>div]:bg-main1";
   };
 
   const getThumbColor = (val: number) => {
@@ -76,12 +78,19 @@ export const RiskSlider = ({ value, onChange }: RiskSliderProps) => {
   };
 
   const [themeValue, setThemeValue] = useState(0);
+  const [realtimeProgress, setRealtimeProgress] = useState(0);
 
   useEffect(() => {
     return currentColorValue.on("change", (latest) => {
       setThemeValue(latest);
     });
   }, [currentColorValue]);
+
+  useEffect(() => {
+    return currentProgress.on("change", (latest) => {
+      setRealtimeProgress(latest);
+    });
+  }, [currentProgress]);
 
   const handleDrag = (_: unknown, info: PanInfo) => {
     if (!containerRef.current) return;
@@ -118,15 +127,15 @@ export const RiskSlider = ({ value, onChange }: RiskSliderProps) => {
       ref={containerRef}
       className="relative flex h-[21rem] w-[1rem] flex-col items-center justify-end rounded-full bg-default"
     >
-      {/* Active Bar */}
-      <motion.div
-        style={{
-          height: currentHeight,
-        }}
-        className={`absolute bottom-0 w-full rounded-full transition-colors duration-300 ${getTrackColor(
-          themeValue,
-        )}`}
-      />
+      {/* Active Bar using shadcn Progress */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <Progress
+          value={realtimeProgress}
+          className={`h-[1rem] w-[21rem] shrink-0 -rotate-90 bg-transparent [&>div]:transition-colors [&>div]:duration-300 ${getTrackColor(
+            themeValue,
+          )}`}
+        />
+      </div>
 
       {/* Thumb */}
       <motion.div
@@ -148,22 +157,7 @@ export const RiskSlider = ({ value, onChange }: RiskSliderProps) => {
           themeValue,
         )} ${getThemeShadow(themeValue)}`}
       >
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M18.7612 9.18827C18.3624 7.69983 17.4836 6.38459 16.2611 5.44653C15.0386 4.50846 13.5407 4 11.9998 4C10.4588 4 8.96094 4.50846 7.73843 5.44653C6.51592 6.38459 5.63711 7.69983 5.23828 9.18827L7.17013 9.7059C7.45501 8.64274 8.08273 7.70328 8.95595 7.03323C9.82918 6.36319 10.8991 6 11.9998 6C13.1004 6 14.1703 6.36319 15.0436 7.03323C15.9168 7.70328 16.5445 8.64274 16.8294 9.70591L18.7612 9.18827Z"
-            fill="white"
-          />
-          <path
-            d="M18.7612 14.8117C18.3624 16.3002 17.4836 17.6154 16.2611 18.5535C15.0386 19.4915 13.5407 20 11.9998 20C10.4588 20 8.96094 19.4915 7.73843 18.5535C6.51592 17.6154 5.63711 16.3002 5.23828 14.8117L7.17013 14.2941C7.45501 15.3573 8.08273 16.2967 8.95595 16.9668C9.82918 17.6368 10.8991 18 11.9998 18C13.1004 18 14.1703 17.6368 15.0436 16.9668C15.9168 16.2967 16.5445 15.3573 16.8294 14.2941L18.7612 14.8117Z"
-            fill="white"
-          />
-        </svg>
+        <SliderThumbIcon />
       </motion.div>
     </div>
   );
