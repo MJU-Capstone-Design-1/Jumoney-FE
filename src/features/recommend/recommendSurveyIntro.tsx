@@ -20,9 +20,9 @@ const RecommendSurveyIntro = () => {
             <p className="text-label-md font-extrabold">오늘의 호주머니</p>
             <p className="text-body-md font-semibold text-text-main text-center">
               {/* TODO: 서버에서 유저 데이터 받아와서 적용 */}
-              두현우님의 호주머니에 넣을 종목을 추천 받아보세요.
+              두현우님의 호주머니에 넣을 종목을 추천 받아보세요
               <br />
-              실시간 시장 데이터와 투자 성향을 토대로 매칭해드려요.
+              실시간 시장 데이터와 투자 성향을 토대로 매칭해드려요
             </p>
           </div>
 
