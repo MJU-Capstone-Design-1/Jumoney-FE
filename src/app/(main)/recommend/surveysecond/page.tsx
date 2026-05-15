@@ -2,7 +2,7 @@
 
 import BackButtonField from "@/components/backButtonField";
 import BottomButton from "@/components/bottomButton";
-import { RiskSelector } from "@/components/riskSelector";
+import { RiskSelector } from "@/features/recommend/survey/riskSelector";
 import { SurveyDetailButton } from "@/components/surveyDetailButton";
 import { SurveyStepper } from "@/components/surveyStepper";
 import { motion } from "framer-motion";

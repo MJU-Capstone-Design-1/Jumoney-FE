@@ -3,10 +3,10 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { RiskSlider } from "./riskSlider";
-import HappyFaceIcon from "./icons/happyFaceIcon";
-import SmileFaceIcon from "./icons/smileFaceIcon";
-import NeturalFaceIcon from "./icons/neturalFaceIcon";
-import SadFaceIcon from "./icons/sadFaceIcon";
+import HappyFaceIcon from "../../../components/icons/happyFaceIcon";
+import SmileFaceIcon from "../../../components/icons/smileFaceIcon";
+import NeturalFaceIcon from "../../../components/icons/neturalFaceIcon";
+import SadFaceIcon from "../../../components/icons/sadFaceIcon";
 
 interface RiskSelectorProps {
   value: number;
