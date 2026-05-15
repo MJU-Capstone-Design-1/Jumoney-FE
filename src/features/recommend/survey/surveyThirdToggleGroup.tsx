@@ -37,22 +37,21 @@ export const SurveyThirdToggleGroup = ({
         className="flex"
       >
         {OPTIONS.map((option) => (
-          <ToggleGroupItem
+          <motion.div
             key={option}
-            value={option}
-            className="rounded-full w-[4.5rem] h-[3.5rem] flex items-center justify-center text-label-md font-extrabold transition-all duration-300
+            whileTap={{ scale: 0.8 }}
+            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+          >
+            <ToggleGroupItem
+              value={option}
+              className="rounded-full w-[4.5rem] h-[3.5rem] flex items-center justify-center text-label-md font-extrabold transition-all duration-300
               border border-secondary2 text-secondary2
               data-[state=on]:bg-main1 data-[state=on]:text-secondary1 data-[state=on]:border-transparent
               data-[state=on]:shadow-select-orange"
-          >
-            <motion.span
-              whileTap={{ scale: 0.8 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
-              className="mt-[0.125rem]"
             >
-              {option}
-            </motion.span>
-          </ToggleGroupItem>
+              <span className="mt-[0.125rem]">{option}</span>
+            </ToggleGroupItem>
+          </motion.div>
         ))}
       </ToggleGroup>
     </motion.div>
