@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { RiskSlider } from "./riskSlider";
 import HappyFaceIcon from "./icons/happyFaceIcon";
 import SmileFaceIcon from "./icons/smileFaceIcon";
@@ -41,21 +41,46 @@ const RISK_LEVELS = [
 ];
 
 export const RiskSelector = ({ value, onChange }: RiskSelectorProps) => {
+  const [isEntered, setIsEntered] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsEntered(true), 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const BASE_DELAY = 1.0;
+  const STAGGER = 0.1;
+
   return (
     <div className="relative flex h-[21rem] w-full items-center justify-center px-[1.25rem]">
       {/* Left Labels */}
       <div className="absolute left-[1.25rem] flex h-full flex-col justify-between py-0">
-        {RISK_LEVELS.map((level) => {
+        {RISK_LEVELS.map((level, index) => {
           const isActive = value === level.val;
           return (
             <motion.div
               key={level.val}
+              initial={{ scale: 0, opacity: 0 }}
               animate={{
                 scale: isActive ? 1.15 : 1,
+                opacity: 1,
                 color: isActive ? "var(--secondary2)" : "var(--text-sub)",
               }}
-              transition={{ type: "spring", stiffness: 500, damping: 15 }}
-              className="flex h-[3rem] flex-col justify-center"
+              transition={
+                isEntered
+                  ? {
+                      type: "spring",
+                      stiffness: 500,
+                      damping: 15,
+                    }
+                  : {
+                      delay: BASE_DELAY + index * STAGGER,
+                      type: "spring",
+                      stiffness: 260,
+                      damping: 20,
+                    }
+              }
+              className="flex h-[3rem] flex-col justify-center origin-left"
             >
               <span className="text-body-xl font-extrabold">{level.title}</span>
               <span className="text-body-md font-bold mt-[0.125rem]">
@@ -67,22 +92,48 @@ export const RiskSelector = ({ value, onChange }: RiskSelectorProps) => {
       </div>
 
       {/* Center Slider */}
-      <RiskSlider value={value} onChange={onChange} />
+      <motion.div
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{
+          delay: BASE_DELAY + RISK_LEVELS.length * STAGGER + 0.1,
+          type: "spring",
+          stiffness: 260,
+          damping: 20,
+        }}
+        className="h-full flex items-center justify-center"
+      >
+        <RiskSlider value={value} onChange={onChange} />
+      </motion.div>
 
       {/* Right Emojis */}
       <div className="absolute right-[1.25rem] flex h-full flex-col justify-between py-0">
-        {RISK_LEVELS.map((level) => {
+        {RISK_LEVELS.map((level, index) => {
           const isActive = value === level.val;
           return (
             <motion.div
               key={level.val}
+              initial={{ scale: 0, opacity: 0 }}
               animate={{
                 scale: isActive ? 1.15 : 1,
-                filter: isActive ? "grayscale(0)" : "grayscale(1)",
                 opacity: isActive ? 1 : 0.4,
+                filter: isActive ? "grayscale(0)" : "grayscale(1)",
               }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
-              className="flex h-[3rem] items-center justify-center"
+              transition={
+                isEntered
+                  ? {
+                      type: "spring",
+                      stiffness: 500,
+                      damping: 15,
+                    }
+                  : {
+                      delay: BASE_DELAY + index * STAGGER,
+                      type: "spring",
+                      stiffness: 260,
+                      damping: 20,
+                    }
+              }
+              className="flex h-[3rem] items-center justify-center origin-right"
             >
               <level.Icon className="transition-all duration-300" />
             </motion.div>
