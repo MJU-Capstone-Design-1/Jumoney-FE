@@ -1,11 +1,11 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
+import { HTMLMotionProps, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import DocumentIcon from "@/components/icons/documentIcon";
 
-interface LoadingNewsCardProps {
+interface LoadingNewsCardProps extends HTMLMotionProps<"div"> {
   title: string;
   subtitle: string;
   tag: string;
@@ -17,16 +17,15 @@ export const LoadingNewsCard = ({
   subtitle,
   tag,
   className,
+  ...props
 }: LoadingNewsCardProps) => {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 1.2, duration: 0.8, ease: "easeOut" }}
       className={cn(
         "w-[21.4375rem] bg-secondary1 rounded-[2rem] px-[0.75rem] py-[1rem] flex items-center gap-[1rem] shadow-card-shadow",
         className,
       )}
+      {...props}
     >
       {/* Left Icon Area */}
       <div className="w-[4.5rem] h-[4.5rem] bg-background rounded-[1.5rem] flex items-center justify-center">
