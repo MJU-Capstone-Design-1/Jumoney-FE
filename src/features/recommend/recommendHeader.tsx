@@ -1,9 +1,13 @@
 import BackButtonField from "@/components/backButtonField";
 import { CustomToggle } from "@/components/customToggle";
-import React, { useState } from "react";
+import React from "react";
 
-const RecommendHeader = () => {
-  const [toggleValue, setTogglevalue] = useState<"left" | "right">("left");
+interface RecommendHeaderProps {
+  value: "left" | "right";
+  onValueChange: (value: "left" | "right") => void;
+}
+
+const RecommendHeader = ({ value, onValueChange }: RecommendHeaderProps) => {
   return (
     <div className="bg-primary h-[10.375rem] w-[calc(100%+2rem)] -mx-[1rem] -mt-[1rem] rounded-[2.5rem] p-[1rem] gap-full flex flex-col justify-between">
       <BackButtonField
@@ -15,8 +19,8 @@ const RecommendHeader = () => {
         size="large"
         leftTitle="오늘의 호주머니"
         rightTitle="거장의 선택"
-        value={toggleValue}
-        onValueChange={setTogglevalue}
+        value={value}
+        onValueChange={onValueChange}
       />
     </div>
   );
