@@ -6,7 +6,7 @@ import BottomButton from "@/components/bottomButton";
 import { SurveyStepper } from "@/components/surveyStepper";
 import { motion } from "framer-motion";
 import { SurveyThirdToggleGroup } from "@/features/recommend/survey/surveyThirdToggleGroup";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 const SUBTITLES: Record<string, string> = {
@@ -19,6 +19,12 @@ const SUBTITLES: Record<string, string> = {
 const Page = () => {
   const router = useRouter();
   const [selectedValue, setSelectedValue] = useState<string>("장기");
+  const [isEntered, setIsEntered] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsEntered(true), 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div className="flex flex-col w-full px-4 pt-4">
@@ -67,12 +73,13 @@ const Page = () => {
           <div className="flex flex-col items-center">
             <motion.h2
               key={`title-${selectedValue}`}
-              initial={{ opacity: 0, y: 15, scale: 0.9 }}
+              initial={{ opacity: 0, y: 20, scale: 0.85 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{
                 type: "spring",
                 stiffness: 400,
                 damping: 17,
+                delay: isEntered ? 0 : 1.0,
               }}
               className="text-heading-lg font-extrabold text-secondary2"
             >
@@ -80,15 +87,15 @@ const Page = () => {
             </motion.h2>
             <motion.p
               key={`sub-${selectedValue}`}
-              initial={{ opacity: 0, y: 10, scale: 0.95 }}
+              initial={{ opacity: 0, y: 15, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{
                 type: "spring",
                 stiffness: 400,
                 damping: 20,
-                delay: 0.05,
+                delay: isEntered ? 0.1 : 1.1,
               }}
-              className="text-label-xl font-extrabold text-secondary2 text-center"
+              className="text-label-xl font-extrabold text-secondary2 text-center -mt-[0.0625rem]"
             >
               {SUBTITLES[selectedValue]}
             </motion.p>
