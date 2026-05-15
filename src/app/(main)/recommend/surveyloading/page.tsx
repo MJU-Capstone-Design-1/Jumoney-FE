@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from "react";
 import BackButtonField from "@/components/backButtonField";
 import { motion, AnimatePresence } from "framer-motion";
-import { Spinner } from "@/components/ui/spinner";
+import { CustomSpinner } from "@/features/recommend/survey/customSpinner";
+import { FloatingCircle } from "@/features/recommend/survey/floatingCircle";
 import { LoadingNewsCard } from "@/features/recommend/survey/loadingNewsCard";
 
 const NEWS_ITEMS = [
@@ -26,44 +27,6 @@ const NEWS_ITEMS = [
     tag: "모빌리티",
   },
 ];
-
-const FloatingCircle = ({
-  // ... (FloatingCircle code remains unchanged)
-  color,
-  delay = 0,
-  opacity = 1,
-  style = {},
-  radius = 30,
-  duration = 8,
-}: {
-  color: string;
-  delay?: number;
-  opacity?: number;
-  style?: React.CSSProperties;
-  radius?: number;
-  duration?: number;
-}) => (
-  <motion.div
-    className="absolute rounded-full"
-    style={{
-      width: "180px",
-      height: "180px",
-      backgroundColor: color,
-      opacity: opacity,
-      ...style,
-    }}
-    animate={{
-      x: [0, radius, 0, -radius, 0],
-      y: [-radius, 0, radius, 0, -radius],
-    }}
-    transition={{
-      duration: duration,
-      repeat: Infinity,
-      ease: "linear",
-      delay: delay,
-    }}
-  />
-);
 
 const Page = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -146,7 +109,7 @@ const Page = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.3, duration: 0.6 }}
           >
-            <Spinner className="w-[11.25rem] h-[11.25rem]" />
+            <CustomSpinner className="w-[11.25rem] h-[11.25rem]" />
           </motion.div>
 
           <motion.p
