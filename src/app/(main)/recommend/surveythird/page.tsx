@@ -1,0 +1,118 @@
+"use client";
+
+import BackButtonField from "@/components/backButtonField";
+import { SurveyDetailButton } from "@/components/surveyDetailButton";
+import BottomButton from "@/components/bottomButton";
+import { SurveyStepper } from "@/components/surveyStepper";
+import { motion } from "framer-motion";
+import { SurveyThirdToggleGroup } from "@/features/recommend/survey/surveyThirdToggleGroup";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+
+const SUBTITLES: Record<string, string> = {
+  초단기: "(1분/10분)",
+  단기: "(5일 이동평균선 돌파)",
+  중기: "(6개월~1년)",
+  장기: "(3년 이상)",
+};
+
+const Page = () => {
+  const router = useRouter();
+  const [selectedValue, setSelectedValue] = useState<string>("장기");
+  const [isEntered, setIsEntered] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsEntered(true), 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <div className="flex flex-col w-full px-4 pt-4">
+      <BackButtonField color="secondary2" label="오늘의 호주머니" />
+      <SurveyStepper currentStep={3} totalSteps={3} />
+
+      <div className="flex flex-col gap-[7.25rem] pt-[2rem] items-center">
+        <div className="flex flex-col gap-[1rem]">
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="flex text-label-lg font-extrabold text-center leading-[120%]"
+          >
+            선호하는 투자 호흡(기간)은
+            <br />
+            어떻게 되나요?
+          </motion.p>
+
+          <motion.div
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{
+              delay: 0.6,
+              type: "spring",
+              stiffness: 260,
+              damping: 20,
+            }}
+          >
+            <SurveyDetailButton>
+              <p className="text-center leading-[120%] text-body-md">
+                투자 기간에 따라
+                <br />
+                주가를 움직이는 결정적인 요인이 달라져요.
+                <br />
+                선택하신 기간에 맞춰 가장 적합한 실시간 수급 흐름이나
+                <br />
+                재무 지표를 적용하여 우선순위를 결정할게요.
+              </p>
+            </SurveyDetailButton>
+          </motion.div>
+        </div>
+
+        {/* Dynamic Text Section */}
+        <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center">
+            <motion.h2
+              key={`title-${selectedValue}`}
+              initial={{ opacity: 0, y: 20, scale: 0.85 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{
+                type: "spring",
+                stiffness: 400,
+                damping: 17,
+                delay: isEntered ? 0 : 1.0,
+              }}
+              className="text-heading-lg font-extrabold text-secondary2"
+            >
+              {selectedValue}
+            </motion.h2>
+            <motion.p
+              key={`sub-${selectedValue}`}
+              initial={{ opacity: 0, y: 15, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{
+                type: "spring",
+                stiffness: 400,
+                damping: 20,
+                delay: isEntered ? 0.1 : 1.1,
+              }}
+              className="text-label-xl font-extrabold text-secondary2 text-center -mt-[0.0625rem]"
+            >
+              {SUBTITLES[selectedValue]}
+            </motion.p>
+          </div>
+
+          <div className="mt-[4.625rem]">
+            <SurveyThirdToggleGroup
+              value={selectedValue}
+              onChange={setSelectedValue}
+            />
+          </div>
+        </div>
+      </div>
+
+      <BottomButton label="결과확인" />
+    </div>
+  );
+};
+
+export default Page;
