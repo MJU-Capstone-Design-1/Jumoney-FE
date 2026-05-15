@@ -45,7 +45,13 @@ export const SurveyThirdToggleGroup = ({
               data-[state=on]:bg-main1 data-[state=on]:text-secondary1 data-[state=on]:border-transparent
               data-[state=on]:shadow-select-orange"
           >
-            <span className="mt-[0.0625rem]">{option}</span>
+            <motion.span
+              whileTap={{ scale: 0.8 }}
+              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              className="mt-[0.125rem]"
+            >
+              {option}
+            </motion.span>
           </ToggleGroupItem>
         ))}
       </ToggleGroup>
