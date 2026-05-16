@@ -1,33 +1,33 @@
-"use client";
+'use client';
 
-import BackButtonField from "@/components/backButtonField";
-import BottomButton from "@/components/bottomButton";
-import { RiskSelector } from "@/features/recommend/survey/riskSelector";
-import { SurveyDetailButton } from "@/components/surveyDetailButton";
-import { SurveyStepper } from "@/components/surveyStepper";
-import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import BackButtonField from '@/components/backButtonField';
+import BottomButton from '@/components/bottomButton';
+import { RiskSelector } from '@/features/recommend/survey/riskSelector';
+import { SurveyDetailButton } from '@/components/surveyDetailButton';
+import { SurveyStepper } from '@/components/surveyStepper';
+import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
 
 const SurveySecondPage = () => {
   const router = useRouter();
   const [value, setValue] = useState<number>(0);
   return (
-    <div className="flex flex-col w-full px-4 pt-4">
+    <div className='flex w-full flex-col px-4 pt-4'>
       <BackButtonField
-        color="secondary2"
-        label="오늘의 호주머니"
+        color='secondary2'
+        label='오늘의 호주머니'
         onClick={() => router.back()}
       />
       <SurveyStepper currentStep={2} totalSteps={3} />
 
-      <div className="flex flex-col gap-[4.875rem] pt-[2rem] items-center">
-        <div className="flex flex-col gap-[1rem]">
+      <div className='flex flex-col items-center gap-[4.875rem] pt-[2rem]'>
+        <div className='flex flex-col gap-[1rem]'>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            className="flex text-label-lg font-extrabold text-center leading-[120%]"
+            transition={{ duration: 0.6, ease: 'easeOut' }}
+            className='text-label-lg flex text-center leading-[120%] font-extrabold'
           >
             어느 정도의 위험을
             <br />
@@ -39,13 +39,13 @@ const SurveySecondPage = () => {
             animate={{ scale: 1, opacity: 1 }}
             transition={{
               delay: 0.6,
-              type: "spring",
+              type: 'spring',
               stiffness: 260,
               damping: 20,
             }}
           >
             <SurveyDetailButton>
-              <p className="text-center leading-[120%]">
+              <p className='text-center leading-[120%]'>
                 베타, 볼린저 밴드, 상대강도 등<br />
                 주가의 성격 및 변동성과 관련된 지표로 구성했어요.
                 <br />
@@ -55,12 +55,12 @@ const SurveySecondPage = () => {
           </motion.div>
         </div>
 
-        <div className="flex w-full items-center justify-center">
+        <div className='flex w-full items-center justify-center'>
           <RiskSelector value={value} onChange={setValue} />
         </div>
       </div>
 
-      <BottomButton label="다음으로" disabled={false} />
+      <BottomButton label='다음으로' disabled={false} />
     </div>
   );
 };

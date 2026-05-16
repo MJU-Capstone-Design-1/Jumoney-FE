@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 interface SurveyStepperProps {
   currentStep: number;
@@ -10,7 +10,7 @@ export const SurveyStepper = ({
   totalSteps,
 }: SurveyStepperProps) => {
   return (
-    <div className="absolute flex gap-[0.375rem] letter-spacing-[1rem] top-[1.375rem] right-[1rem] w-[4rem] h-[1.875rem] text-main2 flex items-center justify-center rounded-[6.25rem] bg-default text-body-sm font-extrabold text-center z-10">
+    <div className='letter-spacing-[1rem] text-main2 bg-default text-body-sm absolute top-[1.375rem] right-[1rem] z-10 flex h-[1.875rem] w-[4rem] items-center justify-center gap-[0.375rem] rounded-[6.25rem] text-center font-extrabold'>
       {currentStep} <p>OF</p> {totalSteps}
     </div>
   );

@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import React from "react";
-import { HTMLMotionProps, motion } from "framer-motion";
-import { cn } from "@/lib/utils";
-import DocumentIcon from "@/components/icons/documentIcon";
+import React from 'react';
+import { HTMLMotionProps, motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
+import DocumentIcon from '@/components/icons/documentIcon';
 
-interface LoadingNewsCardProps extends HTMLMotionProps<"div"> {
+interface LoadingNewsCardProps extends HTMLMotionProps<'div'> {
   title: string;
   subtitle: string;
   tag: string;
@@ -22,23 +22,23 @@ export const LoadingNewsCard = ({
   return (
     <motion.div
       className={cn(
-        "w-[21.4375rem] bg-secondary1 rounded-[2rem] px-[0.75rem] py-[1rem] flex items-center gap-[1rem] shadow-card-shadow",
+        'bg-secondary1 shadow-card-shadow flex w-[21.4375rem] items-center gap-[1rem] rounded-[2rem] px-[0.75rem] py-[1rem]',
         className,
       )}
       {...props}
     >
       {/* Left Icon Area */}
-      <div className="w-[4.5rem] h-[4.5rem] bg-background rounded-[1.5rem] flex items-center justify-center">
+      <div className='bg-background flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-[1.5rem]'>
         <DocumentIcon />
       </div>
 
       {/* Right Text Area */}
-      <div className="flex flex-col">
-        <span className="text-body-sm text-text-sub font-semibold mb-[0.3125rem]">
+      <div className='flex flex-col'>
+        <span className='text-body-sm text-text-sub mb-[0.3125rem] font-semibold'>
           {subtitle}
         </span>
-        <h3 className="text-body-xl font-extrabold text-secondary2">{title}</h3>
-        <span className="text-body-md text-text-main font-bold mt-[0.625rem]">
+        <h3 className='text-body-xl text-secondary2 font-extrabold'>{title}</h3>
+        <span className='text-body-md text-text-main mt-[0.625rem] font-bold'>
           # {tag}
         </span>
       </div>

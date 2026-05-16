@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import React from "react";
-import { motion } from "framer-motion";
-import { HelpIcon } from "@/components/icons/helpIcon";
-import { cn } from "@/lib/utils";
+import React from 'react';
+import { motion } from 'framer-motion';
+import { HelpIcon } from '@/components/icons/helpIcon';
+import { cn } from '@/lib/utils';
 
 interface SurveyOptionProps {
   label: string;
@@ -34,13 +34,13 @@ export const SurveyOption = ({
       whileTap={{ scale: 0.94 }}
       transition={{
         duration: 0.4,
-        ease: "backOut",
+        ease: 'backOut',
       }}
       className={cn(
-        "flex w-full px-[1rem] py-[2rem] rounded-[1.5rem] text-body-xl font-bold justify-between items-center transition-colors duration-300 border-none outline-none relative",
+        'text-body-xl relative flex w-full items-center justify-between rounded-[1.5rem] border-none px-[1rem] py-[2rem] font-bold transition-colors duration-300 outline-none',
         isSelected
-          ? "bg-primary text-secondary1 shadow-select-green"
-          : "bg-secondary1 text-secondary2 shadow-card-shadow",
+          ? 'bg-primary text-secondary1 shadow-select-green'
+          : 'bg-secondary1 text-secondary2 shadow-card-shadow',
       )}
     >
       <p>{label}</p>
@@ -50,7 +50,7 @@ export const SurveyOption = ({
           onHelpClick?.(e);
         }}
       >
-        <HelpIcon color={isSelected ? "secondary1" : "secondary2"} />
+        <HelpIcon color={isSelected ? 'secondary1' : 'secondary2'} />
       </div>
     </motion.button>
   );

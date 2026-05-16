@@ -1,5 +1,5 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React from 'react';
+import { motion } from 'framer-motion';
 
 export const FloatingCircle = ({
   color,
@@ -17,10 +17,10 @@ export const FloatingCircle = ({
   duration?: number;
 }) => (
   <motion.div
-    className="absolute rounded-full"
+    className='absolute rounded-full'
     style={{
-      width: "180px",
-      height: "180px",
+      width: '180px',
+      height: '180px',
       backgroundColor: color,
       opacity: opacity,
       ...style,
@@ -32,7 +32,7 @@ export const FloatingCircle = ({
     transition={{
       duration: duration,
       repeat: Infinity,
-      ease: "linear",
+      ease: 'linear',
       delay: delay,
     }}
   />

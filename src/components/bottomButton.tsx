@@ -13,11 +13,11 @@ const BottomButton = ({
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`fixed bottom-[2.125rem] left-1/2 -translate-x-1/2 flex w-[21.4375rem] h-[4rem] items-center justify-center gap-[2rem] rounded-[1000px] px-[2rem] py-[1rem] text-secondary1 transition-colors ${
-        disabled ? "bg-default" : "bg-secondary2"
+      className={`text-secondary1 fixed bottom-[2.125rem] left-1/2 flex h-[4rem] w-[21.4375rem] -translate-x-1/2 items-center justify-center gap-[2rem] rounded-[1000px] px-[2rem] py-[1rem] transition-colors ${
+        disabled ? 'bg-default' : 'bg-secondary2'
       }`}
     >
-      <span className="text-body-xl font-extrabold">{label}</span>
+      <span className='text-body-xl font-extrabold'>{label}</span>
     </button>
   );
 };
