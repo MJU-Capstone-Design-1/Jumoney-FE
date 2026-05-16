@@ -9,6 +9,7 @@ import { SurveyStepper } from '@/components/surveyStepper';
 import { motion } from 'framer-motion';
 import { SurveyFirstBottomsheet } from '@/features/recommend/survey/surveyFirstBottomsheet';
 import { bottomSheetItems } from '@/constants/surveyFirstBottomsheetItems';
+import Link from 'next/link';
 
 const Page = () => {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
@@ -95,8 +96,13 @@ const Page = () => {
           ))}
         </div>
       </div>
+      <Link
+        href='/recommend/surveysecond'
+        className={!selectedOption ? 'pointer-events-none' : ''}
+      >
+        <BottomButton label='다음으로' disabled={!selectedOption} />
+      </Link>
 
-      <BottomButton label='다음으로' />
       <SurveyFirstBottomsheet
         isOpen={isBottomSheetOpen}
         onClose={setIsBottomSheetOpen}
