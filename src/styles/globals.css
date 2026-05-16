@@ -279,10 +279,8 @@
     width: 100%;
     max-width: 375px;
     min-height: 100vh;
+    margin: 0 auto;
     position: relative;
-    left: 50%;
-    transform: translateX(-50%);
-    margin-top: 1rem;
     display: flex;
     flex-direction: column;
     overflow-x: hidden;

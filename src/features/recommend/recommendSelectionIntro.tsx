@@ -4,9 +4,17 @@ import BottomButton from '@/components/bottomButton';
 import SelectionIntroCard from '@/features/recommend/selection/selectionIntroCard';
 import { motion } from 'framer-motion';
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 const RecommendSelectionIntro = () => {
   const [selectedMaster, setSelectedMaster] = useState('');
+  const router = useRouter();
+
+  const handleStart = () => {
+    if (selectedMaster) {
+      router.push(`/recommend/${selectedMaster}`);
+    }
+  };
 
   return (
     <div>
@@ -33,7 +41,11 @@ const RecommendSelectionIntro = () => {
           onValueChange={setSelectedMaster}
         />
       </div>
-      <BottomButton label='시작하기' disabled={!selectedMaster} />
+      <BottomButton
+        label='시작하기'
+        disabled={!selectedMaster}
+        onClick={handleStart}
+      />
     </div>
   );
 };
