@@ -14,14 +14,8 @@ AXIOS_INSTANCE.interceptors.request.use((config) => {
 });
 
 // 3. Orval이 사용할 커스텀 함수
-export const customInstance = <T>(
-  config: AxiosRequestConfig,
-  options?: AxiosRequestConfig,
-): Promise<T> => {
-  const promise = AXIOS_INSTANCE({
-    ...config,
-    ...options,
-  }).then(({ data }) => data);
+export const customInstance = <T>(config: AxiosRequestConfig): Promise<T> => {
+  const promise = AXIOS_INSTANCE(config).then(({ data }) => data);
 
   return promise;
 };
