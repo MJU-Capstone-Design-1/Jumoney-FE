@@ -8,6 +8,7 @@ export default defineConfig({
       target: 'https://jumoney.site/v3/api-docs',
     },
     output: {
+      httpClient: 'axios',
       mode: 'tags-split',
       target: 'src/api/generated/endpoints',
       schemas: 'src/api/generated/model',
