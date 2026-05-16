@@ -7,7 +7,7 @@ import { SurveyStepper } from '@/components/surveyStepper';
 import { motion } from 'framer-motion';
 import { SurveyThirdToggleGroup } from '@/features/recommend/survey/surveyThirdToggleGroup';
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const SUBTITLES: Record<string, string> = {
   초단기: '(1분/10분)',
@@ -17,7 +17,6 @@ const SUBTITLES: Record<string, string> = {
 };
 
 const Page = () => {
-  const router = useRouter();
   const [selectedValue, setSelectedValue] = useState<string>('장기');
   const [isEntered, setIsEntered] = useState(false);
 
@@ -55,7 +54,7 @@ const Page = () => {
             }}
           >
             <SurveyDetailButton>
-              <p className='text-body-md text-center leading-[120%]'>
+              <p className='text-center leading-[120%]'>
                 투자 기간에 따라
                 <br />
                 주가를 움직이는 결정적인 요인이 달라져요.
@@ -110,7 +109,9 @@ const Page = () => {
         </div>
       </div>
 
-      <BottomButton label='결과확인' />
+      <Link href={`/recommend/surveyloading`}>
+        <BottomButton label='결과확인' />
+      </Link>
     </div>
   );
 };
