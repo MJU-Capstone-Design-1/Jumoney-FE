@@ -20,35 +20,20 @@ import type {
 
 import { customInstance } from '../../../custom-instance';
 
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
-export type updateNicknameResponse200 = {
-  data: ApiResponseUserNicknameUpdateResponseDTO;
-  status: 200;
-};
-
-export type updateNicknameResponseSuccess = updateNicknameResponse200 & {
-  headers: Headers;
-};
-export type updateNicknameResponse = updateNicknameResponseSuccess;
-
-export const getUpdateNicknameUrl = () => {
-  return `/api/users/me/nickname`;
-};
-
 /**
  * 최초 로그인 후 앱 내에서 사용할 닉네임을 설정합니다.
  * @summary 서비스 닉네임 설정
  */
-export const updateNickname = async (
+export const updateNickname = (
   userNicknameUpdateRequestDTO: UserNicknameUpdateRequestDTO,
-  options?: RequestInit,
-): Promise<updateNicknameResponse> => {
-  return customInstance<updateNicknameResponse>(getUpdateNicknameUrl(), {
-    ...options,
+  signal?: AbortSignal,
+) => {
+  return customInstance<ApiResponseUserNicknameUpdateResponseDTO>({
+    url: `/api/users/me/nickname`,
     method: 'PATCH',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(userNicknameUpdateRequestDTO),
+    headers: { 'Content-Type': 'application/json' },
+    data: userNicknameUpdateRequestDTO,
+    signal,
   });
 };
 
@@ -62,7 +47,6 @@ export const getUpdateNicknameMutationOptions = <
     { data: UserNicknameUpdateRequestDTO },
     TContext
   >;
-  request?: SecondParameter<typeof customInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof updateNickname>>,
   TError,
@@ -70,13 +54,13 @@ export const getUpdateNicknameMutationOptions = <
   TContext
 > => {
   const mutationKey = ['updateNickname'];
-  const { mutation: mutationOptions, request: requestOptions } = options
+  const { mutation: mutationOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, request: undefined };
+    : { mutation: { mutationKey } };
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof updateNickname>>,
@@ -84,7 +68,7 @@ export const getUpdateNicknameMutationOptions = <
   > = (props) => {
     const { data } = props ?? {};
 
-    return updateNickname(data, requestOptions);
+    return updateNickname(data);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -107,7 +91,6 @@ export const useUpdateNickname = <TError = unknown, TContext = unknown>(
       { data: UserNicknameUpdateRequestDTO },
       TContext
     >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseMutationResult<

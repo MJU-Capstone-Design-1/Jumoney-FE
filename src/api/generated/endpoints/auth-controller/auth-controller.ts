@@ -30,32 +30,15 @@ import type {
 
 import { customInstance } from '../../../custom-instance';
 
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
-export type refreshResponse200 = {
-  data: TokenRefreshResponse;
-  status: 200;
-};
-
-export type refreshResponseSuccess = refreshResponse200 & {
-  headers: Headers;
-};
-export type refreshResponse = refreshResponseSuccess;
-
-export const getRefreshUrl = () => {
-  return `/api/auth/refresh`;
-};
-
 /**
  * 쿠키에 담긴 Refresh Token을 확인하여 새로운 토큰을 발급합니다.
  * @summary 토큰 재발급
  */
-export const refresh = async (
-  options?: RequestInit,
-): Promise<refreshResponse> => {
-  return customInstance<refreshResponse>(getRefreshUrl(), {
-    ...options,
+export const refresh = (signal?: AbortSignal) => {
+  return customInstance<TokenRefreshResponse>({
+    url: `/api/auth/refresh`,
     method: 'POST',
+    signal,
   });
 };
 
@@ -69,7 +52,6 @@ export const getRefreshMutationOptions = <
     void,
     TContext
   >;
-  request?: SecondParameter<typeof customInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof refresh>>,
   TError,
@@ -77,19 +59,19 @@ export const getRefreshMutationOptions = <
   TContext
 > => {
   const mutationKey = ['refresh'];
-  const { mutation: mutationOptions, request: requestOptions } = options
+  const { mutation: mutationOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, request: undefined };
+    : { mutation: { mutationKey } };
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof refresh>>,
     void
   > = () => {
-    return refresh(requestOptions);
+    return refresh();
   };
 
   return { mutationFn, ...mutationOptions };
@@ -112,7 +94,6 @@ export const useRefresh = <TError = unknown, TContext = unknown>(
       void,
       TContext
     >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -123,43 +104,16 @@ export const useRefresh = <TError = unknown, TContext = unknown>(
 > => {
   return useMutation(getRefreshMutationOptions(options), queryClient);
 };
-export type devLoginResponse200 = {
-  data: AuthLoginResponse;
-  status: 200;
-};
-
-export type devLoginResponseSuccess = devLoginResponse200 & {
-  headers: Headers;
-};
-export type devLoginResponse = devLoginResponseSuccess;
-
-export const getDevLoginUrl = (params: DevLoginParams) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString());
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0
-    ? `/api/auth/dev/login?${stringifiedParams}`
-    : `/api/auth/dev/login`;
-};
-
 /**
  * 카카오 연동 없이 닉네임만으로 토큰을 즉시 발급합니다. (테스트용)
  * @summary 개발자용 임시 로그인
  */
-export const devLogin = async (
-  params: DevLoginParams,
-  options?: RequestInit,
-): Promise<devLoginResponse> => {
-  return customInstance<devLoginResponse>(getDevLoginUrl(params), {
-    ...options,
+export const devLogin = (params: DevLoginParams, signal?: AbortSignal) => {
+  return customInstance<AuthLoginResponse>({
+    url: `/api/auth/dev/login`,
     method: 'POST',
+    params,
+    signal,
   });
 };
 
@@ -173,7 +127,6 @@ export const getDevLoginMutationOptions = <
     { params: DevLoginParams },
     TContext
   >;
-  request?: SecondParameter<typeof customInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof devLogin>>,
   TError,
@@ -181,13 +134,13 @@ export const getDevLoginMutationOptions = <
   TContext
 > => {
   const mutationKey = ['devLogin'];
-  const { mutation: mutationOptions, request: requestOptions } = options
+  const { mutation: mutationOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, request: undefined };
+    : { mutation: { mutationKey } };
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof devLogin>>,
@@ -195,7 +148,7 @@ export const getDevLoginMutationOptions = <
   > = (props) => {
     const { params } = props ?? {};
 
-    return devLogin(params, requestOptions);
+    return devLogin(params);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -218,7 +171,6 @@ export const useDevLogin = <TError = unknown, TContext = unknown>(
       { params: DevLoginParams },
       TContext
     >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -229,43 +181,16 @@ export const useDevLogin = <TError = unknown, TContext = unknown>(
 > => {
   return useMutation(getDevLoginMutationOptions(options), queryClient);
 };
-export type kakaoLoginResponse200 = {
-  data: AuthLoginResponse;
-  status: 200;
-};
-
-export type kakaoLoginResponseSuccess = kakaoLoginResponse200 & {
-  headers: Headers;
-};
-export type kakaoLoginResponse = kakaoLoginResponseSuccess;
-
-export const getKakaoLoginUrl = (params: KakaoLoginParams) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString());
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0
-    ? `/api/auth/kakao/login?${stringifiedParams}`
-    : `/api/auth/kakao/login`;
-};
-
 /**
  * 카카오에서 발급받은 인가 코드(code)를 이용해 로그인을 진행합니다.
  * @summary 카카오 로그인
  */
-export const kakaoLogin = async (
-  params: KakaoLoginParams,
-  options?: RequestInit,
-): Promise<kakaoLoginResponse> => {
-  return customInstance<kakaoLoginResponse>(getKakaoLoginUrl(params), {
-    ...options,
+export const kakaoLogin = (params: KakaoLoginParams, signal?: AbortSignal) => {
+  return customInstance<AuthLoginResponse>({
+    url: `/api/auth/kakao/login`,
     method: 'GET',
+    params,
+    signal,
   });
 };
 
@@ -282,16 +207,15 @@ export const getKakaoLoginQueryOptions = <
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof kakaoLogin>>, TError, TData>
     >;
-    request?: SecondParameter<typeof customInstance>;
   },
 ) => {
-  const { query: queryOptions, request: requestOptions } = options ?? {};
+  const { query: queryOptions } = options ?? {};
 
   const queryKey = queryOptions?.queryKey ?? getKakaoLoginQueryKey(params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof kakaoLogin>>> = ({
     signal,
-  }) => kakaoLogin(params, { signal, ...requestOptions });
+  }) => kakaoLogin(params, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof kakaoLogin>>,
@@ -322,7 +246,6 @@ export function useKakaoLogin<
         >,
         'initialData'
       >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -345,7 +268,6 @@ export function useKakaoLogin<
         >,
         'initialData'
       >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -360,7 +282,6 @@ export function useKakaoLogin<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof kakaoLogin>>, TError, TData>
     >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -379,7 +300,6 @@ export function useKakaoLogin<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof kakaoLogin>>, TError, TData>
     >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {

@@ -29,35 +29,20 @@ import type {
 
 import { customInstance } from '../../../custom-instance';
 
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
-export type recommendResponse200 = {
-  data: ApiResponseHojumoneyRecommendationResponse;
-  status: 200;
-};
-
-export type recommendResponseSuccess = recommendResponse200 & {
-  headers: Headers;
-};
-export type recommendResponse = recommendResponseSuccess;
-
-export const getRecommendUrl = () => {
-  return `/api/hojumoney/recommendations`;
-};
-
 /**
  * 설문 선택지 ID 3개를 기반으로 오늘의 호주머니 추천을 수행하여 추천 종목을 조회합니다.
  * @summary 오늘의 호주머니 추천
  */
-export const recommend = async (
+export const recommend = (
   hojumoneyRecommendationRequest: HojumoneyRecommendationRequest,
-  options?: RequestInit,
-): Promise<recommendResponse> => {
-  return customInstance<recommendResponse>(getRecommendUrl(), {
-    ...options,
+  signal?: AbortSignal,
+) => {
+  return customInstance<ApiResponseHojumoneyRecommendationResponse>({
+    url: `/api/hojumoney/recommendations`,
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(hojumoneyRecommendationRequest),
+    headers: { 'Content-Type': 'application/json' },
+    data: hojumoneyRecommendationRequest,
+    signal,
   });
 };
 
@@ -71,7 +56,6 @@ export const getRecommendMutationOptions = <
     { data: HojumoneyRecommendationRequest },
     TContext
   >;
-  request?: SecondParameter<typeof customInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof recommend>>,
   TError,
@@ -79,13 +63,13 @@ export const getRecommendMutationOptions = <
   TContext
 > => {
   const mutationKey = ['recommend'];
-  const { mutation: mutationOptions, request: requestOptions } = options
+  const { mutation: mutationOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, request: undefined };
+    : { mutation: { mutationKey } };
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof recommend>>,
@@ -93,7 +77,7 @@ export const getRecommendMutationOptions = <
   > = (props) => {
     const { data } = props ?? {};
 
-    return recommend(data, requestOptions);
+    return recommend(data);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -116,7 +100,6 @@ export const useRecommend = <TError = unknown, TContext = unknown>(
       { data: HojumoneyRecommendationRequest },
       TContext
     >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -127,35 +110,16 @@ export const useRecommend = <TError = unknown, TContext = unknown>(
 > => {
   return useMutation(getRecommendMutationOptions(options), queryClient);
 };
-export type getHojumoneySurveyResponse200 = {
-  data: ApiResponseHojumoneySurveyResponse;
-  status: 200;
-};
-
-export type getHojumoneySurveyResponseSuccess =
-  getHojumoneySurveyResponse200 & {
-    headers: Headers;
-  };
-export type getHojumoneySurveyResponse = getHojumoneySurveyResponseSuccess;
-
-export const getGetHojumoneySurveyUrl = () => {
-  return `/api/hojumoney/survey`;
-};
-
 /**
  * 오늘의 호주머니 추천에 필요한 설문 문항과 선택지를 표시 순서대로 조회합니다.
  * @summary 오늘의 호주머니 설문 조회
  */
-export const getHojumoneySurvey = async (
-  options?: RequestInit,
-): Promise<getHojumoneySurveyResponse> => {
-  return customInstance<getHojumoneySurveyResponse>(
-    getGetHojumoneySurveyUrl(),
-    {
-      ...options,
-      method: 'GET',
-    },
-  );
+export const getHojumoneySurvey = (signal?: AbortSignal) => {
+  return customInstance<ApiResponseHojumoneySurveyResponse>({
+    url: `/api/hojumoney/survey`,
+    method: 'GET',
+    signal,
+  });
 };
 
 export const getGetHojumoneySurveyQueryKey = () => {
@@ -173,15 +137,14 @@ export const getGetHojumoneySurveyQueryOptions = <
       TData
     >
   >;
-  request?: SecondParameter<typeof customInstance>;
 }) => {
-  const { query: queryOptions, request: requestOptions } = options ?? {};
+  const { query: queryOptions } = options ?? {};
 
   const queryKey = queryOptions?.queryKey ?? getGetHojumoneySurveyQueryKey();
 
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof getHojumoneySurvey>>
-  > = ({ signal }) => getHojumoneySurvey({ signal, ...requestOptions });
+  > = ({ signal }) => getHojumoneySurvey(signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getHojumoneySurvey>>,
@@ -215,7 +178,6 @@ export function useGetHojumoneySurvey<
         >,
         'initialData'
       >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -241,7 +203,6 @@ export function useGetHojumoneySurvey<
         >,
         'initialData'
       >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -259,7 +220,6 @@ export function useGetHojumoneySurvey<
         TData
       >
     >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -281,7 +241,6 @@ export function useGetHojumoneySurvey<
         TData
       >
     >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -297,30 +256,15 @@ export function useGetHojumoneySurvey<
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-export type getLatestResponse200 = {
-  data: ApiResponseHojumoneyRecommendationResponse;
-  status: 200;
-};
-
-export type getLatestResponseSuccess = getLatestResponse200 & {
-  headers: Headers;
-};
-export type getLatestResponse = getLatestResponseSuccess;
-
-export const getGetLatestUrl = () => {
-  return `/api/hojumoney/recommendations/latest`;
-};
-
 /**
  * 로그인 사용자의 가장 최근 오늘의 호주머니 추천 결과를 조회합니다.
  * @summary 오늘의 호주머니 추천 결과 조회
  */
-export const getLatest = async (
-  options?: RequestInit,
-): Promise<getLatestResponse> => {
-  return customInstance<getLatestResponse>(getGetLatestUrl(), {
-    ...options,
+export const getLatest = (signal?: AbortSignal) => {
+  return customInstance<ApiResponseHojumoneyRecommendationResponse>({
+    url: `/api/hojumoney/recommendations/latest`,
     method: 'GET',
+    signal,
   });
 };
 
@@ -335,15 +279,14 @@ export const getGetLatestQueryOptions = <
   query?: Partial<
     UseQueryOptions<Awaited<ReturnType<typeof getLatest>>, TError, TData>
   >;
-  request?: SecondParameter<typeof customInstance>;
 }) => {
-  const { query: queryOptions, request: requestOptions } = options ?? {};
+  const { query: queryOptions } = options ?? {};
 
   const queryKey = queryOptions?.queryKey ?? getGetLatestQueryKey();
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getLatest>>> = ({
     signal,
-  }) => getLatest({ signal, ...requestOptions });
+  }) => getLatest(signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getLatest>>,
@@ -373,7 +316,6 @@ export function useGetLatest<
         >,
         'initialData'
       >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -395,7 +337,6 @@ export function useGetLatest<
         >,
         'initialData'
       >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -409,7 +350,6 @@ export function useGetLatest<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getLatest>>, TError, TData>
     >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -427,7 +367,6 @@ export function useGetLatest<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getLatest>>, TError, TData>
     >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {

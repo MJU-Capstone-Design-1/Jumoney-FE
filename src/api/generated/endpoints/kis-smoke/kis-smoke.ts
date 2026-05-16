@@ -37,53 +37,20 @@ import type {
 
 import { customInstance } from '../../../custom-instance';
 
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
-export type runStockIndicatorBatchResponse200 = {
-  data: ApiResponseBatchJobRunResponse;
-  status: 200;
-};
-
-export type runStockIndicatorBatchResponseSuccess =
-  runStockIndicatorBatchResponse200 & {
-    headers: Headers;
-  };
-export type runStockIndicatorBatchResponse =
-  runStockIndicatorBatchResponseSuccess;
-
-export const getRunStockIndicatorBatchUrl = (
-  params?: RunStockIndicatorBatchParams,
-) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString());
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0
-    ? `/api/local/kis/batch/stock-indicators?${stringifiedParams}`
-    : `/api/local/kis/batch/stock-indicators`;
-};
-
 /**
  * Stock 테이블 전체 종목을 순회하며 KIS 지표를 조회해 stock_indicators 테이블에 upsert합니다. prod 프로필에서는 adminKey가 필요합니다. 수동 실행은 요청한 baseDate를 그대로 사용하며, 정기 스케줄처럼 직전 개장일 기준 배치는 다음 장 시작 전에 실행해야 합니다. 단, 오늘 기준 실행은 KIS 투자자매매동향 일별 API 제한 때문에 15:40 이후에만 가능합니다. 정기 스케줄은 직전 평일 기준으로 실행됩니다.
  * @summary 종목 지표 배치 수동 실행
  */
-export const runStockIndicatorBatch = async (
+export const runStockIndicatorBatch = (
   params?: RunStockIndicatorBatchParams,
-  options?: RequestInit,
-): Promise<runStockIndicatorBatchResponse> => {
-  return customInstance<runStockIndicatorBatchResponse>(
-    getRunStockIndicatorBatchUrl(params),
-    {
-      ...options,
-      method: 'POST',
-    },
-  );
+  signal?: AbortSignal,
+) => {
+  return customInstance<ApiResponseBatchJobRunResponse>({
+    url: `/api/local/kis/batch/stock-indicators`,
+    method: 'POST',
+    params,
+    signal,
+  });
 };
 
 export const getRunStockIndicatorBatchMutationOptions = <
@@ -96,7 +63,6 @@ export const getRunStockIndicatorBatchMutationOptions = <
     { params?: RunStockIndicatorBatchParams },
     TContext
   >;
-  request?: SecondParameter<typeof customInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof runStockIndicatorBatch>>,
   TError,
@@ -104,13 +70,13 @@ export const getRunStockIndicatorBatchMutationOptions = <
   TContext
 > => {
   const mutationKey = ['runStockIndicatorBatch'];
-  const { mutation: mutationOptions, request: requestOptions } = options
+  const { mutation: mutationOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, request: undefined };
+    : { mutation: { mutationKey } };
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof runStockIndicatorBatch>>,
@@ -118,7 +84,7 @@ export const getRunStockIndicatorBatchMutationOptions = <
   > = (props) => {
     const { params } = props ?? {};
 
-    return runStockIndicatorBatch(params, requestOptions);
+    return runStockIndicatorBatch(params);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -141,7 +107,6 @@ export const useRunStockIndicatorBatch = <TError = unknown, TContext = unknown>(
       { params?: RunStockIndicatorBatchParams },
       TContext
     >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -155,50 +120,20 @@ export const useRunStockIndicatorBatch = <TError = unknown, TContext = unknown>(
     queryClient,
   );
 };
-export type runHtsConditionBatchResponse200 = {
-  data: ApiResponseBatchJobRunResponse;
-  status: 200;
-};
-
-export type runHtsConditionBatchResponseSuccess =
-  runHtsConditionBatchResponse200 & {
-    headers: Headers;
-  };
-export type runHtsConditionBatchResponse = runHtsConditionBatchResponseSuccess;
-
-export const getRunHtsConditionBatchUrl = (
-  params?: RunHtsConditionBatchParams,
-) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString());
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0
-    ? `/api/local/kis/batch/hts-conditions?${stringifiedParams}`
-    : `/api/local/kis/batch/hts-conditions`;
-};
-
 /**
  * 설정된 4개 HTS 조건검색 결과를 KIS에서 조회해 hts_stocks 테이블에 저장합니다. prod 프로필에서는 adminKey가 필요합니다. 수동 실행은 요청한 baseDate를 그대로 사용하며, 생략 시 오늘 날짜를 사용합니다. 정기 스케줄은 직전 평일 기준으로 실행됩니다.
  * @summary HTS 조건검색 배치 수동 실행
  */
-export const runHtsConditionBatch = async (
+export const runHtsConditionBatch = (
   params?: RunHtsConditionBatchParams,
-  options?: RequestInit,
-): Promise<runHtsConditionBatchResponse> => {
-  return customInstance<runHtsConditionBatchResponse>(
-    getRunHtsConditionBatchUrl(params),
-    {
-      ...options,
-      method: 'POST',
-    },
-  );
+  signal?: AbortSignal,
+) => {
+  return customInstance<ApiResponseBatchJobRunResponse>({
+    url: `/api/local/kis/batch/hts-conditions`,
+    method: 'POST',
+    params,
+    signal,
+  });
 };
 
 export const getRunHtsConditionBatchMutationOptions = <
@@ -211,7 +146,6 @@ export const getRunHtsConditionBatchMutationOptions = <
     { params?: RunHtsConditionBatchParams },
     TContext
   >;
-  request?: SecondParameter<typeof customInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof runHtsConditionBatch>>,
   TError,
@@ -219,13 +153,13 @@ export const getRunHtsConditionBatchMutationOptions = <
   TContext
 > => {
   const mutationKey = ['runHtsConditionBatch'];
-  const { mutation: mutationOptions, request: requestOptions } = options
+  const { mutation: mutationOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, request: undefined };
+    : { mutation: { mutationKey } };
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof runHtsConditionBatch>>,
@@ -233,7 +167,7 @@ export const getRunHtsConditionBatchMutationOptions = <
   > = (props) => {
     const { params } = props ?? {};
 
-    return runHtsConditionBatch(params, requestOptions);
+    return runHtsConditionBatch(params);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -256,7 +190,6 @@ export const useRunHtsConditionBatch = <TError = unknown, TContext = unknown>(
       { params?: RunHtsConditionBatchParams },
       TContext
     >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -270,43 +203,16 @@ export const useRunHtsConditionBatch = <TError = unknown, TContext = unknown>(
     queryClient,
   );
 };
-export type smokeResponse200 = {
-  data: ApiResponseKisSmokeResponse;
-  status: 200;
-};
-
-export type smokeResponseSuccess = smokeResponse200 & {
-  headers: Headers;
-};
-export type smokeResponse = smokeResponseSuccess;
-
-export const getSmokeUrl = (params?: SmokeParams) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString());
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0
-    ? `/api/local/kis/smoke?${stringifiedParams}`
-    : `/api/local/kis/smoke`;
-};
-
 /**
  * 입력 종목 코드로 현재까지 연동된 KIS REST API를 순차 호출하고 각 API의 성공 여부와 샘플 응답을 반환합니다. prod 프로필에서는 adminKey가 필요합니다.
  * @summary KIS API 호출 검증
  */
-export const smoke = async (
-  params?: SmokeParams,
-  options?: RequestInit,
-): Promise<smokeResponse> => {
-  return customInstance<smokeResponse>(getSmokeUrl(params), {
-    ...options,
+export const smoke = (params?: SmokeParams, signal?: AbortSignal) => {
+  return customInstance<ApiResponseKisSmokeResponse>({
+    url: `/api/local/kis/smoke`,
     method: 'GET',
+    params,
+    signal,
   });
 };
 
@@ -323,16 +229,15 @@ export const getSmokeQueryOptions = <
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof smoke>>, TError, TData>
     >;
-    request?: SecondParameter<typeof customInstance>;
   },
 ) => {
-  const { query: queryOptions, request: requestOptions } = options ?? {};
+  const { query: queryOptions } = options ?? {};
 
   const queryKey = queryOptions?.queryKey ?? getSmokeQueryKey(params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof smoke>>> = ({
     signal,
-  }) => smoke(params, { signal, ...requestOptions });
+  }) => smoke(params, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof smoke>>,
@@ -361,7 +266,6 @@ export function useSmoke<
         >,
         'initialData'
       >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -384,7 +288,6 @@ export function useSmoke<
         >,
         'initialData'
       >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -399,7 +302,6 @@ export function useSmoke<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof smoke>>, TError, TData>
     >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -418,7 +320,6 @@ export function useSmoke<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof smoke>>, TError, TData>
     >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -434,48 +335,20 @@ export function useSmoke<
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-export type htsConditionTitlesResponse200 = {
-  data: ApiResponseListKisHtsConditionTitleOutput;
-  status: 200;
-};
-
-export type htsConditionTitlesResponseSuccess =
-  htsConditionTitlesResponse200 & {
-    headers: Headers;
-  };
-export type htsConditionTitlesResponse = htsConditionTitlesResponseSuccess;
-
-export const getHtsConditionTitlesUrl = (params?: HtsConditionTitlesParams) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString());
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0
-    ? `/api/local/kis/hts/titles?${stringifiedParams}`
-    : `/api/local/kis/hts/titles`;
-};
-
 /**
  * HTS에 서버저장된 조건명과 seq 목록을 조회합니다. prod 프로필에서는 adminKey가 필요합니다.
  * @summary HTS 조건검색 목록조회 검증
  */
-export const htsConditionTitles = async (
+export const htsConditionTitles = (
   params?: HtsConditionTitlesParams,
-  options?: RequestInit,
-): Promise<htsConditionTitlesResponse> => {
-  return customInstance<htsConditionTitlesResponse>(
-    getHtsConditionTitlesUrl(params),
-    {
-      ...options,
-      method: 'GET',
-    },
-  );
+  signal?: AbortSignal,
+) => {
+  return customInstance<ApiResponseListKisHtsConditionTitleOutput>({
+    url: `/api/local/kis/hts/titles`,
+    method: 'GET',
+    params,
+    signal,
+  });
 };
 
 export const getHtsConditionTitlesQueryKey = (
@@ -497,17 +370,16 @@ export const getHtsConditionTitlesQueryOptions = <
         TData
       >
     >;
-    request?: SecondParameter<typeof customInstance>;
   },
 ) => {
-  const { query: queryOptions, request: requestOptions } = options ?? {};
+  const { query: queryOptions } = options ?? {};
 
   const queryKey =
     queryOptions?.queryKey ?? getHtsConditionTitlesQueryKey(params);
 
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof htsConditionTitles>>
-  > = ({ signal }) => htsConditionTitles(params, { signal, ...requestOptions });
+  > = ({ signal }) => htsConditionTitles(params, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof htsConditionTitles>>,
@@ -542,7 +414,6 @@ export function useHtsConditionTitles<
         >,
         'initialData'
       >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -569,7 +440,6 @@ export function useHtsConditionTitles<
         >,
         'initialData'
       >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -588,7 +458,6 @@ export function useHtsConditionTitles<
         TData
       >
     >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -611,7 +480,6 @@ export function useHtsConditionTitles<
         TData
       >
     >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -627,50 +495,20 @@ export function useHtsConditionTitles<
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-export type htsConditionResultsResponse200 = {
-  data: ApiResponseListKisHtsConditionResultOutput;
-  status: 200;
-};
-
-export type htsConditionResultsResponseSuccess =
-  htsConditionResultsResponse200 & {
-    headers: Headers;
-  };
-export type htsConditionResultsResponse = htsConditionResultsResponseSuccess;
-
-export const getHtsConditionResultsUrl = (
-  params: HtsConditionResultsParams,
-) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString());
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0
-    ? `/api/local/kis/hts/results?${stringifiedParams}`
-    : `/api/local/kis/hts/results`;
-};
-
 /**
  * HTS 조건 seq로 종목검색 결과를 조회합니다. DB에는 저장하지 않습니다. prod 프로필에서는 adminKey가 필요합니다.
  * @summary HTS 조건검색 결과조회 검증
  */
-export const htsConditionResults = async (
+export const htsConditionResults = (
   params: HtsConditionResultsParams,
-  options?: RequestInit,
-): Promise<htsConditionResultsResponse> => {
-  return customInstance<htsConditionResultsResponse>(
-    getHtsConditionResultsUrl(params),
-    {
-      ...options,
-      method: 'GET',
-    },
-  );
+  signal?: AbortSignal,
+) => {
+  return customInstance<ApiResponseListKisHtsConditionResultOutput>({
+    url: `/api/local/kis/hts/results`,
+    method: 'GET',
+    params,
+    signal,
+  });
 };
 
 export const getHtsConditionResultsQueryKey = (
@@ -692,18 +530,16 @@ export const getHtsConditionResultsQueryOptions = <
         TData
       >
     >;
-    request?: SecondParameter<typeof customInstance>;
   },
 ) => {
-  const { query: queryOptions, request: requestOptions } = options ?? {};
+  const { query: queryOptions } = options ?? {};
 
   const queryKey =
     queryOptions?.queryKey ?? getHtsConditionResultsQueryKey(params);
 
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof htsConditionResults>>
-  > = ({ signal }) =>
-    htsConditionResults(params, { signal, ...requestOptions });
+  > = ({ signal }) => htsConditionResults(params, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof htsConditionResults>>,
@@ -738,7 +574,6 @@ export function useHtsConditionResults<
         >,
         'initialData'
       >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -765,7 +600,6 @@ export function useHtsConditionResults<
         >,
         'initialData'
       >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -784,7 +618,6 @@ export function useHtsConditionResults<
         TData
       >
     >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -807,7 +640,6 @@ export function useHtsConditionResults<
         TData
       >
     >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -823,51 +655,20 @@ export function useHtsConditionResults<
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-export type getStockIndicatorBatchStatusResponse200 = {
-  data: ApiResponseStockIndicatorBatchStatusResponse;
-  status: 200;
-};
-
-export type getStockIndicatorBatchStatusResponseSuccess =
-  getStockIndicatorBatchStatusResponse200 & {
-    headers: Headers;
-  };
-export type getStockIndicatorBatchStatusResponse =
-  getStockIndicatorBatchStatusResponseSuccess;
-
-export const getGetStockIndicatorBatchStatusUrl = (
-  params?: GetStockIndicatorBatchStatusParams,
-) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString());
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0
-    ? `/api/local/kis/batch/stock-indicators/status?${stringifiedParams}`
-    : `/api/local/kis/batch/stock-indicators/status`;
-};
-
 /**
  * 기준일이 속한 기준월(baseTime=yyyyMM)의 stock_indicators 적재 건수, 누락 종목, 필수 컬럼 null 건수를 조회합니다. baseDate 생략 시 오늘 날짜 기준월을 사용합니다. prod 프로필에서는 adminKey가 필요합니다.
  * @summary 종목 지표 배치 적재 상태 확인
  */
-export const getStockIndicatorBatchStatus = async (
+export const getStockIndicatorBatchStatus = (
   params?: GetStockIndicatorBatchStatusParams,
-  options?: RequestInit,
-): Promise<getStockIndicatorBatchStatusResponse> => {
-  return customInstance<getStockIndicatorBatchStatusResponse>(
-    getGetStockIndicatorBatchStatusUrl(params),
-    {
-      ...options,
-      method: 'GET',
-    },
-  );
+  signal?: AbortSignal,
+) => {
+  return customInstance<ApiResponseStockIndicatorBatchStatusResponse>({
+    url: `/api/local/kis/batch/stock-indicators/status`,
+    method: 'GET',
+    params,
+    signal,
+  });
 };
 
 export const getGetStockIndicatorBatchStatusQueryKey = (
@@ -892,18 +693,16 @@ export const getGetStockIndicatorBatchStatusQueryOptions = <
         TData
       >
     >;
-    request?: SecondParameter<typeof customInstance>;
   },
 ) => {
-  const { query: queryOptions, request: requestOptions } = options ?? {};
+  const { query: queryOptions } = options ?? {};
 
   const queryKey =
     queryOptions?.queryKey ?? getGetStockIndicatorBatchStatusQueryKey(params);
 
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof getStockIndicatorBatchStatus>>
-  > = ({ signal }) =>
-    getStockIndicatorBatchStatus(params, { signal, ...requestOptions });
+  > = ({ signal }) => getStockIndicatorBatchStatus(params, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getStockIndicatorBatchStatus>>,
@@ -938,7 +737,6 @@ export function useGetStockIndicatorBatchStatus<
         >,
         'initialData'
       >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -965,7 +763,6 @@ export function useGetStockIndicatorBatchStatus<
         >,
         'initialData'
       >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -984,7 +781,6 @@ export function useGetStockIndicatorBatchStatus<
         TData
       >
     >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -1007,7 +803,6 @@ export function useGetStockIndicatorBatchStatus<
         TData
       >
     >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {

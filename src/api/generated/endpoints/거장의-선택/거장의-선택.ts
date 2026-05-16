@@ -29,40 +29,22 @@ import type {
 
 import { customInstance } from '../../../custom-instance';
 
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
-export type recommendMasterResponse200 = {
-  data: ApiResponseMasterRecommendationResponse;
-  status: 200;
-};
-
-export type recommendMasterResponseSuccess = recommendMasterResponse200 & {
-  headers: Headers;
-};
-export type recommendMasterResponse = recommendMasterResponseSuccess;
-
-export const getRecommendMasterUrl = (masterId: number) => {
-  return `/api/master-choice/masters/${masterId}/recommendations`;
-};
-
 /**
  * 선택한 조건 ID 목록과 섹터 목록을 기반으로 거장의 선택 추천을 수행하여 추천 종목을 조회합니다.
  * @summary 거장의 선택 추천
  */
-export const recommendMaster = async (
+export const recommendMaster = (
   masterId: number,
   masterRecommendationRequest: MasterRecommendationRequest,
-  options?: RequestInit,
-): Promise<recommendMasterResponse> => {
-  return customInstance<recommendMasterResponse>(
-    getRecommendMasterUrl(masterId),
-    {
-      ...options,
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...options?.headers },
-      body: JSON.stringify(masterRecommendationRequest),
-    },
-  );
+  signal?: AbortSignal,
+) => {
+  return customInstance<ApiResponseMasterRecommendationResponse>({
+    url: `/api/master-choice/masters/${masterId}/recommendations`,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    data: masterRecommendationRequest,
+    signal,
+  });
 };
 
 export const getRecommendMasterMutationOptions = <
@@ -75,7 +57,6 @@ export const getRecommendMasterMutationOptions = <
     { masterId: number; data: MasterRecommendationRequest },
     TContext
   >;
-  request?: SecondParameter<typeof customInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof recommendMaster>>,
   TError,
@@ -83,13 +64,13 @@ export const getRecommendMasterMutationOptions = <
   TContext
 > => {
   const mutationKey = ['recommendMaster'];
-  const { mutation: mutationOptions, request: requestOptions } = options
+  const { mutation: mutationOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, request: undefined };
+    : { mutation: { mutationKey } };
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof recommendMaster>>,
@@ -97,7 +78,7 @@ export const getRecommendMasterMutationOptions = <
   > = (props) => {
     const { masterId, data } = props ?? {};
 
-    return recommendMaster(masterId, data, requestOptions);
+    return recommendMaster(masterId, data);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -120,7 +101,6 @@ export const useRecommendMaster = <TError = unknown, TContext = unknown>(
       { masterId: number; data: MasterRecommendationRequest },
       TContext
     >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -131,31 +111,15 @@ export const useRecommendMaster = <TError = unknown, TContext = unknown>(
 > => {
   return useMutation(getRecommendMasterMutationOptions(options), queryClient);
 };
-export type getMasterResponse200 = {
-  data: ApiResponseMasterResponse;
-  status: 200;
-};
-
-export type getMasterResponseSuccess = getMasterResponse200 & {
-  headers: Headers;
-};
-export type getMasterResponse = getMasterResponseSuccess;
-
-export const getGetMasterUrl = (masterId: number) => {
-  return `/api/master-choice/masters/${masterId}`;
-};
-
 /**
  * 선택한 거장의 설명과 추천 조건 버튼 목록을 조회합니다.
  * @summary 거장 정보 및 추천 조건 조회
  */
-export const getMaster = async (
-  masterId: number,
-  options?: RequestInit,
-): Promise<getMasterResponse> => {
-  return customInstance<getMasterResponse>(getGetMasterUrl(masterId), {
-    ...options,
+export const getMaster = (masterId: number, signal?: AbortSignal) => {
+  return customInstance<ApiResponseMasterResponse>({
+    url: `/api/master-choice/masters/${masterId}`,
     method: 'GET',
+    signal,
   });
 };
 
@@ -172,16 +136,15 @@ export const getGetMasterQueryOptions = <
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getMaster>>, TError, TData>
     >;
-    request?: SecondParameter<typeof customInstance>;
   },
 ) => {
-  const { query: queryOptions, request: requestOptions } = options ?? {};
+  const { query: queryOptions } = options ?? {};
 
   const queryKey = queryOptions?.queryKey ?? getGetMasterQueryKey(masterId);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getMaster>>> = ({
     signal,
-  }) => getMaster(masterId, { signal, ...requestOptions });
+  }) => getMaster(masterId, signal);
 
   return {
     queryKey,
@@ -215,7 +178,6 @@ export function useGetMaster<
         >,
         'initialData'
       >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -238,7 +200,6 @@ export function useGetMaster<
         >,
         'initialData'
       >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -253,7 +214,6 @@ export function useGetMaster<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getMaster>>, TError, TData>
     >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -272,7 +232,6 @@ export function useGetMaster<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof getMaster>>, TError, TData>
     >;
-    request?: SecondParameter<typeof customInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
