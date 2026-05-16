@@ -22,7 +22,7 @@ export const LoadingNewsCard = ({
   return (
     <motion.div
       className={cn(
-        'bg-secondary1 shadow-card-shadow flex w-[21.4375rem] items-center gap-[1rem] rounded-[2rem] px-[0.75rem] py-[1rem]',
+        'bg-secondary1 shadow-card-shadow flex w-full items-center gap-[1rem] rounded-[2rem] p-[1rem]',
         className,
       )}
       {...props}
@@ -34,13 +34,11 @@ export const LoadingNewsCard = ({
 
       {/* Right Text Area */}
       <div className='flex flex-col'>
-        <span className='text-body-sm text-text-sub mb-[0.3125rem] font-semibold'>
+        <span className='text-body-sm text-text-sub font-semibold'>
           {subtitle}
         </span>
         <h3 className='text-body-xl text-secondary2 font-extrabold'>{title}</h3>
-        <span className='text-body-md text-text-main mt-[0.625rem] font-bold'>
-          # {tag}
-        </span>
+        <span className='text-body-md text-text-main font-bold'># {tag}</span>
       </div>
     </motion.div>
   );
