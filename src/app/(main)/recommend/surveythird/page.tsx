@@ -1,24 +1,24 @@
-"use client";
+'use client';
 
-import BackButtonField from "@/components/backButtonField";
-import { SurveyDetailButton } from "@/components/surveyDetailButton";
-import BottomButton from "@/components/bottomButton";
-import { SurveyStepper } from "@/components/surveyStepper";
-import { motion } from "framer-motion";
-import { SurveyThirdToggleGroup } from "@/features/recommend/survey/surveyThirdToggleGroup";
-import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import BackButtonField from '@/components/backButtonField';
+import { SurveyDetailButton } from '@/components/surveyDetailButton';
+import BottomButton from '@/components/bottomButton';
+import { SurveyStepper } from '@/components/surveyStepper';
+import { motion } from 'framer-motion';
+import { SurveyThirdToggleGroup } from '@/features/recommend/survey/surveyThirdToggleGroup';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 const SUBTITLES: Record<string, string> = {
-  초단기: "(1분/10분)",
-  단기: "(5일 이동평균선 돌파)",
-  중기: "(6개월~1년)",
-  장기: "(3년 이상)",
+  초단기: '(1분/10분)',
+  단기: '(5일 이동평균선 돌파)',
+  중기: '(6개월~1년)',
+  장기: '(3년 이상)',
 };
 
 const Page = () => {
   const router = useRouter();
-  const [selectedValue, setSelectedValue] = useState<string>("장기");
+  const [selectedValue, setSelectedValue] = useState<string>('장기');
   const [isEntered, setIsEntered] = useState(false);
 
   useEffect(() => {
@@ -27,17 +27,17 @@ const Page = () => {
   }, []);
 
   return (
-    <div className="flex flex-col w-full px-4 pt-4">
-      <BackButtonField color="secondary2" label="오늘의 호주머니" />
+    <div className='flex w-full flex-col px-4 pt-4'>
+      <BackButtonField color='secondary2' label='오늘의 호주머니' />
       <SurveyStepper currentStep={3} totalSteps={3} />
 
-      <div className="flex flex-col gap-[7.25rem] pt-[2rem] items-center">
-        <div className="flex flex-col gap-[1rem]">
+      <div className='flex flex-col items-center gap-[7.25rem] pt-[2rem]'>
+        <div className='flex flex-col gap-[1rem]'>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            className="flex text-label-lg font-extrabold text-center leading-[120%]"
+            transition={{ duration: 0.6, ease: 'easeOut' }}
+            className='text-label-lg flex text-center leading-[120%] font-extrabold'
           >
             선호하는 투자 호흡(기간)은
             <br />
@@ -49,13 +49,13 @@ const Page = () => {
             animate={{ scale: 1, opacity: 1 }}
             transition={{
               delay: 0.6,
-              type: "spring",
+              type: 'spring',
               stiffness: 260,
               damping: 20,
             }}
           >
             <SurveyDetailButton>
-              <p className="text-center leading-[120%] text-body-md">
+              <p className='text-body-md text-center leading-[120%]'>
                 투자 기간에 따라
                 <br />
                 주가를 움직이는 결정적인 요인이 달라져요.
@@ -69,19 +69,19 @@ const Page = () => {
         </div>
 
         {/* Dynamic Text Section */}
-        <div className="flex flex-col items-center">
-          <div className="flex flex-col items-center">
+        <div className='flex flex-col items-center'>
+          <div className='flex flex-col items-center'>
             <motion.h2
               key={`title-${selectedValue}`}
               initial={{ opacity: 0, y: 20, scale: 0.85 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{
-                type: "spring",
+                type: 'spring',
                 stiffness: 400,
                 damping: 17,
                 delay: isEntered ? 0 : 1.0,
               }}
-              className="text-heading-lg font-extrabold text-secondary2"
+              className='text-heading-lg text-secondary2 font-extrabold'
             >
               {selectedValue}
             </motion.h2>
@@ -90,18 +90,18 @@ const Page = () => {
               initial={{ opacity: 0, y: 15, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{
-                type: "spring",
+                type: 'spring',
                 stiffness: 400,
                 damping: 20,
                 delay: isEntered ? 0.1 : 1.1,
               }}
-              className="text-label-xl font-extrabold text-secondary2 text-center -mt-[0.0625rem]"
+              className='text-label-xl text-secondary2 -mt-[0.0625rem] text-center font-extrabold'
             >
               {SUBTITLES[selectedValue]}
             </motion.p>
           </div>
 
-          <div className="mt-[4.625rem]">
+          <div className='mt-[4.625rem]'>
             <SurveyThirdToggleGroup
               value={selectedValue}
               onChange={setSelectedValue}
@@ -110,7 +110,7 @@ const Page = () => {
         </div>
       </div>
 
-      <BottomButton label="결과확인" />
+      <BottomButton label='결과확인' />
     </div>
   );
 };

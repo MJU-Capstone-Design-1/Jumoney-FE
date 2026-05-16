@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 interface SurveyDetailButtonProps {
   children: React.ReactNode;
@@ -12,7 +12,7 @@ export const SurveyDetailButton = ({ children }: SurveyDetailButtonProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div className="flex justify-center w-full relative">
+    <div className='relative flex w-full justify-center'>
       <motion.div
         layout
         onClick={() => setIsExpanded(!isExpanded)}
@@ -20,38 +20,38 @@ export const SurveyDetailButton = ({ children }: SurveyDetailButtonProps) => {
           scale: isExpanded ? [1, 1.05, 1] : 1,
         }}
         className={cn(
-          "absolute cursor-pointer flex items-center justify-center overflow-hidden bg-sub4 rounded-[6.25rem] transition-colors shadow-card-shadow font-semibold z-10 top-0 left-1/2 -translate-x-1/2",
+          'bg-sub4 shadow-card-shadow absolute top-0 left-1/2 z-10 flex -translate-x-1/2 cursor-pointer items-center justify-center overflow-hidden rounded-[6.25rem] font-semibold transition-colors',
           isExpanded
-            ? "w-[18.375rem] h-auto py-[0.625rem] -translate-y-[1rem]"
-            : "w-[4.5rem] h-[1.875rem]",
+            ? 'h-auto w-[18.375rem] -translate-y-[1rem] py-[0.625rem]'
+            : 'h-[1.875rem] w-[4.5rem]',
         )}
         whileTap={{ scale: 0.95 }}
         transition={{
           layout: {
-            type: "spring",
+            type: 'spring',
             stiffness: 400,
             damping: 30,
           },
         }}
       >
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode='wait'>
           {!isExpanded ? (
             <motion.span
-              key="label"
+              key='label'
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.5 }}
-              className="text-text-main text-body-sm font-semibold whitespace-nowrap"
+              className='text-text-main text-body-sm font-semibold whitespace-nowrap'
             >
               자세히 보기
             </motion.span>
           ) : (
             <motion.div
-              key="content"
+              key='content'
               initial={{ opacity: 0, scale: 0.8, y: 5 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.8, y: 5 }}
-              className="w-full text-text-main text-body-sm text-center flex flex-col items-center justify-center"
+              className='text-text-main text-body-sm flex w-full flex-col items-center justify-center text-center'
             >
               {children}
             </motion.div>

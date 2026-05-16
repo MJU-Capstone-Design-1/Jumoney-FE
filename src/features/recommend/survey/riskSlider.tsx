@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from 'react';
 import {
   animate,
   motion,
   PanInfo,
   useMotionValue,
   useTransform,
-} from "framer-motion";
-import { Progress } from "@/components/ui/progress";
-import SliderThumbIcon from "@/components/icons/sliderThumbIcon";
+} from 'framer-motion';
+import { Progress } from '@/components/ui/progress';
+import SliderThumbIcon from '@/components/icons/sliderThumbIcon';
 
 interface RiskSliderProps {
   value: number;
@@ -20,7 +20,7 @@ export const RiskSlider = ({ value, onChange }: RiskSliderProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const [basePx] = useState(() => {
-    if (typeof window !== "undefined") {
+    if (typeof window !== 'undefined') {
       return parseFloat(getComputedStyle(document.documentElement).fontSize);
     }
     return 16;
@@ -36,7 +36,7 @@ export const RiskSlider = ({ value, onChange }: RiskSliderProps) => {
     const targetY = -(value / 100) * trackHeightPx;
 
     animate(dragY, targetY, {
-      type: "spring",
+      type: 'spring',
       stiffness: 350,
       damping: 40,
     });
@@ -57,37 +57,37 @@ export const RiskSlider = ({ value, onChange }: RiskSliderProps) => {
   });
 
   const getTrackColor = (val: number) => {
-    if (val === 0) return "[&>div]:bg-primary";
-    if (val === 33) return "[&>div]:bg-main3";
-    if (val === 66) return "[&>div]:bg-main2";
-    return "[&>div]:bg-main1";
+    if (val === 0) return '[&>div]:bg-primary';
+    if (val === 33) return '[&>div]:bg-main3';
+    if (val === 66) return '[&>div]:bg-main2';
+    return '[&>div]:bg-main1';
   };
 
   const getThumbColor = (val: number) => {
-    if (val === 0) return "bg-primaryMuted";
-    if (val === 33) return "bg-sub3";
-    if (val === 66) return "bg-sub2";
-    return "bg-sub1";
+    if (val === 0) return 'bg-primaryMuted';
+    if (val === 33) return 'bg-sub3';
+    if (val === 66) return 'bg-sub2';
+    return 'bg-sub1';
   };
 
   const getThemeShadow = (val: number) => {
-    if (val === 0) return "shadow-select-green";
-    if (val === 33) return "shadow-select-yellow";
-    if (val === 66) return "shadow-select-brown";
-    return "shadow-select-orange";
+    if (val === 0) return 'shadow-select-green';
+    if (val === 33) return 'shadow-select-yellow';
+    if (val === 66) return 'shadow-select-brown';
+    return 'shadow-select-orange';
   };
 
   const [themeValue, setThemeValue] = useState(0);
   const [realtimeProgress, setRealtimeProgress] = useState(0);
 
   useEffect(() => {
-    return currentColorValue.on("change", (latest) => {
+    return currentColorValue.on('change', (latest) => {
       setThemeValue(latest);
     });
   }, [currentColorValue]);
 
   useEffect(() => {
-    return currentProgress.on("change", (latest) => {
+    return currentProgress.on('change', (latest) => {
       setRealtimeProgress(latest);
     });
   }, [currentProgress]);
@@ -115,7 +115,7 @@ export const RiskSlider = ({ value, onChange }: RiskSliderProps) => {
 
     const snappedY = -(normalizedValue / 100) * trackHeightPx;
     animate(dragY, snappedY, {
-      type: "spring",
+      type: 'spring',
       stiffness: 400,
       damping: 40,
     });
@@ -125,10 +125,10 @@ export const RiskSlider = ({ value, onChange }: RiskSliderProps) => {
   return (
     <div
       ref={containerRef}
-      className="relative flex h-[21rem] w-[1rem] flex-col items-center justify-end rounded-full bg-default"
+      className='bg-default relative flex h-[21rem] w-[1rem] flex-col items-center justify-end rounded-full'
     >
       {/* Active Bar using shadcn Progress */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+      <div className='pointer-events-none absolute inset-0 flex items-center justify-center'>
         <Progress
           value={realtimeProgress}
           className={`h-[1rem] w-[21rem] shrink-0 -rotate-90 bg-transparent [&>div]:transition-colors [&>div]:duration-300 ${getTrackColor(
@@ -139,7 +139,7 @@ export const RiskSlider = ({ value, onChange }: RiskSliderProps) => {
 
       {/* Thumb */}
       <motion.div
-        drag="y"
+        drag='y'
         dragConstraints={{
           top: -trackHeightPx,
           bottom: 0,
@@ -150,8 +150,8 @@ export const RiskSlider = ({ value, onChange }: RiskSliderProps) => {
         onDragEnd={handleDragEnd}
         style={{
           y: dragY,
-          bottom: "1.75rem",
-          translateY: "50%",
+          bottom: '1.75rem',
+          translateY: '50%',
         }}
         className={`absolute z-20 flex h-[4rem] w-[4rem] cursor-grab items-center justify-center rounded-full p-[1.25rem] transition-colors transition-shadow duration-300 active:cursor-grabbing ${getThumbColor(
           themeValue,

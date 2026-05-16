@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
-import "@/styles/globals.css";
-import { cn } from "@/lib/utils";
+import type { Metadata } from 'next';
+import '@/styles/globals.css';
+import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = {
-  title: "Jumoney",
-  description: "Jumoney Frontend Application",
+  title: 'Jumoney',
+  description: 'Jumoney Frontend Application',
 };
 
 export default function RootLayout({
@@ -13,9 +13,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" className={cn("h-full", "antialiased")}>
-      <body className="min-h-full font-sans">
-        <div vaul-drawer-wrapper="" className="layout-wrapper ">
+    <html lang='ko' className={cn('h-full', 'antialiased')}>
+      <body className='min-h-full font-sans'>
+        <div vaul-drawer-wrapper='' className='layout-wrapper'>
           {children}
         </div>
       </body>
