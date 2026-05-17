@@ -4,7 +4,6 @@ import type { RecommendedStockResponse } from '@/api/generated/model';
 import { LOGIC_CODE_TO_KOREAN } from '@/constants/masters';
 
 interface RecommendResultCardProps {
-  // 💡 백엔드에서 내려오는 stockCode 타입을 대응하기 위해 인터페이스 확장 (이미 포함되어 있다면 생략 가능)
   data: RecommendedStockResponse & {
     tags?: string[];
     stockCode?: string;
@@ -31,14 +30,12 @@ const RecommendResultCard = ({ data }: RecommendResultCardProps) => {
     >
       <div className='flex w-full items-center justify-between gap-[1rem]'>
         <div className='flex min-w-0 items-center gap-[0.5rem]'>
-          {/* 💡 로고 이미지 렌더링 영역 */}
           {data.stockCode ? (
             <img
               src={`/logos/${data.stockCode}.png`}
               alt={`${data.stockName || '종목'} 로고`}
               className='h-[3rem] w-[3rem] flex-shrink-0 rounded-full bg-white object-contain' // 💡 흰 배경을 주면 투명 로고도 깔끔하게 보입니다.
               onError={(e) => {
-                // 이미지 로드 실패(404 등) 시 기존 회색 원 스타일로 대체
                 e.currentTarget.style.display = 'none';
                 const fallback = e.currentTarget
                   .nextElementSibling as HTMLElement;
@@ -47,8 +44,6 @@ const RecommendResultCard = ({ data }: RecommendResultCardProps) => {
             />
           ) : null}
 
-          {/* 💡 이미지가 없거나 불러오지 못했을 때 노출되는 Fallback 디폴트 원 */}
-          {/* 처음에는 기본적으로 숨겨두었다가(hidden), img가 에러 나거나 stockCode가 없을 때만 보여줍니다. */}
           <div
             className='bg-primary h-[3rem] w-[3rem] flex-shrink-0 rounded-full'
             style={{ display: data.stockCode ? 'none' : 'block' }}

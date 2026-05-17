@@ -1,24 +1,33 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React from 'react';
 import { cn } from '@/lib/utils';
 import BackButtonField from '@/components/backButtonField';
 import RecommendResultCard from '@/components/recommendResultCard';
 import FloatingButton from '@/features/recommend/selection/floatingButton';
 import CriteriaDescriptionModal from '@/features/recommend/selection/criteriaDescriptionModal';
 import { motion, Variants } from 'framer-motion';
-import {
-  MASTERS_DATA,
-  CRITERIA_DESCRIPTIONS,
-  LOGIC_CODE_TO_KOREAN,
-} from '@/constants/masters';
+import { LOGIC_CODE_TO_KOREAN } from '@/constants/masters';
 import BottomButton from '@/components/bottomButton';
-import {
-  useGetMaster,
-  useRecommendMaster,
-} from '@/api/generated/endpoints/거장의-선택/거장의-선택';
 import { SectorSelectionBottomsheet } from '@/features/recommend/selection/sectorSelectionBottomsheet';
+import { useMasterRecommend } from '@/hooks/useMasterRecommend';
+
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.15, delayChildren: 0.1 },
+  },
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { type: 'spring', bounce: 0.4 },
+  },
+};
 
 export default function MasterRecommendPage({
   params,
@@ -28,167 +37,26 @@ export default function MasterRecommendPage({
   const resolvedParams = React.use(params);
   const currentKey = resolvedParams.masterId;
 
-  const masterIdMapping: Record<string, number> = {
-    buffett: 1,
-    lynch: 2,
-    dalio: 3,
-    oneil: 4,
-  };
-
-  const targetMasterId = masterIdMapping[currentKey] || 1;
-
-  const { data: masterApiResponse, isLoading } = useGetMaster(targetMasterId);
-  const masterData = masterApiResponse?.data;
-
-  const recommendMutation = useRecommendMaster();
-
-  const masterThemeInfo =
-    MASTERS_DATA[currentKey as keyof typeof MASTERS_DATA] ||
-    MASTERS_DATA.buffett;
-
-  const [selectedOptionIds, setSelectedOptionIds] = useState<
-    (string | number)[]
-  >([]);
-  const [submittedOptionIds, setSubmittedOptionIds] = useState<
-    (string | number)[] | null
-  >([]);
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isAnimationTrigger, setIsAnimationTrigger] = useState(true);
-  const [hasSearched, setHasSearched] = useState(false);
-
-  const [isSectorBottomSheetOpen, setIsSectorBottomSheetOpen] = useState(false);
-  const [selectedSectorTypes, setSelectedSectorTypes] = useState<string[]>([]);
-  const [activeSectorOptionId, setActiveSectorOptionId] = useState<
-    number | null
-  >(null);
-
-  const modalData =
-    CRITERIA_DESCRIPTIONS[currentKey as keyof typeof CRITERIA_DESCRIPTIONS] ||
-    CRITERIA_DESCRIPTIONS.buffett;
-
-  const toggleCriteria = (option: {
-    optionId?: string | number;
-    requiresSectorSelection?: boolean;
-  }) => {
-    const optionId = option.optionId ?? 0;
-
-    if (option?.requiresSectorSelection) {
-      if (selectedOptionIds.includes(optionId)) {
-        setSelectedOptionIds((prev) => prev.filter((id) => id !== optionId));
-        setSelectedSectorTypes([]);
-        setActiveSectorOptionId(null);
-      } else {
-        setActiveSectorOptionId(optionId as number);
-        setIsSectorBottomSheetOpen(true);
-      }
-      return;
-    }
-
-    setSelectedOptionIds((prev) =>
-      prev.includes(optionId)
-        ? prev.filter((id) => id !== optionId)
-        : [...prev, optionId],
-    );
-  };
-
-  const handleSectorToggle = (sectorType: string) => {
-    const isMultiple = currentKey === 'dalio';
-
-    if (isMultiple) {
-      setSelectedSectorTypes((prev) =>
-        prev.includes(sectorType)
-          ? prev.filter((t) => t !== sectorType)
-          : [...prev, sectorType],
-      );
-    } else {
-      setSelectedSectorTypes([sectorType]);
-    }
-  };
-
-  const handleSectorConfirm = () => {
-    if (activeSectorOptionId !== null) {
-      setSelectedOptionIds((prev) => [...prev, activeSectorOptionId]);
-    }
-    setIsSectorBottomSheetOpen(false);
-  };
-
-  const handleSectorClose = () => {
-    setIsSectorBottomSheetOpen(false);
-    if (
-      activeSectorOptionId !== null &&
-      !selectedOptionIds.includes(activeSectorOptionId)
-    ) {
-      setSelectedSectorTypes([]);
-      setActiveSectorOptionId(null);
-    }
-  };
-
-  const handleResultSubmit = () => {
-    setIsAnimationTrigger(false);
-
-    const validOptionIds = selectedOptionIds.filter(
-      (id): id is number => typeof id === 'number',
-    );
-
-    const requestData: { selectedOptionIds: number[]; sectorTypes?: string[] } =
-      {
-        selectedOptionIds: validOptionIds,
-      };
-
-    if (selectedSectorTypes.length > 0) {
-      requestData.sectorTypes = selectedSectorTypes;
-    }
-
-    recommendMutation.mutate(
-      {
-        masterId: targetMasterId,
-        data: requestData as unknown as Parameters<
-          typeof recommendMutation.mutate
-        >[0]['data'],
-      },
-      {
-        onSuccess: () => {
-          setSubmittedOptionIds(selectedOptionIds);
-          setHasSearched(true);
-          setTimeout(() => {
-            setIsAnimationTrigger(true);
-          }, 40);
-        },
-        onError: (error) => {
-          console.error('추천 종목 조회 실패:', error);
-          setSubmittedOptionIds(selectedOptionIds);
-          setHasSearched(true);
-          setTimeout(() => {
-            setIsAnimationTrigger(true);
-          }, 40);
-        },
-      },
-    );
-  };
-
-  const isButtonDisabled =
-    selectedOptionIds.length === 0 ||
-    (submittedOptionIds !== null &&
-      selectedOptionIds.length === submittedOptionIds.length &&
-      selectedOptionIds.every((id) => submittedOptionIds.includes(id)));
-
-  const containerVariants: Variants = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.15, delayChildren: 0.1 },
-    },
-  };
-
-  const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 20 },
-    show: {
-      opacity: 1,
-      y: 0,
-      transition: { type: 'spring', bounce: 0.4 },
-    },
-  };
+  const {
+    masterData,
+    masterThemeInfo,
+    modalData,
+    recommendMutation,
+    selectedOptionIds,
+    submittedOptionIds,
+    isModalOpen,
+    setIsModalOpen,
+    isAnimationTrigger,
+    hasSearched,
+    isSectorBottomSheetOpen,
+    selectedSectorTypes,
+    toggleCriteria,
+    handleSectorToggle,
+    handleSectorConfirm,
+    handleSectorClose,
+    handleResultSubmit,
+    isButtonDisabled,
+  } = useMasterRecommend(currentKey);
 
   const recommendedStocks = recommendMutation.data?.data?.recommendations || [];
 
@@ -254,7 +122,6 @@ export default function MasterRecommendPage({
             ? masterData.options.map((option) => {
                 const optionId = option.optionId ?? 0;
                 const isSelected = selectedOptionIds.includes(optionId);
-
                 const displayContent =
                   (option.content && LOGIC_CODE_TO_KOREAN[option.content]) ||
                   option.content ||
@@ -281,7 +148,6 @@ export default function MasterRecommendPage({
               })
             : masterThemeInfo.criteria.map((c) => {
                 const isSelected = selectedOptionIds.includes(c);
-
                 const displayContent = LOGIC_CODE_TO_KOREAN[c] || c;
 
                 return (
@@ -328,7 +194,7 @@ export default function MasterRecommendPage({
               ))}
 
               {hasSearched && recommendedStocks.length === 0 && (
-                <div className='text-body-lg text-text-sub py-8 text-center'>
+                <div className='text-body-lg text-text-sub py-8 text-center font-extrabold'>
                   선택하신 조건에 매칭되는 종목이 없어요.
                 </div>
               )}
