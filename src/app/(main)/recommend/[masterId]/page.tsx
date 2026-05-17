@@ -13,6 +13,7 @@ import {
   MOCK_STOCKS,
   CRITERIA_DESCRIPTIONS,
 } from '@/constants/masters';
+import BottomButton from '@/components/bottomButton';
 
 export default function MasterRecommendPage({
   params,
@@ -26,7 +27,12 @@ export default function MasterRecommendPage({
     MASTERS_DATA.buffett;
 
   const [selectedCriteria, setSelectedCriteria] = useState<string[]>([]);
+  const [submittedCriteria, setSubmittedCriteria] = useState<string[] | null>(
+    null,
+  );
+
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAnimationTrigger, setIsAnimationTrigger] = useState(true);
 
   const modalData =
     CRITERIA_DESCRIPTIONS[
@@ -38,6 +44,22 @@ export default function MasterRecommendPage({
       prev.includes(c) ? prev.filter((item) => item !== c) : [...prev, c],
     );
   };
+
+  const handleResultSubmit = () => {
+    setIsAnimationTrigger(false);
+
+    setSubmittedCriteria(selectedCriteria);
+
+    setTimeout(() => {
+      setIsAnimationTrigger(true);
+    }, 40);
+  };
+
+  const isButtonDisabled =
+    selectedCriteria.length === 0 ||
+    (submittedCriteria !== null &&
+      selectedCriteria.length === submittedCriteria.length &&
+      selectedCriteria.every((c) => submittedCriteria.includes(c)));
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -148,14 +170,25 @@ export default function MasterRecommendPage({
         </motion.div>
 
         {/* Stock Cards */}
-        <motion.div
-          variants={itemVariants}
-          className='mt-[1rem] flex flex-col gap-[1rem] pb-[1.875rem]'
-        >
-          {MOCK_STOCKS.map((_, i) => (
-            <RecommendResultCard key={i} />
-          ))}
-        </motion.div>
+        {submittedCriteria !== null && isAnimationTrigger && (
+          <motion.div
+            variants={itemVariants}
+            initial='hidden'
+            animate='show'
+            key={submittedCriteria.join(',')}
+            className='mt-[1rem] flex flex-col gap-[1rem] px-4 pb-[1.875rem]'
+          >
+            {MOCK_STOCKS.map((_, i) => (
+              <RecommendResultCard key={i} />
+            ))}
+          </motion.div>
+        )}
+
+        <BottomButton
+          label='결과 확인'
+          onClick={handleResultSubmit}
+          disabled={isButtonDisabled}
+        />
       </motion.div>
 
       {/* Modal */}
