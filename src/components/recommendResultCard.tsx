@@ -38,6 +38,8 @@ const RecommendResultCard = ({ data }: RecommendResultCardProps) => {
             <Image
               src={`/logos/${data.stockCode}.png`}
               alt={`${data.stockName || '종목'} 로고`}
+              width={48}
+              height={48}
               className='bg-secondary1 h-[3rem] w-[3rem] flex-shrink-0 rounded-full object-contain'
               onError={(e) => {
                 e.currentTarget.style.display = 'none';

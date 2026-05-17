@@ -13,21 +13,18 @@ import {
   getHojumoneySurvey,
 } from '@/api/generated/endpoints/오늘의-호주머니/오늘의-호주머니';
 
-const NEWS_ITEMS = [
+const NEWS_FALLBACKS = [
   {
-    id: 1,
     subtitle: '호가 예상 금융 뉴스 인사이트',
     title: '주목받는 AI 반도체 관련주',
     tag: '반도체/IT',
   },
   {
-    id: 2,
     subtitle: '오늘의 주요 경제 지표',
     title: '미 연준 금리 인하 가능성 시사',
     tag: '거시경제',
   },
   {
-    id: 3,
     subtitle: '글로벌 마켓 트렌드',
     title: '전기차 수요 회복 조짐 보인다',
     tag: '모빌리티',
@@ -61,17 +58,26 @@ export default function Page() {
   const { purpose, getRiskLabel, period, setRecommendationData } =
     useSurveyStore();
 
+  const [newsItems, setNewsItems] =
+    useState<Array<{ subtitle: string; title: string; tag: string }>>(
+      NEWS_FALLBACKS,
+    );
   const [currentIndex, setCurrentIndex] = useState(0);
   const [dotCount, setDotCount] = useState(0);
   const [errorMsg, setErrorMsg] = useState('');
 
-  // 실시간 카드 변경 타이머
+  // 실시간 카드 변경 타이머 (newsItems 가 변경되면 자동 재조정)
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % NEWS_ITEMS.length);
+      setNewsItems((items) => {
+        if (items.length > 0) {
+          setCurrentIndex((prev) => (prev + 1) % items.length);
+        }
+        return items;
+      });
     }, 3000);
     return () => clearInterval(timer);
-  }, []);
+  }, [newsItems]);
 
   // 분석 중 말줄임표 타이머
   useEffect(() => {
@@ -81,53 +87,7 @@ export default function Page() {
     return () => clearInterval(dotTimer);
   }, []);
 
-  // 1. 설문 선택지 ID 조회 및 매핑 함수
-  const fetchAndMapOptions = async (
-    purposeVal: string,
-    riskVal: string,
-    periodVal: string,
-  ): Promise<number[]> => {
-    const response = await getHojumoneySurvey();
-    const questions = response.data?.questions || [];
-
-    const targetLogicCodes = [
-      PURPOSE_TO_LOGIC[purposeVal],
-      RISK_TO_LOGIC[riskVal],
-      PERIOD_TO_LOGIC[periodVal],
-    ].filter(Boolean);
-
-    const selectedOptionIds: number[] = [];
-
-    // logicCode와 매칭되는 선택지 ID 탐색
-    questions.forEach((q) => {
-      q.options?.forEach((opt) => {
-        if (
-          opt.logicCode &&
-          targetLogicCodes.includes(opt.logicCode) &&
-          opt.optionId !== undefined
-        ) {
-          selectedOptionIds.push(opt.optionId);
-        }
-      });
-    });
-
-    // 만약 예외 사항이나 Mock API 미스매치로 3개가 다 매핑되지 않은 경우, 각 질문의 첫 번째 선택지를 대체로 선택
-    if (selectedOptionIds.length < 3) {
-      questions.forEach((q) => {
-        const firstOpt = q.options?.[0];
-        if (
-          firstOpt?.optionId !== undefined &&
-          !selectedOptionIds.includes(firstOpt.optionId)
-        ) {
-          selectedOptionIds.push(firstOpt.optionId);
-        }
-      });
-    }
-
-    return selectedOptionIds.slice(0, 3);
-  };
-
-  // 2. 백엔드 추천 요청 흐름 실행
+  // 백엔드 추천 요청 및 설문 정보 통합 흐름 실행
   useEffect(() => {
     const minTimer = new Promise((resolve) => setTimeout(resolve, 5000)); // 최소 5초 대기시간
 
@@ -140,16 +100,90 @@ export default function Page() {
 
       const risk = getRiskLabel();
 
-      // 1) API에서 설문 데이터 가져와 적절한 optionId 추출
-      const optionIds = await fetchAndMapOptions(purpose, risk, period);
-      if (optionIds.length < 3) {
+      // 1) API에서 설문 데이터 가져와 적절한 optionId 추출 및 뉴스 추출
+      const response = await getHojumoneySurvey();
+      const questions = response.data?.questions || [];
+
+      const targetLogicCodes = [
+        PURPOSE_TO_LOGIC[purpose],
+        RISK_TO_LOGIC[risk],
+        PERIOD_TO_LOGIC[period],
+      ].filter(Boolean);
+
+      const selectedOptionIds: number[] = [];
+      const dynamicNews: Array<{
+        subtitle: string;
+        title: string;
+        tag: string;
+      }> = [];
+
+      // logicCode와 매칭되는 선택지 ID 및 설명 추출
+      questions.forEach((q) => {
+        q.options?.forEach((opt) => {
+          if (
+            opt.logicCode &&
+            targetLogicCodes.includes(opt.logicCode) &&
+            opt.optionId !== undefined
+          ) {
+            selectedOptionIds.push(opt.optionId);
+
+            // 실시간 기사 카드로 쓸 indicator 설명 추가
+            if (opt.description && opt.description.length > 0) {
+              opt.description.forEach((desc) => {
+                if (desc.indicatorName && desc.indicatorDescription) {
+                  dynamicNews.push({
+                    subtitle: desc.indicatorName,
+                    title: desc.indicatorDescription,
+                    tag: opt.content || '',
+                  });
+                }
+              });
+            }
+          }
+        });
+      });
+
+      // 만약 예외 사항으로 3개가 다 매핑되지 않은 경우 대체 선택지 추출
+      if (selectedOptionIds.length < 3) {
+        questions.forEach((q) => {
+          const firstOpt = q.options?.[0];
+          if (
+            firstOpt?.optionId !== undefined &&
+            !selectedOptionIds.includes(firstOpt.optionId)
+          ) {
+            selectedOptionIds.push(firstOpt.optionId);
+
+            if (firstOpt.description && firstOpt.description.length > 0) {
+              firstOpt.description.forEach((desc) => {
+                if (desc.indicatorName && desc.indicatorDescription) {
+                  dynamicNews.push({
+                    subtitle: desc.indicatorName,
+                    title: desc.indicatorDescription,
+                    tag: firstOpt.content || '',
+                  });
+                }
+              });
+            }
+          }
+        });
+      }
+
+      // 실시간 기사가 있다면 로딩 상태에 연동
+      if (dynamicNews.length > 0) {
+        setNewsItems(dynamicNews);
+        setCurrentIndex(0); // 새 뉴스 유입 시 인덱스 초기화
+      }
+
+      if (selectedOptionIds.length < 3) {
         throw new Error(
           '선택한 설문에 대한 옵션 매핑 정보가 올바르지 않습니다.',
         );
       }
 
       // 2) 추출한 optionIds를 바디에 실어 추천 생성 요청
-      const recommendRes = await recommend({ selectedOptionIds: optionIds });
+      const recommendRes = await recommend({
+        selectedOptionIds: selectedOptionIds.slice(0, 3),
+      });
       if (!recommendRes.success || !recommendRes.data) {
         throw new Error(
           recommendRes.message || '추천 결과를 받아오지 못했습니다.',
@@ -274,10 +308,10 @@ export default function Page() {
             <div className='relative mt-auto mb-[1.875rem] min-h-[6.5rem] w-full max-w-[21.4375rem]'>
               <AnimatePresence mode='popLayout'>
                 <LoadingNewsCard
-                  key={currentIndex}
-                  subtitle={NEWS_ITEMS[currentIndex].subtitle}
-                  title={NEWS_ITEMS[currentIndex].title}
-                  tag={NEWS_ITEMS[currentIndex].tag}
+                  key={`${currentIndex}-${newsItems[currentIndex]?.subtitle}`}
+                  subtitle={newsItems[currentIndex]?.subtitle || ''}
+                  title={newsItems[currentIndex]?.title || ''}
+                  tag={newsItems[currentIndex]?.tag || ''}
                   className='absolute mt-0 mb-0 w-full'
                   initial={{ opacity: 0, x: 50 }}
                   animate={{ opacity: 1, x: 0 }}
