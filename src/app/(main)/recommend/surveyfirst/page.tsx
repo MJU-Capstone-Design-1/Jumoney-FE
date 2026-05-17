@@ -7,16 +7,11 @@ import { SurveyOption } from '@/features/recommend/survey/surveyFirstListGroup';
 import BottomButton from '@/components/bottomButton';
 import { SurveyStepper } from '@/components/surveyStepper';
 import { motion } from 'framer-motion';
-import { SurveyFirstBottomsheet } from '@/features/recommend/survey/surveyFirstBottomsheet';
 import { bottomSheetItems } from '@/constants/surveyFirstBottomsheetItems';
 import Link from 'next/link';
 
 const Page = () => {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
-  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
-  const [currentHelpItems, setCurrentHelpItems] = useState<
-    { title: string; description: string }[]
-  >([]);
 
   const options = [
     '안정적인 자산 보호',
@@ -24,11 +19,6 @@ const Page = () => {
     '자산의 꾸준한 성장',
     '시세 차익',
   ];
-
-  const handleHelpClick = (option: string) => {
-    setCurrentHelpItems(bottomSheetItems[option] || []);
-    setIsBottomSheetOpen(true);
-  };
 
   return (
     <div className='flex w-full flex-col px-4 pt-4'>
@@ -90,7 +80,7 @@ const Page = () => {
                 onClick={() =>
                   setSelectedOption(selectedOption === option ? null : option)
                 }
-                onHelpClick={() => handleHelpClick(option)}
+                helpItems={bottomSheetItems[option]}
               />
             </motion.div>
           ))}
@@ -102,12 +92,6 @@ const Page = () => {
       >
         <BottomButton label='다음으로' disabled={!selectedOption} />
       </Link>
-
-      <SurveyFirstBottomsheet
-        isOpen={isBottomSheetOpen}
-        onClose={setIsBottomSheetOpen}
-        items={currentHelpItems}
-      />
     </div>
   );
 };
