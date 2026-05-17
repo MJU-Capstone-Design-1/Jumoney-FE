@@ -1,13 +1,14 @@
 'use client';
 
 import React from 'react';
-import VerificationButton from './verificationButton';
+/* import VerificationButton from './verificationButton'; */
 import type { RecommendedStockResponse } from '@/api/generated/model';
 import { LOGIC_CODE_TO_KOREAN } from '@/constants/masters';
 import { masterSortMetricLabels } from '@/constants/masterLabels';
+import Image from 'next/image';
 
 interface RecommendResultCardProps {
-  data: RecommendedStockResponse & {
+  data: Omit<RecommendedStockResponse, 'tags'> & {
     tags?: string[];
     stockCode?: string;
   };
@@ -34,7 +35,7 @@ const RecommendResultCard = ({ data }: RecommendResultCardProps) => {
       <div className='flex w-full items-center justify-between gap-[1rem]'>
         <div className='flex min-w-0 items-center gap-[0.5rem]'>
           {data.stockCode ? (
-            <img
+            <Image
               src={`/logos/${data.stockCode}.png`}
               alt={`${data.stockName || '종목'} 로고`}
               className='bg-secondary1 h-[3rem] w-[3rem] flex-shrink-0 rounded-full object-contain'
@@ -78,9 +79,9 @@ const RecommendResultCard = ({ data }: RecommendResultCardProps) => {
             </div>
           </div>
         </div>
-        <div className='flex-shrink-0'>
+        {/*  <div className='flex-shrink-0'>
           <VerificationButton />
-        </div>
+        </div> */}
       </div>
 
       <div className='flex items-center gap-[0.5rem]'>

@@ -5,14 +5,24 @@ import RecommendResultCard from '@/components/recommendResultCard';
 import { motion } from 'framer-motion';
 import { useSurveyStore } from '@/store/surveyStore';
 import { getPersona } from '@/constants/surveyMappings';
+import {
+  labelMappings,
+  recommendationTagLabels,
+} from '@/constants/labelMappings';
 
 const Page = () => {
   const typingText = '분석 완료! 당신의 투자 타입은 · · ·';
 
-  const { purpose, getRiskLabel, period } = useSurveyStore();
+  const { purpose, getRiskLabel, period, recommendationData } =
+    useSurveyStore();
   const persona = useMemo(() => {
     return getPersona(purpose, getRiskLabel(), period);
   }, [purpose, getRiskLabel, period]);
+
+  const displayName = recommendationData?.persona?.personaName || persona.name;
+  const displayDescription =
+    recommendationData?.persona?.personaDescription || persona.description;
+  const recommendations = recommendationData?.recommendations || [];
 
   return (
     <div>
@@ -35,7 +45,7 @@ const Page = () => {
           transition={{ delay: 1.5, duration: 0.8 }}
           className='text-label-md font-extrabold whitespace-pre-wrap'
         >
-          {persona.name}
+          {displayName}
         </motion.p>
         <motion.p
           initial={{ opacity: 0 }}
@@ -43,7 +53,7 @@ const Page = () => {
           transition={{ delay: 2.2, duration: 0.8 }}
           className='text-body-md leading-[120%] font-semibold whitespace-pre-wrap'
         >
-          {persona.description}
+          {displayDescription}
         </motion.p>
       </div>
 
@@ -56,24 +66,75 @@ const Page = () => {
         >
           추천 종목
         </motion.p>
-        {/* TODO: 추천 종목 받아오기 */}
+
         <div className='flex flex-col gap-[1rem]'>
-          {[0, 1, 2].map((i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{
-                delay: 3.3 + i * 0.2,
-                duration: 0.5,
-                type: 'spring',
-                stiffness: 260,
-                damping: 20,
-              }}
-            >
-              <RecommendResultCard />
-            </motion.div>
-          ))}
+          {recommendations.length > 0 ? (
+            recommendations.map((stock, i) => {
+              // 1. 태그 매핑 처리 (투자 목적, 위험 성향, 섹터명)
+              const mappedTags: string[] = [];
+              if (stock.tags) {
+                stock.tags.forEach((tag) => {
+                  if (tag && tag in recommendationTagLabels) {
+                    mappedTags.push(
+                      recommendationTagLabels[
+                        tag as keyof typeof recommendationTagLabels
+                      ],
+                    );
+                  } else if (tag) {
+                    mappedTags.push(tag);
+                  }
+                });
+              }
+
+              if (stock.goodSectorTags) {
+                stock.goodSectorTags.forEach((sect) => {
+                  if (sect && sect in labelMappings) {
+                    mappedTags.push(
+                      labelMappings[sect as keyof typeof labelMappings],
+                    );
+                  } else if (sect) {
+                    mappedTags.push(sect);
+                  }
+                });
+              }
+
+              // 2. 정렬 지표 키 매핑 처리
+              const mappedSortMetricKey =
+                stock.sortMetricKey && stock.sortMetricKey in labelMappings
+                  ? labelMappings[
+                      stock.sortMetricKey as keyof typeof labelMappings
+                    ]
+                  : stock.sortMetricKey;
+
+              const cardData = {
+                ...stock,
+                tags: mappedTags,
+                sortMetricKey: mappedSortMetricKey,
+                stockCode: stock.stockCode || '',
+              };
+
+              return (
+                <motion.div
+                  key={stock.stockId || i}
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{
+                    delay: 3.3 + i * 0.2,
+                    duration: 0.5,
+                    type: 'spring',
+                    stiffness: 260,
+                    damping: 20,
+                  }}
+                >
+                  <RecommendResultCard data={cardData} />
+                </motion.div>
+              );
+            })
+          ) : (
+            <p className='py-8 text-center text-sm text-gray-400'>
+              추천된 종목이 없습니다.
+            </p>
+          )}
         </div>
       </div>
     </div>
