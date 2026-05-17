@@ -1,11 +1,18 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import RecommendResultCard from '@/components/recommendResultCard';
 import { motion } from 'framer-motion';
+import { useSurveyStore } from '@/store/surveyStore';
+import { getPersona } from '@/constants/surveyMappings';
 
-const page = () => {
+const Page = () => {
   const typingText = '분석 완료! 당신의 투자 타입은 · · ·';
+
+  const { purpose, getRiskLabel, period } = useSurveyStore();
+  const persona = useMemo(() => {
+    return getPersona(purpose, getRiskLabel(), period);
+  }, [purpose, getRiskLabel, period]);
 
   return (
     <div>
@@ -26,19 +33,17 @@ const page = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.5, duration: 0.8 }}
-          className='text-label-md font-extrabold'
+          className='text-label-md font-extrabold whitespace-pre-wrap'
         >
-          무결점 방어형 저축가
+          {persona.name}
         </motion.p>
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 2.2, duration: 0.8 }}
-          className='text-body-md leading-[120%] font-semibold'
+          className='text-body-md leading-[120%] font-semibold whitespace-pre-wrap'
         >
-          손실 확률 0%에 도전해요
-          <br />
-          아주 짧은 기간이라도 원금이 완벽히 보호되는 곳을 선호합니다
+          {persona.description}
         </motion.p>
       </div>
 
@@ -75,4 +80,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

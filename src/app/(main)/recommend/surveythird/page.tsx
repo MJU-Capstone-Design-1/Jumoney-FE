@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import { SurveyThirdToggleGroup } from '@/features/recommend/survey/surveyThirdToggleGroup';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useSurveyStore, SurveyPeriod } from '@/store/surveyStore';
 
 const SUBTITLES: Record<string, string> = {
   초단기: '(1분/10분)',
@@ -109,7 +110,12 @@ const Page = () => {
         </div>
       </div>
 
-      <Link href={`/recommend/surveyloading`}>
+      <Link
+        href={`/recommend/surveyloading`}
+        onClick={() => {
+          useSurveyStore.getState().setPeriod(selectedValue as SurveyPeriod);
+        }}
+      >
         <BottomButton label='결과확인' />
       </Link>
     </div>

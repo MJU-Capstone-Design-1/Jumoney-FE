@@ -9,6 +9,7 @@ import { SurveyStepper } from '@/components/surveyStepper';
 import { motion } from 'framer-motion';
 import { bottomSheetItems } from '@/constants/surveyFirstBottomsheetItems';
 import Link from 'next/link';
+import { useSurveyStore, SurveyPurpose } from '@/store/surveyStore';
 
 const Page = () => {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
@@ -89,6 +90,13 @@ const Page = () => {
       <Link
         href='/recommend/surveysecond'
         className={!selectedOption ? 'pointer-events-none' : ''}
+        onClick={() => {
+          if (selectedOption) {
+            useSurveyStore
+              .getState()
+              .setPurpose(selectedOption as SurveyPurpose);
+          }
+        }}
       >
         <BottomButton label='다음으로' disabled={!selectedOption} />
       </Link>

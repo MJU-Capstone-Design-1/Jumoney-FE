@@ -9,6 +9,7 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useSurveyStore } from '@/store/surveyStore';
 
 const SurveySecondPage = () => {
   const router = useRouter();
@@ -61,7 +62,12 @@ const SurveySecondPage = () => {
         </div>
       </div>
 
-      <Link href='/recommend/surveythird'>
+      <Link
+        href='/recommend/surveythird'
+        onClick={() => {
+          useSurveyStore.getState().setRiskValue(value);
+        }}
+      >
         <BottomButton label='다음으로' disabled={false} />
       </Link>
     </div>
