@@ -41,7 +41,7 @@ export default function CriteriaDescriptionModal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className='fixed inset-0 z-1000 flex items-center justify-center bg-black/60 px-[1.375rem]'
+          className='fixed inset-0 z-20 flex items-center justify-center bg-black/60 px-[1.375rem]'
           onClick={onClose}
           style={{ height: '100dvh' }}
         >

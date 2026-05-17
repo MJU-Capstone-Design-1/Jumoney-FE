@@ -33,7 +33,7 @@ export const SectorSelectionBottomsheet = ({
       shouldScaleBackground={false}
     >
       <DrawerPrimitive.Portal>
-        <DrawerPrimitive.Overlay className='fixed inset-0 z-1000 bg-black/60' />
+        <DrawerPrimitive.Overlay className='fixed inset-0 z-20 bg-black/60' />
         <DrawerPrimitive.Content className='bg-background fixed bottom-0 left-1/2 z-10000 flex w-full max-w-[375px] -translate-x-1/2 flex-col overflow-hidden rounded-t-[2.5rem] outline-none focus:outline-none'>
           <DrawerPrimitive.Title className='sr-only'>
             섹터 선택
