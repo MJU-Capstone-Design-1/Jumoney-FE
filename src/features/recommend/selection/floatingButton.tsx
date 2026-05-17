@@ -15,7 +15,7 @@ export default function FloatingButton({ onClick }: { onClick?: () => void }) {
         left: '50%',
         marginLeft: 'calc(187.5px - 3.5rem - 1.5rem)',
       }}
-      className='bg-secondary2 shadow-card-shadow pointer-events-auto fixed top-3 z-[999] flex h-[3.5rem] w-[3.5rem] items-center justify-center rounded-full'
+      className='bg-secondary2 shadow-card-shadow pointer-events-auto fixed top-3 z-15 flex h-[3.5rem] w-[3.5rem] items-center justify-center rounded-full'
     >
       <CheckIcon />
     </motion.button>

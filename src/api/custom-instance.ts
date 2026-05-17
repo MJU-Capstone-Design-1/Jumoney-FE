@@ -3,7 +3,7 @@ import axios, { AxiosRequestConfig } from 'axios';
 
 // 1. 기본 설정 (서버 주소, 타임아웃 등)
 export const AXIOS_INSTANCE = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080',
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://jumoney.site',
 });
 
 // 2. 요청 가로채기 (여기에 토큰을 넣습니다)
