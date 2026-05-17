@@ -210,3 +210,29 @@ export const CRITERIA_DESCRIPTIONS = {
     },
   ],
 };
+
+export const LOGIC_CODE_TO_KOREAN: Record<string, string> = {
+  BUFFETT_ROE: 'ROE',
+  BUFFETT_PER: 'PER',
+  BUFFETT_EPS_GROWTH: 'EPS 성장률',
+  BUFFETT_DEBT_RATIO: '부채비율',
+  BUFFETT_OPERATING_MARGIN: '영업이익률',
+
+  LYNCH_PEG: 'PEG',
+  LYNCH_EPS_GROWTH: 'EPS 성장률',
+  LYNCH_DEBT_RATIO: '부채비율',
+  LYNCH_SALES_GROWTH: '매출액 증가율',
+  LYNCH_SECTOR: '섹터 선택',
+
+  DALIO_ALL_WEATHER: '올웨더 포트폴리오',
+  DALIO_PER: 'PER',
+  DALIO_MARGIN_DEBT: '신용잔고율',
+  DALIO_DEBT_RATIO: '부채비율',
+  DALIO_EARNINGS_YIELD: '이익수익률',
+
+  ONEIL_EPS_GROWTH: 'EPS 성장률',
+  ONEIL_ROE: 'ROE',
+  ONEIL_HIGH_52_WEEK: '52주 신고가 갱신',
+  ONEIL_MARKET_LEADER: '대장주 여부',
+  ONEIL_INST_NET_BUY: '기관 순매수',
+};
