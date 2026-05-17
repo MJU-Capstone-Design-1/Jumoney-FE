@@ -34,7 +34,7 @@ const RecommendResultCard = ({ data }: RecommendResultCardProps) => {
             <img
               src={`/logos/${data.stockCode}.png`}
               alt={`${data.stockName || '종목'} 로고`}
-              className='h-[3rem] w-[3rem] flex-shrink-0 rounded-full bg-white object-contain' // 💡 흰 배경을 주면 투명 로고도 깔끔하게 보입니다.
+              className='bg-secondary1 h-[3rem] w-[3rem] flex-shrink-0 rounded-full object-contain'
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
                 const fallback = e.currentTarget
