@@ -13,6 +13,7 @@ export const HelpIcon = ({ color = 'secondary1' }: HelpIconProps) => {
       height='24'
       viewBox='0 0 24 24'
       fill='none'
+      className='size-6'
     >
       <rect
         x='3'
