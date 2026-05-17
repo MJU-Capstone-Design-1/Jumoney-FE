@@ -11,6 +11,7 @@ import { LOGIC_CODE_TO_KOREAN } from '@/constants/masters';
 import BottomButton from '@/components/bottomButton';
 import { SectorSelectionBottomsheet } from '@/features/recommend/selection/sectorSelectionBottomsheet';
 import { useMasterRecommend } from '@/hooks/useMasterRecommend';
+import { masterSortMetricLabels } from '@/constants/masterLabels';
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -122,10 +123,12 @@ export default function MasterRecommendPage({
             ? masterData.options.map((option) => {
                 const optionId = option.optionId ?? 0;
                 const isSelected = selectedOptionIds.includes(optionId);
+
+                const rawContent = option.content || '';
                 const displayContent =
-                  (option.content && LOGIC_CODE_TO_KOREAN[option.content]) ||
-                  option.content ||
-                  '';
+                  masterSortMetricLabels[rawContent] ||
+                  LOGIC_CODE_TO_KOREAN[rawContent] ||
+                  rawContent;
 
                 return (
                   <motion.button
@@ -148,7 +151,9 @@ export default function MasterRecommendPage({
               })
             : masterThemeInfo.criteria.map((c) => {
                 const isSelected = selectedOptionIds.includes(c);
-                const displayContent = LOGIC_CODE_TO_KOREAN[c] || c;
+
+                const displayContent =
+                  masterSortMetricLabels[c] || LOGIC_CODE_TO_KOREAN[c] || c;
 
                 return (
                   <motion.button

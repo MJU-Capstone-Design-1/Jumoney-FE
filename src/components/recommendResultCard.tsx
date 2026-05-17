@@ -1,7 +1,10 @@
+'use client';
+
 import React from 'react';
 import VerificationButton from './verificationButton';
 import type { RecommendedStockResponse } from '@/api/generated/model';
 import { LOGIC_CODE_TO_KOREAN } from '@/constants/masters';
+import { masterSortMetricLabels } from '@/constants/masterLabels';
 
 interface RecommendResultCardProps {
   data: RecommendedStockResponse & {
@@ -58,9 +61,11 @@ const RecommendResultCard = ({ data }: RecommendResultCardProps) => {
               {stockTags.length > 0 ? (
                 stockTags.map((code, index) => {
                   const displayTag =
+                    masterSortMetricLabels[code.toUpperCase()] ||
                     LOGIC_CODE_TO_KOREAN[
                       code as keyof typeof LOGIC_CODE_TO_KOREAN
-                    ] || code;
+                    ] ||
+                    code;
                   return (
                     <div key={index} className='whitespace-nowrap'>
                       # {displayTag}
@@ -87,7 +92,9 @@ const RecommendResultCard = ({ data }: RecommendResultCardProps) => {
           <>
             <div className='bg-secondary2 flex h-[0.75rem] w-[0.0625rem]' />
             <p className='text-body-md font-semibold'>
-              {data.sortMetricKey.split('_').pop()} {data.sortMetricValue}%
+              {masterSortMetricLabels[data.sortMetricKey.toUpperCase()] ||
+                data.sortMetricKey}{' '}
+              {data.sortMetricValue}%
             </p>
           </>
         )}
