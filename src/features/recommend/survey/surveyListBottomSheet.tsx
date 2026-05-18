@@ -3,22 +3,22 @@
 import React from 'react';
 import { Drawer as DrawerPrimitive } from 'vaul';
 
-interface DetailItem {
+export interface BottomSheetDetailItem {
   title: string;
   description: string;
 }
 
-interface SurveyFirstBottomsheetProps {
+interface SurveyListBottomSheetProps {
   isOpen: boolean;
   onClose: (open: boolean) => void;
-  items: DetailItem[];
+  items: BottomSheetDetailItem[];
 }
 
-export const SurveyFirstBottomsheet = ({
+export const SurveyListBottomSheet = ({
   isOpen,
   onClose,
   items,
-}: SurveyFirstBottomsheetProps) => {
+}: SurveyListBottomSheetProps) => {
   return (
     <DrawerPrimitive.Root
       open={isOpen}

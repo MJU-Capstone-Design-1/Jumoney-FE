@@ -19,10 +19,14 @@ export const LoadingNewsCard = ({
   className,
   ...props
 }: LoadingNewsCardProps) => {
+  const truncatedTitle = title.length > 10 ? `${title.slice(0, 10)}...` : title;
+  const truncatedSubtitle =
+    subtitle.length > 20 ? `${subtitle.slice(0, 20)}...` : subtitle;
+
   return (
     <motion.div
       className={cn(
-        'bg-secondary1 shadow-card-shadow flex w-[21.4375rem] items-center gap-[1rem] rounded-[2rem] px-[0.75rem] py-[1rem]',
+        'bg-secondary1 shadow-card-shadow flex w-full items-center gap-[1rem] rounded-[2rem] p-[1rem]',
         className,
       )}
       {...props}
@@ -34,13 +38,13 @@ export const LoadingNewsCard = ({
 
       {/* Right Text Area */}
       <div className='flex flex-col'>
-        <span className='text-body-sm text-text-sub mb-[0.3125rem] font-semibold'>
-          {subtitle}
+        <span className='text-body-sm text-text-sub font-semibold'>
+          {truncatedSubtitle}
         </span>
-        <h3 className='text-body-xl text-secondary2 font-extrabold'>{title}</h3>
-        <span className='text-body-md text-text-main mt-[0.625rem] font-bold'>
-          # {tag}
-        </span>
+        <h3 className='text-body-xl text-secondary2 font-extrabold'>
+          {truncatedTitle}
+        </h3>
+        <span className='text-body-md text-text-main font-bold'># {tag}</span>
       </div>
     </motion.div>
   );

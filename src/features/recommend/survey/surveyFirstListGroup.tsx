@@ -2,21 +2,22 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { HelpIcon } from '@/components/icons/helpIcon';
 import { cn } from '@/lib/utils';
+import { HelpButton } from './helpButton';
+import { BottomSheetDetailItem } from './surveyListBottomSheet';
 
 interface SurveyOptionProps {
   label: string;
   isSelected: boolean;
   onClick: () => void;
-  onHelpClick?: (e: React.MouseEvent) => void;
+  helpItems?: BottomSheetDetailItem[];
 }
 
 export const SurveyOption = ({
   label,
   isSelected,
   onClick,
-  onHelpClick,
+  helpItems,
 }: SurveyOptionProps) => {
   return (
     <motion.button
@@ -44,14 +45,12 @@ export const SurveyOption = ({
       )}
     >
       <p>{label}</p>
-      <div
-        onClick={(e) => {
-          e.stopPropagation();
-          onHelpClick?.(e);
-        }}
-      >
-        <HelpIcon color={isSelected ? 'secondary1' : 'secondary2'} />
-      </div>
+      {helpItems && helpItems.length > 0 && (
+        <HelpButton
+          color={isSelected ? 'secondary1' : 'secondary2'}
+          items={helpItems}
+        />
+      )}
     </motion.button>
   );
 };
