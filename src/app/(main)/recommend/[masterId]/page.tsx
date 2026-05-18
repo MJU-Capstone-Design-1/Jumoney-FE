@@ -1,17 +1,32 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
 import BackButtonField from '@/components/backButtonField';
 import RecommendResultCard from '@/components/recommendResultCard';
 import FloatingButton from '@/features/recommend/selection/floatingButton';
 import CriteriaDescriptionModal from '@/features/recommend/selection/criteriaDescriptionModal';
 import { motion, Variants } from 'framer-motion';
-import { LOGIC_CODE_TO_KOREAN } from '@/constants/masters';
+import {
+  CRITERIA_DESCRIPTIONS,
+  LOGIC_CODE_TO_KOREAN,
+  MASTERS_DATA,
+} from '@/constants/masters';
 import BottomButton from '@/components/bottomButton';
 import { SectorSelectionBottomsheet } from '@/features/recommend/selection/sectorSelectionBottomsheet';
-import { useMasterRecommend } from '@/hooks/useMasterRecommend';
 import { masterSortMetricLabels } from '@/constants/masterLabels';
+import {
+  useGetMaster,
+  useRecommendMaster,
+} from '@/api/generated/endpoints/거장의-선택/거장의-선택';
+import type {
+  MasterOptionResponse,
+  MasterRecommendationRequest,
+} from '@/api/generated/model';
+
+type MasterRecommendationSectorTypes = NonNullable<
+  MasterRecommendationRequest['sectorTypes']
+>;
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -38,28 +53,144 @@ export default function MasterRecommendPage({
   const resolvedParams = React.use(params);
   const currentKey = resolvedParams.masterId;
 
-  const {
-    masterData,
-    masterThemeInfo,
-    modalData,
-    recommendMutation,
-    selectedOptionIds,
-    submittedOptionIds,
-    isModalOpen,
-    setIsModalOpen,
-    isAnimationTrigger,
-    hasSearched,
-    isSectorBottomSheetOpen,
-    selectedSectorTypes,
-    toggleCriteria,
-    handleSectorToggle,
-    handleSectorConfirm,
-    handleSectorClose,
-    handleResultSubmit,
-    isButtonDisabled,
-  } = useMasterRecommend(currentKey);
+  const masterIdMapping: Record<string, number> = {
+    buffett: 1,
+    lynch: 2,
+    dalio: 3,
+    oneil: 4,
+  };
+  const targetMasterId = masterIdMapping[currentKey] || 1;
 
+  const { data: masterApiResponse } = useGetMaster(targetMasterId);
+  const masterData = masterApiResponse?.data;
+  const recommendMutation = useRecommendMaster();
+
+  const masterThemeInfo =
+    MASTERS_DATA[currentKey as keyof typeof MASTERS_DATA] ||
+    MASTERS_DATA.buffett;
+  const modalData =
+    CRITERIA_DESCRIPTIONS[currentKey as keyof typeof CRITERIA_DESCRIPTIONS] ||
+    CRITERIA_DESCRIPTIONS.buffett;
+
+  const [selectedOptionIds, setSelectedOptionIds] = useState<number[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAnimationTrigger, setIsAnimationTrigger] = useState(true);
+  const [isSectorBottomSheetOpen, setIsSectorBottomSheetOpen] = useState(false);
+  const [selectedSectorTypes, setSelectedSectorTypes] =
+    useState<MasterRecommendationSectorTypes>([]);
+  const [activeSectorOptionId, setActiveSectorOptionId] = useState<
+    number | null
+  >(null);
+
+  const submittedOptionIds =
+    recommendMutation.variables?.data.selectedOptionIds;
+  const submittedSectorTypes = recommendMutation.variables?.data.sectorTypes;
   const recommendedStocks = recommendMutation.data?.data?.recommendations || [];
+  const hasSearched = recommendMutation.isSuccess || recommendMutation.isError;
+
+  const toggleCriteria = (option: MasterOptionResponse) => {
+    if (option.optionId === undefined) return;
+
+    const optionId = option.optionId;
+    if (option.requiresSectorSelection) {
+      if (selectedOptionIds.includes(optionId)) {
+        setSelectedOptionIds((prev) => prev.filter((id) => id !== optionId));
+        setSelectedSectorTypes([]);
+        setActiveSectorOptionId(null);
+      } else {
+        setActiveSectorOptionId(optionId);
+        setIsSectorBottomSheetOpen(true);
+      }
+      return;
+    }
+
+    setSelectedOptionIds((prev) =>
+      prev.includes(optionId)
+        ? prev.filter((id) => id !== optionId)
+        : [...prev, optionId],
+    );
+  };
+
+  const handleSectorToggle = (sectorType: string) => {
+    const typedSectorType =
+      sectorType as MasterRecommendationSectorTypes[number];
+
+    if (currentKey === 'dalio') {
+      setSelectedSectorTypes((prev) =>
+        prev.includes(typedSectorType)
+          ? prev.filter((t) => t !== typedSectorType)
+          : [...prev, typedSectorType],
+      );
+    } else {
+      setSelectedSectorTypes([typedSectorType]);
+    }
+  };
+
+  const handleSectorConfirm = () => {
+    if (activeSectorOptionId !== null) {
+      setSelectedOptionIds((prev) =>
+        prev.includes(activeSectorOptionId)
+          ? prev
+          : [...prev, activeSectorOptionId],
+      );
+    }
+    setIsSectorBottomSheetOpen(false);
+  };
+
+  const handleSectorClose = () => {
+    setIsSectorBottomSheetOpen(false);
+    if (
+      activeSectorOptionId !== null &&
+      !selectedOptionIds.includes(activeSectorOptionId)
+    ) {
+      setSelectedSectorTypes([]);
+      setActiveSectorOptionId(null);
+    }
+  };
+
+  const handleResultSubmit = () => {
+    setIsAnimationTrigger(false);
+
+    const requestData: MasterRecommendationRequest = {
+      selectedOptionIds,
+    };
+
+    if (selectedSectorTypes.length > 0) {
+      requestData.sectorTypes = selectedSectorTypes;
+    }
+
+    recommendMutation.mutate(
+      {
+        masterId: targetMasterId,
+        data: requestData,
+      },
+      {
+        onSuccess: () => {
+          setTimeout(() => setIsAnimationTrigger(true), 40);
+        },
+        onError: (error) => {
+          console.error('추천 종목 조회 실패:', error);
+          setTimeout(() => setIsAnimationTrigger(true), 40);
+        },
+      },
+    );
+  };
+
+  const isOptionIdsUnchanged =
+    submittedOptionIds !== undefined &&
+    selectedOptionIds.length === submittedOptionIds.length &&
+    selectedOptionIds.every((id) => submittedOptionIds.includes(id));
+
+  const isSectorTypesUnchanged =
+    (!submittedSectorTypes && selectedSectorTypes.length === 0) ||
+    (submittedSectorTypes !== undefined &&
+      selectedSectorTypes.length === submittedSectorTypes.length &&
+      selectedSectorTypes.every((type) => submittedSectorTypes.includes(type)));
+
+  const isButtonDisabled =
+    recommendMutation.isPending ||
+    selectedOptionIds.length === 0 ||
+    (isOptionIdsUnchanged && isSectorTypesUnchanged);
 
   return (
     <div className='bg-background relative flex min-h-screen w-full flex-col overflow-x-hidden'>
@@ -119,61 +250,35 @@ export default function MasterRecommendPage({
           variants={itemVariants}
           className='mt-[1.25rem] flex flex-wrap justify-center gap-[0.5rem]'
         >
-          {masterData?.options && masterData.options.length > 0
-            ? masterData.options.map((option) => {
-                const optionId = option.optionId ?? 0;
-                const isSelected = selectedOptionIds.includes(optionId);
+          {masterData?.options?.map((option) => {
+            const optionId = option.optionId ?? 0;
+            const isSelected = selectedOptionIds.includes(optionId);
 
-                const rawContent = option.content || '';
-                const displayContent =
-                  masterSortMetricLabels[rawContent] ||
-                  LOGIC_CODE_TO_KOREAN[rawContent] ||
-                  rawContent;
+            const rawContent = option.content || '';
+            const displayContent =
+              masterSortMetricLabels[rawContent] ||
+              LOGIC_CODE_TO_KOREAN[rawContent] ||
+              rawContent;
 
-                return (
-                  <motion.button
-                    whileTap={{ scale: 0.9, rotate: isSelected ? -2 : 2 }}
-                    key={optionId}
-                    onClick={() => toggleCriteria(option)}
-                    className={cn(
-                      'text-body-md rounded-full border px-[1.125rem] py-[0.5625rem] font-semibold transition-colors duration-200',
-                      isSelected
-                        ? cn(
-                            masterThemeInfo.theme,
-                            'text-secondary1 border-transparent',
-                          )
-                        : 'text-secondary2 border-secondary2 bg-transparent',
-                    )}
-                  >
-                    {displayContent}
-                  </motion.button>
-                );
-              })
-            : masterThemeInfo.criteria.map((c) => {
-                const isSelected = selectedOptionIds.includes(c);
-
-                const displayContent =
-                  masterSortMetricLabels[c] || LOGIC_CODE_TO_KOREAN[c] || c;
-
-                return (
-                  <motion.button
-                    whileTap={{ scale: 0.9, rotate: isSelected ? -2 : 2 }}
-                    key={c}
-                    onClick={() => toggleCriteria({ optionId: c })}
-                    className={cn(
-                      'text-body-md rounded-full border px-[1.125rem] py-[0.5625rem] font-semibold transition-colors duration-200',
-                      isSelected
-                        ? cn(
-                            masterThemeInfo.theme,
-                            'text-secondary1 border-transparent',
-                          )
-                        : 'text-secondary2 border-secondary2 bg-transparent',
-                    )}
-                  >
-                    {displayContent}
-                  </motion.button>
-                );
-              })}
+            return (
+              <motion.button
+                whileTap={{ scale: 0.9, rotate: isSelected ? -2 : 2 }}
+                key={optionId}
+                onClick={() => toggleCriteria(option)}
+                className={cn(
+                  'text-body-md rounded-full border px-[1.125rem] py-[0.5625rem] font-semibold transition-colors duration-200',
+                  isSelected
+                    ? cn(
+                        masterThemeInfo.theme,
+                        'text-secondary1 border-transparent',
+                      )
+                    : 'text-secondary2 border-secondary2 bg-transparent',
+                )}
+              >
+                {displayContent}
+              </motion.button>
+            );
+          })}
 
           <motion.button
             whileTap={{ scale: 0.9, rotate: -2 }}
@@ -185,13 +290,13 @@ export default function MasterRecommendPage({
         </motion.div>
 
         {/* Stock Cards */}
-        {submittedOptionIds !== null && isAnimationTrigger && (
+        {submittedOptionIds !== undefined && isAnimationTrigger && (
           <div className='mt-[1rem] flex w-full flex-col px-4'>
             <motion.div
               variants={itemVariants}
               initial='hidden'
               animate='show'
-              key={submittedOptionIds.join(',')}
+              key={`${submittedOptionIds.join(',')}-${submittedSectorTypes?.join(',') ?? ''}`}
               className='flex h-[calc(100vh-29rem)] [scrollbar-width:none] flex-col gap-[1rem] overflow-y-auto overscroll-contain pb-[6rem] [&::-webkit-scrollbar]:hidden'
             >
               {recommendedStocks.map((stock, i) => (
