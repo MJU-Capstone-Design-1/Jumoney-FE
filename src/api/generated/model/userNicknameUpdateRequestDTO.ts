@@ -11,8 +11,8 @@
  */
 export interface UserNicknameUpdateRequestDTO {
   /**
-   * @minLength 2
-   * @maxLength 15
-   */
+     * @minLength 2
+     * @maxLength 15
+     */
   serviceNickname: string;
 }

@@ -5,7 +5,10 @@
  * 주머니의 백엔드 API 명세서입니다.
  * OpenAPI spec version: 1.0.0
  */
-import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQuery
+} from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -18,299 +21,237 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
+  UseQueryResult
 } from '@tanstack/react-query';
 
 import type {
   AuthLoginResponse,
   DevLoginParams,
   KakaoLoginParams,
-  TokenRefreshResponse,
+  TokenRefreshResponse
 } from '../../model';
 
 import { customInstance } from '../../../custom-instance';
+
+
+
 
 /**
  * 쿠키에 담긴 Refresh Token을 확인하여 새로운 토큰을 발급합니다.
  * @summary 토큰 재발급
  */
-export const refresh = (signal?: AbortSignal) => {
-  return customInstance<TokenRefreshResponse>({
-    url: `/api/auth/refresh`,
-    method: 'POST',
-    signal,
-  });
-};
+export const refresh = (
 
-export const getRefreshMutationOptions = <
-  TError = unknown,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof refresh>>,
-    TError,
-    void,
-    TContext
-  >;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof refresh>>,
-  TError,
-  void,
-  TContext
-> => {
-  const mutationKey = ['refresh'];
-  const { mutation: mutationOptions } = options
-    ? options.mutation &&
-      'mutationKey' in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } };
+ signal?: AbortSignal
+) => {
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof refresh>>,
-    void
-  > = () => {
-    return refresh();
-  };
 
-  return { mutationFn, ...mutationOptions };
-};
+      return customInstance<TokenRefreshResponse>(
+      {url: `/api/auth/refresh`, method: 'POST', signal
+    },
+      );
+    }
 
-export type RefreshMutationResult = NonNullable<
-  Awaited<ReturnType<typeof refresh>>
->;
 
-export type RefreshMutationError = unknown;
 
-/**
+export const getRefreshMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof refresh>>, TError,void, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof refresh>>, TError,void, TContext> => {
+
+const mutationKey = ['refresh'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof refresh>>, void> = () => {
+
+
+          return  refresh()
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RefreshMutationResult = NonNullable<Awaited<ReturnType<typeof refresh>>>
+
+    export type RefreshMutationError = unknown
+
+    /**
  * @summary 토큰 재발급
  */
-export const useRefresh = <TError = unknown, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof refresh>>,
-      TError,
-      void,
-      TContext
-    >;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof refresh>>,
-  TError,
-  void,
-  TContext
-> => {
-  return useMutation(getRefreshMutationOptions(options), queryClient);
-};
-/**
+export const useRefresh = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof refresh>>, TError,void, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof refresh>>,
+        TError,
+        void,
+        TContext
+      > => {
+      return useMutation(getRefreshMutationOptions(options), queryClient);
+    }
+    /**
  * 카카오 연동 없이 닉네임만으로 토큰을 즉시 발급합니다. (테스트용)
  * @summary 개발자용 임시 로그인
  */
-export const devLogin = (params: DevLoginParams, signal?: AbortSignal) => {
-  return customInstance<AuthLoginResponse>({
-    url: `/api/auth/dev/login`,
-    method: 'POST',
-    params,
-    signal,
-  });
-};
+export const devLogin = (
+    params: DevLoginParams,
+ signal?: AbortSignal
+) => {
 
-export const getDevLoginMutationOptions = <
-  TError = unknown,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof devLogin>>,
-    TError,
-    { params: DevLoginParams },
-    TContext
-  >;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof devLogin>>,
-  TError,
-  { params: DevLoginParams },
-  TContext
-> => {
-  const mutationKey = ['devLogin'];
-  const { mutation: mutationOptions } = options
-    ? options.mutation &&
-      'mutationKey' in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof devLogin>>,
-    { params: DevLoginParams }
-  > = (props) => {
-    const { params } = props ?? {};
+      return customInstance<AuthLoginResponse>(
+      {url: `/api/auth/dev/login`, method: 'POST',
+        params, signal
+    },
+      );
+    }
 
-    return devLogin(params);
-  };
 
-  return { mutationFn, ...mutationOptions };
-};
 
-export type DevLoginMutationResult = NonNullable<
-  Awaited<ReturnType<typeof devLogin>>
->;
+export const getDevLoginMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof devLogin>>, TError,{params: DevLoginParams}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof devLogin>>, TError,{params: DevLoginParams}, TContext> => {
 
-export type DevLoginMutationError = unknown;
+const mutationKey = ['devLogin'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
 
-/**
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof devLogin>>, {params: DevLoginParams}> = (props) => {
+          const {params} = props ?? {};
+
+          return  devLogin(params,)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DevLoginMutationResult = NonNullable<Awaited<ReturnType<typeof devLogin>>>
+
+    export type DevLoginMutationError = unknown
+
+    /**
  * @summary 개발자용 임시 로그인
  */
-export const useDevLogin = <TError = unknown, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof devLogin>>,
-      TError,
-      { params: DevLoginParams },
-      TContext
-    >;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof devLogin>>,
-  TError,
-  { params: DevLoginParams },
-  TContext
-> => {
-  return useMutation(getDevLoginMutationOptions(options), queryClient);
-};
-/**
+export const useDevLogin = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof devLogin>>, TError,{params: DevLoginParams}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof devLogin>>,
+        TError,
+        {params: DevLoginParams},
+        TContext
+      > => {
+      return useMutation(getDevLoginMutationOptions(options), queryClient);
+    }
+    /**
  * 카카오에서 발급받은 인가 코드(code)를 이용해 로그인을 진행합니다.
  * @summary 카카오 로그인
  */
-export const kakaoLogin = (params: KakaoLoginParams, signal?: AbortSignal) => {
-  return customInstance<AuthLoginResponse>({
-    url: `/api/auth/kakao/login`,
-    method: 'GET',
-    params,
-    signal,
-  });
-};
-
-export const getKakaoLoginQueryKey = (params?: KakaoLoginParams) => {
-  return [`/api/auth/kakao/login`, ...(params ? [params] : [])] as const;
-};
-
-export const getKakaoLoginQueryOptions = <
-  TData = Awaited<ReturnType<typeof kakaoLogin>>,
-  TError = unknown,
->(
-  params: KakaoLoginParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof kakaoLogin>>, TError, TData>
-    >;
-  },
+export const kakaoLogin = (
+    params: KakaoLoginParams,
+ signal?: AbortSignal
 ) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getKakaoLoginQueryKey(params);
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof kakaoLogin>>> = ({
-    signal,
-  }) => kakaoLogin(params, signal);
+      return customInstance<AuthLoginResponse>(
+      {url: `/api/auth/kakao/login`, method: 'GET',
+        params, signal
+    },
+      );
+    }
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof kakaoLogin>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
 
-export type KakaoLoginQueryResult = NonNullable<
-  Awaited<ReturnType<typeof kakaoLogin>>
->;
-export type KakaoLoginQueryError = unknown;
 
-export function useKakaoLogin<
-  TData = Awaited<ReturnType<typeof kakaoLogin>>,
-  TError = unknown,
->(
-  params: KakaoLoginParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof kakaoLogin>>, TError, TData>
-    > &
-      Pick<
+
+export const getKakaoLoginQueryKey = (params?: KakaoLoginParams,) => {
+    return [
+    `/api/auth/kakao/login`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getKakaoLoginQueryOptions = <TData = Awaited<ReturnType<typeof kakaoLogin>>, TError = unknown>(params: KakaoLoginParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof kakaoLogin>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getKakaoLoginQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof kakaoLogin>>> = ({ signal }) => kakaoLogin(params, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof kakaoLogin>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type KakaoLoginQueryResult = NonNullable<Awaited<ReturnType<typeof kakaoLogin>>>
+export type KakaoLoginQueryError = unknown
+
+
+export function useKakaoLogin<TData = Awaited<ReturnType<typeof kakaoLogin>>, TError = unknown>(
+ params: KakaoLoginParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof kakaoLogin>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof kakaoLogin>>,
           TError,
           Awaited<ReturnType<typeof kakaoLogin>>
-        >,
-        'initialData'
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useKakaoLogin<
-  TData = Awaited<ReturnType<typeof kakaoLogin>>,
-  TError = unknown,
->(
-  params: KakaoLoginParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof kakaoLogin>>, TError, TData>
-    > &
-      Pick<
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useKakaoLogin<TData = Awaited<ReturnType<typeof kakaoLogin>>, TError = unknown>(
+ params: KakaoLoginParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof kakaoLogin>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof kakaoLogin>>,
           TError,
           Awaited<ReturnType<typeof kakaoLogin>>
-        >,
-        'initialData'
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useKakaoLogin<
-  TData = Awaited<ReturnType<typeof kakaoLogin>>,
-  TError = unknown,
->(
-  params: KakaoLoginParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof kakaoLogin>>, TError, TData>
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useKakaoLogin<TData = Awaited<ReturnType<typeof kakaoLogin>>, TError = unknown>(
+ params: KakaoLoginParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof kakaoLogin>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary 카카오 로그인
  */
 
-export function useKakaoLogin<
-  TData = Awaited<ReturnType<typeof kakaoLogin>>,
-  TError = unknown,
->(
-  params: KakaoLoginParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof kakaoLogin>>, TError, TData>
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getKakaoLoginQueryOptions(params, options);
+export function useKakaoLogin<TData = Awaited<ReturnType<typeof kakaoLogin>>, TError = unknown>(
+ params: KakaoLoginParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof kakaoLogin>>, TError, TData>>, }
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const queryOptions = getKakaoLoginQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
+
+
+

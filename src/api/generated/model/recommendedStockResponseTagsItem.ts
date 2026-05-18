@@ -6,8 +6,8 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type RecommendedStockResponseTagsItem =
-  (typeof RecommendedStockResponseTagsItem)[keyof typeof RecommendedStockResponseTagsItem];
+export type RecommendedStockResponseTagsItem = typeof RecommendedStockResponseTagsItem[keyof typeof RecommendedStockResponseTagsItem];
+
 
 export const RecommendedStockResponseTagsItem = {
   BUFFETT_ROE: 'BUFFETT_ROE',

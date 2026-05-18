@@ -6,8 +6,8 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type SectorOptionResponseSectorType =
-  (typeof SectorOptionResponseSectorType)[keyof typeof SectorOptionResponseSectorType];
+export type SectorOptionResponseSectorType = typeof SectorOptionResponseSectorType[keyof typeof SectorOptionResponseSectorType];
+
 
 export const SectorOptionResponseSectorType = {
   IT_SEMICONDUCTOR: 'IT_SEMICONDUCTOR',

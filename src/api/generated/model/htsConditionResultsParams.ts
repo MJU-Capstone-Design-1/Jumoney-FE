@@ -7,16 +7,16 @@
  */
 
 export type HtsConditionResultsParams = {
-  /**
-   * prod 프로필 전용 관리자 키
-   */
-  adminKey?: string;
-  /**
-   * 조건 seq
-   */
-  seq: string;
-  /**
-   * HTS ID. 생략 시 kis.hts.user-id 설정값 사용
-   */
-  userId?: string;
+/**
+ * prod 프로필 전용 관리자 키
+ */
+adminKey?: string;
+/**
+ * 조건 seq
+ */
+seq: string;
+/**
+ * HTS ID. 생략 시 kis.hts.user-id 설정값 사용
+ */
+userId?: string;
 };

@@ -5,63 +5,37 @@
  * 주머니의 백엔드 API 명세서입니다.
  * OpenAPI spec version: 1.0.0
  */
-import { faker } from '@faker-js/faker';
+import {
+  faker
+} from '@faker-js/faker';
 
-import { HttpResponse, http } from 'msw';
-import type { RequestHandlerOptions } from 'msw';
+import {
+  HttpResponse,
+  http
+} from 'msw';
+import type {
+  RequestHandlerOptions
+} from 'msw';
 
-import type { ApiResponseUserNicknameUpdateResponseDTO } from '../../model';
+import type {
+  ApiResponseUserNicknameUpdateResponseDTO
+} from '../../model';
 
-export const getUpdateNicknameResponseMock = (
-  overrideResponse: Partial<
-    Extract<ApiResponseUserNicknameUpdateResponseDTO, object>
-  > = {},
-): ApiResponseUserNicknameUpdateResponseDTO => ({
-  success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([
-    faker.string.alpha({ length: { min: 10, max: 20 } }),
-    undefined,
-  ]),
-  message: faker.helpers.arrayElement([
-    faker.string.alpha({ length: { min: 10, max: 20 } }),
-    undefined,
-  ]),
-  data: faker.helpers.arrayElement([
-    {
-      userId: faker.helpers.arrayElement([faker.number.int(), undefined]),
-      serviceNickname: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-    },
-    undefined,
-  ]),
-  ...overrideResponse,
-});
 
-export const getUpdateNicknameMockHandler = (
-  overrideResponse?:
-    | ApiResponseUserNicknameUpdateResponseDTO
-    | ((
-        info: Parameters<Parameters<typeof http.patch>[1]>[0],
-      ) =>
-        | Promise<ApiResponseUserNicknameUpdateResponseDTO>
-        | ApiResponseUserNicknameUpdateResponseDTO),
-  options?: RequestHandlerOptions,
-) => {
-  return http.patch(
-    '*/api/users/me/nickname',
-    async (info: Parameters<Parameters<typeof http.patch>[1]>[0]) => {
-      return HttpResponse.json(
-        overrideResponse !== undefined
-          ? typeof overrideResponse === 'function'
-            ? await overrideResponse(info)
-            : overrideResponse
-          : getUpdateNicknameResponseMock(),
-        { status: 200 },
-      );
-    },
-    options,
-  );
-};
-export const getUserControllerMock = () => [getUpdateNicknameMockHandler()];
+export const getUpdateNicknameResponseMock = (overrideResponse: Partial<Extract<ApiResponseUserNicknameUpdateResponseDTO, object>> = {}): ApiResponseUserNicknameUpdateResponseDTO => ({success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), data: faker.helpers.arrayElement([{userId: faker.helpers.arrayElement([faker.number.int(), undefined]), serviceNickname: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, undefined]), ...overrideResponse})
+
+
+export const getUpdateNicknameMockHandler = (overrideResponse?: ApiResponseUserNicknameUpdateResponseDTO | ((info: Parameters<Parameters<typeof http.patch>[1]>[0]) => Promise<ApiResponseUserNicknameUpdateResponseDTO> | ApiResponseUserNicknameUpdateResponseDTO), options?: RequestHandlerOptions) => {
+  return http.patch('*/api/users/me/nickname', async (info: Parameters<Parameters<typeof http.patch>[1]>[0]) => {
+
+
+    return HttpResponse.json(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getUpdateNicknameResponseMock(),
+      { status: 200
+      })
+  }, options)
+}
+export const getUserControllerMock = () => [
+  getUpdateNicknameMockHandler()
+]

@@ -7,5 +7,5 @@
  */
 
 export type KakaoLoginParams = {
-  code: string;
+code: string;
 };

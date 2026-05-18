@@ -6,8 +6,8 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type SurveyQuestionResponseQuestionType =
-  (typeof SurveyQuestionResponseQuestionType)[keyof typeof SurveyQuestionResponseQuestionType];
+export type SurveyQuestionResponseQuestionType = typeof SurveyQuestionResponseQuestionType[keyof typeof SurveyQuestionResponseQuestionType];
+
 
 export const SurveyQuestionResponseQuestionType = {
   INVESTMENT_PURPOSE: 'INVESTMENT_PURPOSE',

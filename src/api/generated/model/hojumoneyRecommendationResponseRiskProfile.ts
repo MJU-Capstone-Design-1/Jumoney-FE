@@ -6,8 +6,8 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type HojumoneyRecommendationResponseRiskProfile =
-  (typeof HojumoneyRecommendationResponseRiskProfile)[keyof typeof HojumoneyRecommendationResponseRiskProfile];
+export type HojumoneyRecommendationResponseRiskProfile = typeof HojumoneyRecommendationResponseRiskProfile[keyof typeof HojumoneyRecommendationResponseRiskProfile];
+
 
 export const HojumoneyRecommendationResponseRiskProfile = {
   CAPITAL_PROTECTION: 'CAPITAL_PROTECTION',

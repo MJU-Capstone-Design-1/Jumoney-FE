@@ -6,8 +6,8 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type MasterOptionResponseLogicCode =
-  (typeof MasterOptionResponseLogicCode)[keyof typeof MasterOptionResponseLogicCode];
+export type MasterOptionResponseLogicCode = typeof MasterOptionResponseLogicCode[keyof typeof MasterOptionResponseLogicCode];
+
 
 export const MasterOptionResponseLogicCode = {
   BUFFETT_ROE: 'BUFFETT_ROE',

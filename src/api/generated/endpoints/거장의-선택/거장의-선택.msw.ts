@@ -5,295 +5,53 @@
  * 주머니의 백엔드 API 명세서입니다.
  * OpenAPI spec version: 1.0.0
  */
-import { faker } from '@faker-js/faker';
+import {
+  faker
+} from '@faker-js/faker';
 
-import { HttpResponse, http } from 'msw';
-import type { RequestHandlerOptions } from 'msw';
+import {
+  HttpResponse,
+  http
+} from 'msw';
+import type {
+  RequestHandlerOptions
+} from 'msw';
 
 import type {
   ApiResponseMasterRecommendationResponse,
-  ApiResponseMasterResponse,
+  ApiResponseMasterResponse
 } from '../../model';
 
-export const getRecommendMasterResponseMock = (
-  overrideResponse: Partial<
-    Extract<ApiResponseMasterRecommendationResponse, object>
-  > = {},
-): ApiResponseMasterRecommendationResponse => ({
-  success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([
-    faker.string.alpha({ length: { min: 10, max: 20 } }),
-    undefined,
-  ]),
-  message: faker.helpers.arrayElement([
-    faker.string.alpha({ length: { min: 10, max: 20 } }),
-    undefined,
-  ]),
-  data: faker.helpers.arrayElement([
-    {
-      masterId: faker.helpers.arrayElement([faker.number.int(), undefined]),
-      masterCode: faker.helpers.arrayElement([
-        faker.helpers.arrayElement([
-          'WARREN_BUFFETT',
-          'PETER_LYNCH',
-          'RAY_DALIO',
-          'WILLIAM_ONEIL',
-        ] as const),
-        undefined,
-      ]),
-      masterName: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-      selectedOptionIds: faker.helpers.arrayElement([
-        Array.from(
-          { length: faker.number.int({ min: 1, max: 10 }) },
-          (_, i) => i + 1,
-        ).map(() => faker.number.int()),
-        undefined,
-      ]),
-      totalCount: faker.helpers.arrayElement([faker.number.int(), undefined]),
-      recommendations: faker.helpers.arrayElement([
-        Array.from(
-          { length: faker.number.int({ min: 1, max: 10 }) },
-          (_, i) => i + 1,
-        ).map(() => ({
-          stockId: faker.helpers.arrayElement([faker.number.int(), undefined]),
-          stockCode: faker.helpers.arrayElement([
-            faker.string.alpha({ length: { min: 10, max: 20 } }),
-            undefined,
-          ]),
-          stockName: faker.helpers.arrayElement([
-            faker.string.alpha({ length: { min: 10, max: 20 } }),
-            undefined,
-          ]),
-          rank: faker.helpers.arrayElement([faker.number.int(), undefined]),
-          tags: faker.helpers.arrayElement([
-            faker.helpers.arrayElements([
-              'BUFFETT_ROE',
-              'BUFFETT_PER',
-              'BUFFETT_EPS_GROWTH',
-              'BUFFETT_DEBT_RATIO',
-              'BUFFETT_OPERATING_MARGIN',
-              'LYNCH_PEG',
-              'LYNCH_EPS_GROWTH',
-              'LYNCH_DEBT_RATIO',
-              'LYNCH_SALES_GROWTH',
-              'LYNCH_SECTOR',
-              'DALIO_ALL_WEATHER',
-              'DALIO_PER',
-              'DALIO_MARGIN_DEBT',
-              'DALIO_DEBT_RATIO',
-              'DALIO_EARNINGS_YIELD',
-              'ONEIL_EPS_GROWTH',
-              'ONEIL_ROE',
-              'ONEIL_HIGH_52_WEEK',
-              'ONEIL_MARKET_LEADER',
-              'ONEIL_INST_NET_BUY',
-            ] as const),
-            undefined,
-          ]),
-          goodSectorTags: faker.helpers.arrayElement([
-            Array.from(
-              { length: faker.number.int({ min: 1, max: 10 }) },
-              (_, i) => i + 1,
-            ).map(() => faker.string.alpha({ length: { min: 10, max: 20 } })),
-            undefined,
-          ]),
-          matchedConditionCount: faker.helpers.arrayElement([
-            faker.number.int(),
-            undefined,
-          ]),
-          sortMetricKey: faker.helpers.arrayElement([
-            faker.string.alpha({ length: { min: 10, max: 20 } }),
-            undefined,
-          ]),
-          sortMetricValue: faker.helpers.arrayElement([
-            faker.number.float({ fractionDigits: 2 }),
-            undefined,
-          ]),
-          currentPrice: faker.helpers.arrayElement([
-            faker.number.float({ fractionDigits: 2 }),
-            undefined,
-          ]),
-          changeRate: faker.helpers.arrayElement([
-            faker.number.float({ fractionDigits: 2 }),
-            undefined,
-          ]),
-        })),
-        undefined,
-      ]),
-    },
-    undefined,
-  ]),
-  ...overrideResponse,
-});
 
-export const getGetMasterResponseMock = (
-  overrideResponse: Partial<Extract<ApiResponseMasterResponse, object>> = {},
-): ApiResponseMasterResponse => ({
-  success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([
-    faker.string.alpha({ length: { min: 10, max: 20 } }),
-    undefined,
-  ]),
-  message: faker.helpers.arrayElement([
-    faker.string.alpha({ length: { min: 10, max: 20 } }),
-    undefined,
-  ]),
-  data: faker.helpers.arrayElement([
-    {
-      masterId: faker.helpers.arrayElement([faker.number.int(), undefined]),
-      masterCode: faker.helpers.arrayElement([
-        faker.helpers.arrayElement([
-          'WARREN_BUFFETT',
-          'PETER_LYNCH',
-          'RAY_DALIO',
-          'WILLIAM_ONEIL',
-        ] as const),
-        undefined,
-      ]),
-      masterName: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-      recommendationDescription: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-      options: faker.helpers.arrayElement([
-        Array.from(
-          { length: faker.number.int({ min: 1, max: 10 }) },
-          (_, i) => i + 1,
-        ).map(() => ({
-          optionId: faker.helpers.arrayElement([faker.number.int(), undefined]),
-          logicCode: faker.helpers.arrayElement([
-            faker.helpers.arrayElement([
-              'BUFFETT_ROE',
-              'BUFFETT_PER',
-              'BUFFETT_EPS_GROWTH',
-              'BUFFETT_DEBT_RATIO',
-              'BUFFETT_OPERATING_MARGIN',
-              'LYNCH_PEG',
-              'LYNCH_EPS_GROWTH',
-              'LYNCH_DEBT_RATIO',
-              'LYNCH_SALES_GROWTH',
-              'LYNCH_SECTOR',
-              'DALIO_ALL_WEATHER',
-              'DALIO_PER',
-              'DALIO_MARGIN_DEBT',
-              'DALIO_DEBT_RATIO',
-              'DALIO_EARNINGS_YIELD',
-              'ONEIL_EPS_GROWTH',
-              'ONEIL_ROE',
-              'ONEIL_HIGH_52_WEEK',
-              'ONEIL_MARKET_LEADER',
-              'ONEIL_INST_NET_BUY',
-            ] as const),
-            undefined,
-          ]),
-          content: faker.helpers.arrayElement([
-            faker.string.alpha({ length: { min: 10, max: 20 } }),
-            undefined,
-          ]),
-          description: faker.helpers.arrayElement([
-            faker.string.alpha({ length: { min: 10, max: 20 } }),
-            undefined,
-          ]),
-          displayOrder: faker.helpers.arrayElement([
-            faker.number.int(),
-            undefined,
-          ]),
-          requiresSectorSelection: faker.helpers.arrayElement([
-            faker.datatype.boolean(),
-            undefined,
-          ]),
-        })),
-        undefined,
-      ]),
-      sectorOptions: faker.helpers.arrayElement([
-        Array.from(
-          { length: faker.number.int({ min: 1, max: 10 }) },
-          (_, i) => i + 1,
-        ).map(() => ({
-          sectorType: faker.helpers.arrayElement([
-            faker.helpers.arrayElement([
-              'IT_SEMICONDUCTOR',
-              'AUTOMOBILE_TRANSPORT',
-              'ENERGY_CHEMISTRY',
-              'BIO_HEALTHCARE',
-              'SHIPBUILDING_MACHINERY',
-              'FINANCE',
-              'COMMUNICATION',
-              'STEEL_MATERIALS',
-              'CONSTRUCTION_UTILITY',
-              'ESSENTIAL_CONSUMER',
-            ] as const),
-            undefined,
-          ]),
-          description: faker.helpers.arrayElement([
-            faker.string.alpha({ length: { min: 10, max: 20 } }),
-            undefined,
-          ]),
-        })),
-        undefined,
-      ]),
-    },
-    undefined,
-  ]),
-  ...overrideResponse,
-});
+export const getRecommendMasterResponseMock = (overrideResponse: Partial<Extract<ApiResponseMasterRecommendationResponse, object>> = {}): ApiResponseMasterRecommendationResponse => ({success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), data: faker.helpers.arrayElement([{masterId: faker.helpers.arrayElement([faker.number.int(), undefined]), masterCode: faker.helpers.arrayElement([faker.helpers.arrayElement(['WARREN_BUFFETT','PETER_LYNCH','RAY_DALIO','WILLIAM_ONEIL'] as const), undefined]), masterName: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), selectedOptionIds: faker.helpers.arrayElement([Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => (faker.number.int())), undefined]), totalCount: faker.helpers.arrayElement([faker.number.int(), undefined]), recommendations: faker.helpers.arrayElement([Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({stockId: faker.helpers.arrayElement([faker.number.int(), undefined]), stockCode: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), stockName: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), rank: faker.helpers.arrayElement([faker.number.int(), undefined]), tags: faker.helpers.arrayElement([faker.helpers.arrayElements(['BUFFETT_ROE','BUFFETT_PER','BUFFETT_EPS_GROWTH','BUFFETT_DEBT_RATIO','BUFFETT_OPERATING_MARGIN','LYNCH_PEG','LYNCH_EPS_GROWTH','LYNCH_DEBT_RATIO','LYNCH_SALES_GROWTH','LYNCH_SECTOR','DALIO_ALL_WEATHER','DALIO_PER','DALIO_MARGIN_DEBT','DALIO_DEBT_RATIO','DALIO_EARNINGS_YIELD','ONEIL_EPS_GROWTH','ONEIL_ROE','ONEIL_HIGH_52_WEEK','ONEIL_MARKET_LEADER','ONEIL_INST_NET_BUY'] as const), undefined]), goodSectorTags: faker.helpers.arrayElement([Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 10, max: 20}}))), undefined]), matchedConditionCount: faker.helpers.arrayElement([faker.number.int(), undefined]), sortMetricKey: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), sortMetricValue: faker.helpers.arrayElement([faker.number.float({fractionDigits: 2}), undefined]), currentPrice: faker.helpers.arrayElement([faker.number.float({fractionDigits: 2}), undefined]), changeRate: faker.helpers.arrayElement([faker.number.float({fractionDigits: 2}), undefined])})), undefined])}, undefined]), ...overrideResponse})
 
-export const getRecommendMasterMockHandler = (
-  overrideResponse?:
-    | ApiResponseMasterRecommendationResponse
-    | ((
-        info: Parameters<Parameters<typeof http.post>[1]>[0],
-      ) =>
-        | Promise<ApiResponseMasterRecommendationResponse>
-        | ApiResponseMasterRecommendationResponse),
-  options?: RequestHandlerOptions,
-) => {
-  return http.post(
-    '*/api/master-choice/masters/:masterId/recommendations',
-    async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
-      return HttpResponse.json(
-        overrideResponse !== undefined
-          ? typeof overrideResponse === 'function'
-            ? await overrideResponse(info)
-            : overrideResponse
-          : getRecommendMasterResponseMock(),
-        { status: 200 },
-      );
-    },
-    options,
-  );
-};
+export const getGetMasterResponseMock = (overrideResponse: Partial<Extract<ApiResponseMasterResponse, object>> = {}): ApiResponseMasterResponse => ({success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), data: faker.helpers.arrayElement([{masterId: faker.helpers.arrayElement([faker.number.int(), undefined]), masterCode: faker.helpers.arrayElement([faker.helpers.arrayElement(['WARREN_BUFFETT','PETER_LYNCH','RAY_DALIO','WILLIAM_ONEIL'] as const), undefined]), masterName: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), recommendationDescription: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), options: faker.helpers.arrayElement([Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({optionId: faker.helpers.arrayElement([faker.number.int(), undefined]), logicCode: faker.helpers.arrayElement([faker.helpers.arrayElement(['BUFFETT_ROE','BUFFETT_PER','BUFFETT_EPS_GROWTH','BUFFETT_DEBT_RATIO','BUFFETT_OPERATING_MARGIN','LYNCH_PEG','LYNCH_EPS_GROWTH','LYNCH_DEBT_RATIO','LYNCH_SALES_GROWTH','LYNCH_SECTOR','DALIO_ALL_WEATHER','DALIO_PER','DALIO_MARGIN_DEBT','DALIO_DEBT_RATIO','DALIO_EARNINGS_YIELD','ONEIL_EPS_GROWTH','ONEIL_ROE','ONEIL_HIGH_52_WEEK','ONEIL_MARKET_LEADER','ONEIL_INST_NET_BUY'] as const), undefined]), content: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), description: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), displayOrder: faker.helpers.arrayElement([faker.number.int(), undefined]), requiresSectorSelection: faker.helpers.arrayElement([faker.datatype.boolean(), undefined])})), undefined]), sectorOptions: faker.helpers.arrayElement([Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({sectorType: faker.helpers.arrayElement([faker.helpers.arrayElement(['IT_SEMICONDUCTOR','AUTOMOBILE_TRANSPORT','ENERGY_CHEMISTRY','BIO_HEALTHCARE','SHIPBUILDING_MACHINERY','FINANCE','COMMUNICATION','STEEL_MATERIALS','CONSTRUCTION_UTILITY','ESSENTIAL_CONSUMER'] as const), undefined]), description: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined])}, undefined]), ...overrideResponse})
 
-export const getGetMasterMockHandler = (
-  overrideResponse?:
-    | ApiResponseMasterResponse
-    | ((
-        info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) => Promise<ApiResponseMasterResponse> | ApiResponseMasterResponse),
-  options?: RequestHandlerOptions,
-) => {
-  return http.get(
-    '*/api/master-choice/masters/:masterId',
-    async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
-      return HttpResponse.json(
-        overrideResponse !== undefined
-          ? typeof overrideResponse === 'function'
-            ? await overrideResponse(info)
-            : overrideResponse
-          : getGetMasterResponseMock(),
-        { status: 200 },
-      );
-    },
-    options,
-  );
-};
+
+export const getRecommendMasterMockHandler = (overrideResponse?: ApiResponseMasterRecommendationResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<ApiResponseMasterRecommendationResponse> | ApiResponseMasterRecommendationResponse), options?: RequestHandlerOptions) => {
+  return http.post('*/api/master-choice/masters/:masterId/recommendations', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+
+
+    return HttpResponse.json(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getRecommendMasterResponseMock(),
+      { status: 200
+      })
+  }, options)
+}
+
+export const getGetMasterMockHandler = (overrideResponse?: ApiResponseMasterResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<ApiResponseMasterResponse> | ApiResponseMasterResponse), options?: RequestHandlerOptions) => {
+  return http.get('*/api/master-choice/masters/:masterId', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+
+
+    return HttpResponse.json(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getGetMasterResponseMock(),
+      { status: 200
+      })
+  }, options)
+}
 export const getMock = () => [
   getRecommendMasterMockHandler(),
-  getGetMasterMockHandler(),
-];
+  getGetMasterMockHandler()
+]

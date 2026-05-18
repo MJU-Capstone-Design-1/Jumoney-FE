@@ -5,7 +5,10 @@
  * 주머니의 백엔드 API 명세서입니다.
  * OpenAPI spec version: 1.0.0
  */
-import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQuery
+} from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -18,7 +21,7 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
+  UseQueryResult
 } from '@tanstack/react-query';
 
 import type {
@@ -32,791 +35,513 @@ import type {
   HtsConditionTitlesParams,
   RunHtsConditionBatchParams,
   RunStockIndicatorBatchParams,
-  SmokeParams,
+  SmokeParams
 } from '../../model';
 
 import { customInstance } from '../../../custom-instance';
+
+
+
 
 /**
  * Stock 테이블 전체 종목을 순회하며 KIS 지표를 조회해 stock_indicators 테이블에 upsert합니다. prod 프로필에서는 adminKey가 필요합니다. 수동 실행은 요청한 baseDate를 그대로 사용하며, 정기 스케줄처럼 직전 개장일 기준 배치는 다음 장 시작 전에 실행해야 합니다. 단, 오늘 기준 실행은 KIS 투자자매매동향 일별 API 제한 때문에 15:40 이후에만 가능합니다. 정기 스케줄은 직전 평일 기준으로 실행됩니다.
  * @summary 종목 지표 배치 수동 실행
  */
 export const runStockIndicatorBatch = (
-  params?: RunStockIndicatorBatchParams,
-  signal?: AbortSignal,
+    params?: RunStockIndicatorBatchParams,
+ signal?: AbortSignal
 ) => {
-  return customInstance<ApiResponseBatchJobRunResponse>({
-    url: `/api/local/kis/batch/stock-indicators`,
-    method: 'POST',
-    params,
-    signal,
-  });
-};
 
-export const getRunStockIndicatorBatchMutationOptions = <
-  TError = unknown,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof runStockIndicatorBatch>>,
-    TError,
-    { params?: RunStockIndicatorBatchParams },
-    TContext
-  >;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof runStockIndicatorBatch>>,
-  TError,
-  { params?: RunStockIndicatorBatchParams },
-  TContext
-> => {
-  const mutationKey = ['runStockIndicatorBatch'];
-  const { mutation: mutationOptions } = options
-    ? options.mutation &&
-      'mutationKey' in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof runStockIndicatorBatch>>,
-    { params?: RunStockIndicatorBatchParams }
-  > = (props) => {
-    const { params } = props ?? {};
+      return customInstance<ApiResponseBatchJobRunResponse>(
+      {url: `/api/local/kis/batch/stock-indicators`, method: 'POST',
+        params, signal
+    },
+      );
+    }
 
-    return runStockIndicatorBatch(params);
-  };
 
-  return { mutationFn, ...mutationOptions };
-};
 
-export type RunStockIndicatorBatchMutationResult = NonNullable<
-  Awaited<ReturnType<typeof runStockIndicatorBatch>>
->;
+export const getRunStockIndicatorBatchMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof runStockIndicatorBatch>>, TError,{params?: RunStockIndicatorBatchParams}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof runStockIndicatorBatch>>, TError,{params?: RunStockIndicatorBatchParams}, TContext> => {
 
-export type RunStockIndicatorBatchMutationError = unknown;
+const mutationKey = ['runStockIndicatorBatch'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
 
-/**
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof runStockIndicatorBatch>>, {params?: RunStockIndicatorBatchParams}> = (props) => {
+          const {params} = props ?? {};
+
+          return  runStockIndicatorBatch(params,)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RunStockIndicatorBatchMutationResult = NonNullable<Awaited<ReturnType<typeof runStockIndicatorBatch>>>
+
+    export type RunStockIndicatorBatchMutationError = unknown
+
+    /**
  * @summary 종목 지표 배치 수동 실행
  */
-export const useRunStockIndicatorBatch = <TError = unknown, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof runStockIndicatorBatch>>,
-      TError,
-      { params?: RunStockIndicatorBatchParams },
-      TContext
-    >;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof runStockIndicatorBatch>>,
-  TError,
-  { params?: RunStockIndicatorBatchParams },
-  TContext
-> => {
-  return useMutation(
-    getRunStockIndicatorBatchMutationOptions(options),
-    queryClient,
-  );
-};
-/**
+export const useRunStockIndicatorBatch = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof runStockIndicatorBatch>>, TError,{params?: RunStockIndicatorBatchParams}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof runStockIndicatorBatch>>,
+        TError,
+        {params?: RunStockIndicatorBatchParams},
+        TContext
+      > => {
+      return useMutation(getRunStockIndicatorBatchMutationOptions(options), queryClient);
+    }
+    /**
  * 설정된 4개 HTS 조건검색 결과를 KIS에서 조회해 hts_stocks 테이블에 저장합니다. prod 프로필에서는 adminKey가 필요합니다. 수동 실행은 요청한 baseDate를 그대로 사용하며, 생략 시 오늘 날짜를 사용합니다. 정기 스케줄은 직전 평일 기준으로 실행됩니다.
  * @summary HTS 조건검색 배치 수동 실행
  */
 export const runHtsConditionBatch = (
-  params?: RunHtsConditionBatchParams,
-  signal?: AbortSignal,
+    params?: RunHtsConditionBatchParams,
+ signal?: AbortSignal
 ) => {
-  return customInstance<ApiResponseBatchJobRunResponse>({
-    url: `/api/local/kis/batch/hts-conditions`,
-    method: 'POST',
-    params,
-    signal,
-  });
-};
 
-export const getRunHtsConditionBatchMutationOptions = <
-  TError = unknown,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof runHtsConditionBatch>>,
-    TError,
-    { params?: RunHtsConditionBatchParams },
-    TContext
-  >;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof runHtsConditionBatch>>,
-  TError,
-  { params?: RunHtsConditionBatchParams },
-  TContext
-> => {
-  const mutationKey = ['runHtsConditionBatch'];
-  const { mutation: mutationOptions } = options
-    ? options.mutation &&
-      'mutationKey' in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof runHtsConditionBatch>>,
-    { params?: RunHtsConditionBatchParams }
-  > = (props) => {
-    const { params } = props ?? {};
+      return customInstance<ApiResponseBatchJobRunResponse>(
+      {url: `/api/local/kis/batch/hts-conditions`, method: 'POST',
+        params, signal
+    },
+      );
+    }
 
-    return runHtsConditionBatch(params);
-  };
 
-  return { mutationFn, ...mutationOptions };
-};
 
-export type RunHtsConditionBatchMutationResult = NonNullable<
-  Awaited<ReturnType<typeof runHtsConditionBatch>>
->;
+export const getRunHtsConditionBatchMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof runHtsConditionBatch>>, TError,{params?: RunHtsConditionBatchParams}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof runHtsConditionBatch>>, TError,{params?: RunHtsConditionBatchParams}, TContext> => {
 
-export type RunHtsConditionBatchMutationError = unknown;
+const mutationKey = ['runHtsConditionBatch'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
 
-/**
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof runHtsConditionBatch>>, {params?: RunHtsConditionBatchParams}> = (props) => {
+          const {params} = props ?? {};
+
+          return  runHtsConditionBatch(params,)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RunHtsConditionBatchMutationResult = NonNullable<Awaited<ReturnType<typeof runHtsConditionBatch>>>
+
+    export type RunHtsConditionBatchMutationError = unknown
+
+    /**
  * @summary HTS 조건검색 배치 수동 실행
  */
-export const useRunHtsConditionBatch = <TError = unknown, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof runHtsConditionBatch>>,
-      TError,
-      { params?: RunHtsConditionBatchParams },
-      TContext
-    >;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof runHtsConditionBatch>>,
-  TError,
-  { params?: RunHtsConditionBatchParams },
-  TContext
-> => {
-  return useMutation(
-    getRunHtsConditionBatchMutationOptions(options),
-    queryClient,
-  );
-};
-/**
+export const useRunHtsConditionBatch = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof runHtsConditionBatch>>, TError,{params?: RunHtsConditionBatchParams}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof runHtsConditionBatch>>,
+        TError,
+        {params?: RunHtsConditionBatchParams},
+        TContext
+      > => {
+      return useMutation(getRunHtsConditionBatchMutationOptions(options), queryClient);
+    }
+    /**
  * 입력 종목 코드로 현재까지 연동된 KIS REST API를 순차 호출하고 각 API의 성공 여부와 샘플 응답을 반환합니다. prod 프로필에서는 adminKey가 필요합니다.
  * @summary KIS API 호출 검증
  */
-export const smoke = (params?: SmokeParams, signal?: AbortSignal) => {
-  return customInstance<ApiResponseKisSmokeResponse>({
-    url: `/api/local/kis/smoke`,
-    method: 'GET',
-    params,
-    signal,
-  });
-};
-
-export const getSmokeQueryKey = (params?: SmokeParams) => {
-  return [`/api/local/kis/smoke`, ...(params ? [params] : [])] as const;
-};
-
-export const getSmokeQueryOptions = <
-  TData = Awaited<ReturnType<typeof smoke>>,
-  TError = unknown,
->(
-  params?: SmokeParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof smoke>>, TError, TData>
-    >;
-  },
+export const smoke = (
+    params?: SmokeParams,
+ signal?: AbortSignal
 ) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getSmokeQueryKey(params);
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof smoke>>> = ({
-    signal,
-  }) => smoke(params, signal);
+      return customInstance<ApiResponseKisSmokeResponse>(
+      {url: `/api/local/kis/smoke`, method: 'GET',
+        params, signal
+    },
+      );
+    }
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof smoke>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
 
-export type SmokeQueryResult = NonNullable<Awaited<ReturnType<typeof smoke>>>;
-export type SmokeQueryError = unknown;
 
-export function useSmoke<
-  TData = Awaited<ReturnType<typeof smoke>>,
-  TError = unknown,
->(
-  params: undefined | SmokeParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof smoke>>, TError, TData>
-    > &
-      Pick<
+
+export const getSmokeQueryKey = (params?: SmokeParams,) => {
+    return [
+    `/api/local/kis/smoke`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getSmokeQueryOptions = <TData = Awaited<ReturnType<typeof smoke>>, TError = unknown>(params?: SmokeParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof smoke>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getSmokeQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof smoke>>> = ({ signal }) => smoke(params, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof smoke>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type SmokeQueryResult = NonNullable<Awaited<ReturnType<typeof smoke>>>
+export type SmokeQueryError = unknown
+
+
+export function useSmoke<TData = Awaited<ReturnType<typeof smoke>>, TError = unknown>(
+ params: undefined |  SmokeParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof smoke>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof smoke>>,
           TError,
           Awaited<ReturnType<typeof smoke>>
-        >,
-        'initialData'
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSmoke<
-  TData = Awaited<ReturnType<typeof smoke>>,
-  TError = unknown,
->(
-  params?: SmokeParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof smoke>>, TError, TData>
-    > &
-      Pick<
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSmoke<TData = Awaited<ReturnType<typeof smoke>>, TError = unknown>(
+ params?: SmokeParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof smoke>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof smoke>>,
           TError,
           Awaited<ReturnType<typeof smoke>>
-        >,
-        'initialData'
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSmoke<
-  TData = Awaited<ReturnType<typeof smoke>>,
-  TError = unknown,
->(
-  params?: SmokeParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof smoke>>, TError, TData>
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSmoke<TData = Awaited<ReturnType<typeof smoke>>, TError = unknown>(
+ params?: SmokeParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof smoke>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary KIS API 호출 검증
  */
 
-export function useSmoke<
-  TData = Awaited<ReturnType<typeof smoke>>,
-  TError = unknown,
->(
-  params?: SmokeParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof smoke>>, TError, TData>
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getSmokeQueryOptions(params, options);
+export function useSmoke<TData = Awaited<ReturnType<typeof smoke>>, TError = unknown>(
+ params?: SmokeParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof smoke>>, TError, TData>>, }
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const queryOptions = getSmokeQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
+
+
 
 /**
  * HTS에 서버저장된 조건명과 seq 목록을 조회합니다. prod 프로필에서는 adminKey가 필요합니다.
  * @summary HTS 조건검색 목록조회 검증
  */
 export const htsConditionTitles = (
-  params?: HtsConditionTitlesParams,
-  signal?: AbortSignal,
+    params?: HtsConditionTitlesParams,
+ signal?: AbortSignal
 ) => {
-  return customInstance<ApiResponseListKisHtsConditionTitleOutput>({
-    url: `/api/local/kis/hts/titles`,
-    method: 'GET',
-    params,
-    signal,
-  });
-};
 
-export const getHtsConditionTitlesQueryKey = (
-  params?: HtsConditionTitlesParams,
+
+      return customInstance<ApiResponseListKisHtsConditionTitleOutput>(
+      {url: `/api/local/kis/hts/titles`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+
+
+
+
+export const getHtsConditionTitlesQueryKey = (params?: HtsConditionTitlesParams,) => {
+    return [
+    `/api/local/kis/hts/titles`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getHtsConditionTitlesQueryOptions = <TData = Awaited<ReturnType<typeof htsConditionTitles>>, TError = unknown>(params?: HtsConditionTitlesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof htsConditionTitles>>, TError, TData>>, }
 ) => {
-  return [`/api/local/kis/hts/titles`, ...(params ? [params] : [])] as const;
-};
 
-export const getHtsConditionTitlesQueryOptions = <
-  TData = Awaited<ReturnType<typeof htsConditionTitles>>,
-  TError = unknown,
->(
-  params?: HtsConditionTitlesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof htsConditionTitles>>,
-        TError,
-        TData
-      >
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
+const {query: queryOptions} = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getHtsConditionTitlesQueryKey(params);
+  const queryKey =  queryOptions?.queryKey ?? getHtsConditionTitlesQueryKey(params);
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof htsConditionTitles>>
-  > = ({ signal }) => htsConditionTitles(params, signal);
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof htsConditionTitles>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
 
-export type HtsConditionTitlesQueryResult = NonNullable<
-  Awaited<ReturnType<typeof htsConditionTitles>>
->;
-export type HtsConditionTitlesQueryError = unknown;
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof htsConditionTitles>>> = ({ signal }) => htsConditionTitles(params, signal);
 
-export function useHtsConditionTitles<
-  TData = Awaited<ReturnType<typeof htsConditionTitles>>,
-  TError = unknown,
->(
-  params: undefined | HtsConditionTitlesParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof htsConditionTitles>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof htsConditionTitles>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type HtsConditionTitlesQueryResult = NonNullable<Awaited<ReturnType<typeof htsConditionTitles>>>
+export type HtsConditionTitlesQueryError = unknown
+
+
+export function useHtsConditionTitles<TData = Awaited<ReturnType<typeof htsConditionTitles>>, TError = unknown>(
+ params: undefined |  HtsConditionTitlesParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof htsConditionTitles>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof htsConditionTitles>>,
           TError,
           Awaited<ReturnType<typeof htsConditionTitles>>
-        >,
-        'initialData'
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useHtsConditionTitles<
-  TData = Awaited<ReturnType<typeof htsConditionTitles>>,
-  TError = unknown,
->(
-  params?: HtsConditionTitlesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof htsConditionTitles>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useHtsConditionTitles<TData = Awaited<ReturnType<typeof htsConditionTitles>>, TError = unknown>(
+ params?: HtsConditionTitlesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof htsConditionTitles>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof htsConditionTitles>>,
           TError,
           Awaited<ReturnType<typeof htsConditionTitles>>
-        >,
-        'initialData'
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useHtsConditionTitles<
-  TData = Awaited<ReturnType<typeof htsConditionTitles>>,
-  TError = unknown,
->(
-  params?: HtsConditionTitlesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof htsConditionTitles>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useHtsConditionTitles<TData = Awaited<ReturnType<typeof htsConditionTitles>>, TError = unknown>(
+ params?: HtsConditionTitlesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof htsConditionTitles>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary HTS 조건검색 목록조회 검증
  */
 
-export function useHtsConditionTitles<
-  TData = Awaited<ReturnType<typeof htsConditionTitles>>,
-  TError = unknown,
->(
-  params?: HtsConditionTitlesParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof htsConditionTitles>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getHtsConditionTitlesQueryOptions(params, options);
+export function useHtsConditionTitles<TData = Awaited<ReturnType<typeof htsConditionTitles>>, TError = unknown>(
+ params?: HtsConditionTitlesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof htsConditionTitles>>, TError, TData>>, }
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const queryOptions = getHtsConditionTitlesQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
+
+
 
 /**
  * HTS 조건 seq로 종목검색 결과를 조회합니다. DB에는 저장하지 않습니다. prod 프로필에서는 adminKey가 필요합니다.
  * @summary HTS 조건검색 결과조회 검증
  */
 export const htsConditionResults = (
-  params: HtsConditionResultsParams,
-  signal?: AbortSignal,
+    params: HtsConditionResultsParams,
+ signal?: AbortSignal
 ) => {
-  return customInstance<ApiResponseListKisHtsConditionResultOutput>({
-    url: `/api/local/kis/hts/results`,
-    method: 'GET',
-    params,
-    signal,
-  });
-};
 
-export const getHtsConditionResultsQueryKey = (
-  params?: HtsConditionResultsParams,
+
+      return customInstance<ApiResponseListKisHtsConditionResultOutput>(
+      {url: `/api/local/kis/hts/results`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+
+
+
+
+export const getHtsConditionResultsQueryKey = (params?: HtsConditionResultsParams,) => {
+    return [
+    `/api/local/kis/hts/results`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getHtsConditionResultsQueryOptions = <TData = Awaited<ReturnType<typeof htsConditionResults>>, TError = unknown>(params: HtsConditionResultsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof htsConditionResults>>, TError, TData>>, }
 ) => {
-  return [`/api/local/kis/hts/results`, ...(params ? [params] : [])] as const;
-};
 
-export const getHtsConditionResultsQueryOptions = <
-  TData = Awaited<ReturnType<typeof htsConditionResults>>,
-  TError = unknown,
->(
-  params: HtsConditionResultsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof htsConditionResults>>,
-        TError,
-        TData
-      >
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
+const {query: queryOptions} = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getHtsConditionResultsQueryKey(params);
+  const queryKey =  queryOptions?.queryKey ?? getHtsConditionResultsQueryKey(params);
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof htsConditionResults>>
-  > = ({ signal }) => htsConditionResults(params, signal);
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof htsConditionResults>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
 
-export type HtsConditionResultsQueryResult = NonNullable<
-  Awaited<ReturnType<typeof htsConditionResults>>
->;
-export type HtsConditionResultsQueryError = unknown;
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof htsConditionResults>>> = ({ signal }) => htsConditionResults(params, signal);
 
-export function useHtsConditionResults<
-  TData = Awaited<ReturnType<typeof htsConditionResults>>,
-  TError = unknown,
->(
-  params: HtsConditionResultsParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof htsConditionResults>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof htsConditionResults>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type HtsConditionResultsQueryResult = NonNullable<Awaited<ReturnType<typeof htsConditionResults>>>
+export type HtsConditionResultsQueryError = unknown
+
+
+export function useHtsConditionResults<TData = Awaited<ReturnType<typeof htsConditionResults>>, TError = unknown>(
+ params: HtsConditionResultsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof htsConditionResults>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof htsConditionResults>>,
           TError,
           Awaited<ReturnType<typeof htsConditionResults>>
-        >,
-        'initialData'
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useHtsConditionResults<
-  TData = Awaited<ReturnType<typeof htsConditionResults>>,
-  TError = unknown,
->(
-  params: HtsConditionResultsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof htsConditionResults>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useHtsConditionResults<TData = Awaited<ReturnType<typeof htsConditionResults>>, TError = unknown>(
+ params: HtsConditionResultsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof htsConditionResults>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof htsConditionResults>>,
           TError,
           Awaited<ReturnType<typeof htsConditionResults>>
-        >,
-        'initialData'
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useHtsConditionResults<
-  TData = Awaited<ReturnType<typeof htsConditionResults>>,
-  TError = unknown,
->(
-  params: HtsConditionResultsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof htsConditionResults>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useHtsConditionResults<TData = Awaited<ReturnType<typeof htsConditionResults>>, TError = unknown>(
+ params: HtsConditionResultsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof htsConditionResults>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary HTS 조건검색 결과조회 검증
  */
 
-export function useHtsConditionResults<
-  TData = Awaited<ReturnType<typeof htsConditionResults>>,
-  TError = unknown,
->(
-  params: HtsConditionResultsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof htsConditionResults>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getHtsConditionResultsQueryOptions(params, options);
+export function useHtsConditionResults<TData = Awaited<ReturnType<typeof htsConditionResults>>, TError = unknown>(
+ params: HtsConditionResultsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof htsConditionResults>>, TError, TData>>, }
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const queryOptions = getHtsConditionResultsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
+
+
 
 /**
  * 기준일이 속한 기준월(baseTime=yyyyMM)의 stock_indicators 적재 건수, 누락 종목, 필수 컬럼 null 건수를 조회합니다. baseDate 생략 시 오늘 날짜 기준월을 사용합니다. prod 프로필에서는 adminKey가 필요합니다.
  * @summary 종목 지표 배치 적재 상태 확인
  */
 export const getStockIndicatorBatchStatus = (
-  params?: GetStockIndicatorBatchStatusParams,
-  signal?: AbortSignal,
+    params?: GetStockIndicatorBatchStatusParams,
+ signal?: AbortSignal
 ) => {
-  return customInstance<ApiResponseStockIndicatorBatchStatusResponse>({
-    url: `/api/local/kis/batch/stock-indicators/status`,
-    method: 'GET',
-    params,
-    signal,
-  });
-};
 
-export const getGetStockIndicatorBatchStatusQueryKey = (
-  params?: GetStockIndicatorBatchStatusParams,
+
+      return customInstance<ApiResponseStockIndicatorBatchStatusResponse>(
+      {url: `/api/local/kis/batch/stock-indicators/status`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+
+
+
+
+export const getGetStockIndicatorBatchStatusQueryKey = (params?: GetStockIndicatorBatchStatusParams,) => {
+    return [
+    `/api/local/kis/batch/stock-indicators/status`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetStockIndicatorBatchStatusQueryOptions = <TData = Awaited<ReturnType<typeof getStockIndicatorBatchStatus>>, TError = unknown>(params?: GetStockIndicatorBatchStatusParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStockIndicatorBatchStatus>>, TError, TData>>, }
 ) => {
-  return [
-    `/api/local/kis/batch/stock-indicators/status`,
-    ...(params ? [params] : []),
-  ] as const;
-};
 
-export const getGetStockIndicatorBatchStatusQueryOptions = <
-  TData = Awaited<ReturnType<typeof getStockIndicatorBatchStatus>>,
-  TError = unknown,
->(
-  params?: GetStockIndicatorBatchStatusParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getStockIndicatorBatchStatus>>,
-        TError,
-        TData
-      >
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
+const {query: queryOptions} = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getGetStockIndicatorBatchStatusQueryKey(params);
+  const queryKey =  queryOptions?.queryKey ?? getGetStockIndicatorBatchStatusQueryKey(params);
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof getStockIndicatorBatchStatus>>
-  > = ({ signal }) => getStockIndicatorBatchStatus(params, signal);
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getStockIndicatorBatchStatus>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
 
-export type GetStockIndicatorBatchStatusQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getStockIndicatorBatchStatus>>
->;
-export type GetStockIndicatorBatchStatusQueryError = unknown;
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getStockIndicatorBatchStatus>>> = ({ signal }) => getStockIndicatorBatchStatus(params, signal);
 
-export function useGetStockIndicatorBatchStatus<
-  TData = Awaited<ReturnType<typeof getStockIndicatorBatchStatus>>,
-  TError = unknown,
->(
-  params: undefined | GetStockIndicatorBatchStatusParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getStockIndicatorBatchStatus>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getStockIndicatorBatchStatus>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetStockIndicatorBatchStatusQueryResult = NonNullable<Awaited<ReturnType<typeof getStockIndicatorBatchStatus>>>
+export type GetStockIndicatorBatchStatusQueryError = unknown
+
+
+export function useGetStockIndicatorBatchStatus<TData = Awaited<ReturnType<typeof getStockIndicatorBatchStatus>>, TError = unknown>(
+ params: undefined |  GetStockIndicatorBatchStatusParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStockIndicatorBatchStatus>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getStockIndicatorBatchStatus>>,
           TError,
           Awaited<ReturnType<typeof getStockIndicatorBatchStatus>>
-        >,
-        'initialData'
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetStockIndicatorBatchStatus<
-  TData = Awaited<ReturnType<typeof getStockIndicatorBatchStatus>>,
-  TError = unknown,
->(
-  params?: GetStockIndicatorBatchStatusParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getStockIndicatorBatchStatus>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetStockIndicatorBatchStatus<TData = Awaited<ReturnType<typeof getStockIndicatorBatchStatus>>, TError = unknown>(
+ params?: GetStockIndicatorBatchStatusParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStockIndicatorBatchStatus>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getStockIndicatorBatchStatus>>,
           TError,
           Awaited<ReturnType<typeof getStockIndicatorBatchStatus>>
-        >,
-        'initialData'
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetStockIndicatorBatchStatus<
-  TData = Awaited<ReturnType<typeof getStockIndicatorBatchStatus>>,
-  TError = unknown,
->(
-  params?: GetStockIndicatorBatchStatusParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getStockIndicatorBatchStatus>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetStockIndicatorBatchStatus<TData = Awaited<ReturnType<typeof getStockIndicatorBatchStatus>>, TError = unknown>(
+ params?: GetStockIndicatorBatchStatusParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStockIndicatorBatchStatus>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary 종목 지표 배치 적재 상태 확인
  */
 
-export function useGetStockIndicatorBatchStatus<
-  TData = Awaited<ReturnType<typeof getStockIndicatorBatchStatus>>,
-  TError = unknown,
->(
-  params?: GetStockIndicatorBatchStatusParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getStockIndicatorBatchStatus>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getGetStockIndicatorBatchStatusQueryOptions(
-    params,
-    options,
-  );
+export function useGetStockIndicatorBatchStatus<TData = Awaited<ReturnType<typeof getStockIndicatorBatchStatus>>, TError = unknown>(
+ params?: GetStockIndicatorBatchStatusParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStockIndicatorBatchStatus>>, TError, TData>>, }
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const queryOptions = getGetStockIndicatorBatchStatusQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
+
+
+

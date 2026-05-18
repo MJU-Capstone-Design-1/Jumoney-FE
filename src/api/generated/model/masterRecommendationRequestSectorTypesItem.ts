@@ -6,8 +6,8 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type MasterRecommendationRequestSectorTypesItem =
-  (typeof MasterRecommendationRequestSectorTypesItem)[keyof typeof MasterRecommendationRequestSectorTypesItem];
+export type MasterRecommendationRequestSectorTypesItem = typeof MasterRecommendationRequestSectorTypesItem[keyof typeof MasterRecommendationRequestSectorTypesItem];
+
 
 export const MasterRecommendationRequestSectorTypesItem = {
   IT_SEMICONDUCTOR: 'IT_SEMICONDUCTOR',

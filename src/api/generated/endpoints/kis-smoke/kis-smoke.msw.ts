@@ -5,551 +5,120 @@
  * 주머니의 백엔드 API 명세서입니다.
  * OpenAPI spec version: 1.0.0
  */
-import { faker } from '@faker-js/faker';
+import {
+  faker
+} from '@faker-js/faker';
 
-import { HttpResponse, http } from 'msw';
-import type { RequestHandlerOptions } from 'msw';
+import {
+  HttpResponse,
+  http
+} from 'msw';
+import type {
+  RequestHandlerOptions
+} from 'msw';
 
 import type {
   ApiResponseBatchJobRunResponse,
   ApiResponseKisSmokeResponse,
   ApiResponseListKisHtsConditionResultOutput,
   ApiResponseListKisHtsConditionTitleOutput,
-  ApiResponseStockIndicatorBatchStatusResponse,
+  ApiResponseStockIndicatorBatchStatusResponse
 } from '../../model';
 
-export const getRunStockIndicatorBatchResponseMock = (
-  overrideResponse: Partial<
-    Extract<ApiResponseBatchJobRunResponse, object>
-  > = {},
-): ApiResponseBatchJobRunResponse => ({
-  success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([
-    faker.string.alpha({ length: { min: 10, max: 20 } }),
-    undefined,
-  ]),
-  message: faker.helpers.arrayElement([
-    faker.string.alpha({ length: { min: 10, max: 20 } }),
-    undefined,
-  ]),
-  data: faker.helpers.arrayElement([
-    {
-      jobName: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-      jobExecutionId: faker.helpers.arrayElement([
-        faker.number.int(),
-        undefined,
-      ]),
-      jobInstanceId: faker.helpers.arrayElement([
-        faker.number.int(),
-        undefined,
-      ]),
-      baseDate: faker.helpers.arrayElement([
-        faker.date.past().toISOString().slice(0, 10),
-        undefined,
-      ]),
-      status: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-      exitCode: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-      exitDescription: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-      startTime: faker.helpers.arrayElement([
-        faker.date.past().toISOString().slice(0, 19) + 'Z',
-        undefined,
-      ]),
-      endTime: faker.helpers.arrayElement([
-        faker.date.past().toISOString().slice(0, 19) + 'Z',
-        undefined,
-      ]),
-      baseTime: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-      totalCount: faker.helpers.arrayElement([faker.number.int(), undefined]),
-      successCount: faker.helpers.arrayElement([faker.number.int(), undefined]),
-      failureCount: faker.helpers.arrayElement([faker.number.int(), undefined]),
-      totalSavedCount: faker.helpers.arrayElement([
-        faker.number.int(),
-        undefined,
-      ]),
-      savedCounts: faker.helpers.arrayElement([
-        {
-          [faker.string.alphanumeric(5)]: faker.number.int(),
-        },
-        undefined,
-      ]),
-    },
-    undefined,
-  ]),
-  ...overrideResponse,
-});
 
-export const getRunHtsConditionBatchResponseMock = (
-  overrideResponse: Partial<
-    Extract<ApiResponseBatchJobRunResponse, object>
-  > = {},
-): ApiResponseBatchJobRunResponse => ({
-  success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([
-    faker.string.alpha({ length: { min: 10, max: 20 } }),
-    undefined,
-  ]),
-  message: faker.helpers.arrayElement([
-    faker.string.alpha({ length: { min: 10, max: 20 } }),
-    undefined,
-  ]),
-  data: faker.helpers.arrayElement([
-    {
-      jobName: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-      jobExecutionId: faker.helpers.arrayElement([
-        faker.number.int(),
-        undefined,
-      ]),
-      jobInstanceId: faker.helpers.arrayElement([
-        faker.number.int(),
-        undefined,
-      ]),
-      baseDate: faker.helpers.arrayElement([
-        faker.date.past().toISOString().slice(0, 10),
-        undefined,
-      ]),
-      status: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-      exitCode: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-      exitDescription: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-      startTime: faker.helpers.arrayElement([
-        faker.date.past().toISOString().slice(0, 19) + 'Z',
-        undefined,
-      ]),
-      endTime: faker.helpers.arrayElement([
-        faker.date.past().toISOString().slice(0, 19) + 'Z',
-        undefined,
-      ]),
-      baseTime: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-      totalCount: faker.helpers.arrayElement([faker.number.int(), undefined]),
-      successCount: faker.helpers.arrayElement([faker.number.int(), undefined]),
-      failureCount: faker.helpers.arrayElement([faker.number.int(), undefined]),
-      totalSavedCount: faker.helpers.arrayElement([
-        faker.number.int(),
-        undefined,
-      ]),
-      savedCounts: faker.helpers.arrayElement([
-        {
-          [faker.string.alphanumeric(5)]: faker.number.int(),
-        },
-        undefined,
-      ]),
-    },
-    undefined,
-  ]),
-  ...overrideResponse,
-});
+export const getRunStockIndicatorBatchResponseMock = (overrideResponse: Partial<Extract<ApiResponseBatchJobRunResponse, object>> = {}): ApiResponseBatchJobRunResponse => ({success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), data: faker.helpers.arrayElement([{jobName: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), jobExecutionId: faker.helpers.arrayElement([faker.number.int(), undefined]), jobInstanceId: faker.helpers.arrayElement([faker.number.int(), undefined]), baseDate: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 10), undefined]), status: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), exitCode: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), exitDescription: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), startTime: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]), endTime: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]), baseTime: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), totalCount: faker.helpers.arrayElement([faker.number.int(), undefined]), successCount: faker.helpers.arrayElement([faker.number.int(), undefined]), failureCount: faker.helpers.arrayElement([faker.number.int(), undefined]), totalSavedCount: faker.helpers.arrayElement([faker.number.int(), undefined]), savedCounts: faker.helpers.arrayElement([{
+        [faker.string.alphanumeric(5)]: faker.number.int()
+      }, undefined])}, undefined]), ...overrideResponse})
 
-export const getSmokeResponseMock = (
-  overrideResponse: Partial<Extract<ApiResponseKisSmokeResponse, object>> = {},
-): ApiResponseKisSmokeResponse => ({
-  success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([
-    faker.string.alpha({ length: { min: 10, max: 20 } }),
-    undefined,
-  ]),
-  message: faker.helpers.arrayElement([
-    faker.string.alpha({ length: { min: 10, max: 20 } }),
-    undefined,
-  ]),
-  data: faker.helpers.arrayElement([
-    {
-      stockCode: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-      baseDate: faker.helpers.arrayElement([
-        faker.date.past().toISOString().slice(0, 10),
-        undefined,
-      ]),
-      dividendFrom: faker.helpers.arrayElement([
-        faker.date.past().toISOString().slice(0, 10),
-        undefined,
-      ]),
-      dividendTo: faker.helpers.arrayElement([
-        faker.date.past().toISOString().slice(0, 10),
-        undefined,
-      ]),
-      totalCount: faker.helpers.arrayElement([faker.number.int(), undefined]),
-      successCount: faker.helpers.arrayElement([faker.number.int(), undefined]),
-      failureCount: faker.helpers.arrayElement([faker.number.int(), undefined]),
-      results: faker.helpers.arrayElement([
-        Array.from(
-          { length: faker.number.int({ min: 1, max: 10 }) },
-          (_, i) => i + 1,
-        ).map(() => ({
-          step: faker.helpers.arrayElement([faker.number.int(), undefined]),
-          name: faker.helpers.arrayElement([
-            faker.string.alpha({ length: { min: 10, max: 20 } }),
-            undefined,
-          ]),
-          trId: faker.helpers.arrayElement([
-            faker.string.alpha({ length: { min: 10, max: 20 } }),
-            undefined,
-          ]),
-          success: faker.helpers.arrayElement([
-            faker.datatype.boolean(),
-            undefined,
-          ]),
-          itemCount: faker.helpers.arrayElement([
-            faker.number.int(),
-            undefined,
-          ]),
-          sample: faker.helpers.arrayElement([{}, undefined]),
-          errorMessage: faker.helpers.arrayElement([
-            faker.string.alpha({ length: { min: 10, max: 20 } }),
-            undefined,
-          ]),
-        })),
-        undefined,
-      ]),
-    },
-    undefined,
-  ]),
-  ...overrideResponse,
-});
+export const getRunHtsConditionBatchResponseMock = (overrideResponse: Partial<Extract<ApiResponseBatchJobRunResponse, object>> = {}): ApiResponseBatchJobRunResponse => ({success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), data: faker.helpers.arrayElement([{jobName: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), jobExecutionId: faker.helpers.arrayElement([faker.number.int(), undefined]), jobInstanceId: faker.helpers.arrayElement([faker.number.int(), undefined]), baseDate: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 10), undefined]), status: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), exitCode: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), exitDescription: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), startTime: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]), endTime: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]), baseTime: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), totalCount: faker.helpers.arrayElement([faker.number.int(), undefined]), successCount: faker.helpers.arrayElement([faker.number.int(), undefined]), failureCount: faker.helpers.arrayElement([faker.number.int(), undefined]), totalSavedCount: faker.helpers.arrayElement([faker.number.int(), undefined]), savedCounts: faker.helpers.arrayElement([{
+        [faker.string.alphanumeric(5)]: faker.number.int()
+      }, undefined])}, undefined]), ...overrideResponse})
 
-export const getHtsConditionTitlesResponseMock = (
-  overrideResponse: Partial<
-    Extract<ApiResponseListKisHtsConditionTitleOutput, object>
-  > = {},
-): ApiResponseListKisHtsConditionTitleOutput => ({
-  success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([
-    faker.string.alpha({ length: { min: 10, max: 20 } }),
-    undefined,
-  ]),
-  message: faker.helpers.arrayElement([
-    faker.string.alpha({ length: { min: 10, max: 20 } }),
-    undefined,
-  ]),
-  data: faker.helpers.arrayElement([
-    Array.from(
-      { length: faker.number.int({ min: 1, max: 10 }) },
-      (_, i) => i + 1,
-    ).map(() => ({
-      user_id: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-      seq: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-      grp_nm: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-      condition_nm: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-    })),
-    undefined,
-  ]),
-  ...overrideResponse,
-});
+export const getSmokeResponseMock = (overrideResponse: Partial<Extract<ApiResponseKisSmokeResponse, object>> = {}): ApiResponseKisSmokeResponse => ({success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), data: faker.helpers.arrayElement([{stockCode: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), baseDate: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 10), undefined]), dividendFrom: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 10), undefined]), dividendTo: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 10), undefined]), totalCount: faker.helpers.arrayElement([faker.number.int(), undefined]), successCount: faker.helpers.arrayElement([faker.number.int(), undefined]), failureCount: faker.helpers.arrayElement([faker.number.int(), undefined]), results: faker.helpers.arrayElement([Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({step: faker.helpers.arrayElement([faker.number.int(), undefined]), name: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), trId: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), itemCount: faker.helpers.arrayElement([faker.number.int(), undefined]), sample: faker.helpers.arrayElement([{}, undefined]), errorMessage: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined])}, undefined]), ...overrideResponse})
 
-export const getHtsConditionResultsResponseMock = (
-  overrideResponse: Partial<
-    Extract<ApiResponseListKisHtsConditionResultOutput, object>
-  > = {},
-): ApiResponseListKisHtsConditionResultOutput => ({
-  success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([
-    faker.string.alpha({ length: { min: 10, max: 20 } }),
-    undefined,
-  ]),
-  message: faker.helpers.arrayElement([
-    faker.string.alpha({ length: { min: 10, max: 20 } }),
-    undefined,
-  ]),
-  data: faker.helpers.arrayElement([
-    Array.from(
-      { length: faker.number.int({ min: 1, max: 10 }) },
-      (_, i) => i + 1,
-    ).map(() => ({
-      code: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-      name: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-      price: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-      chgrate: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-      trade_amt: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-      cttr: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-      stotprice: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-    })),
-    undefined,
-  ]),
-  ...overrideResponse,
-});
+export const getHtsConditionTitlesResponseMock = (overrideResponse: Partial<Extract<ApiResponseListKisHtsConditionTitleOutput, object>> = {}): ApiResponseListKisHtsConditionTitleOutput => ({success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), data: faker.helpers.arrayElement([Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({user_id: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), seq: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), grp_nm: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), condition_nm: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined]), ...overrideResponse})
 
-export const getGetStockIndicatorBatchStatusResponseMock = (
-  overrideResponse: Partial<
-    Extract<ApiResponseStockIndicatorBatchStatusResponse, object>
-  > = {},
-): ApiResponseStockIndicatorBatchStatusResponse => ({
-  success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]),
-  code: faker.helpers.arrayElement([
-    faker.string.alpha({ length: { min: 10, max: 20 } }),
-    undefined,
-  ]),
-  message: faker.helpers.arrayElement([
-    faker.string.alpha({ length: { min: 10, max: 20 } }),
-    undefined,
-  ]),
-  data: faker.helpers.arrayElement([
-    {
-      baseDate: faker.helpers.arrayElement([
-        faker.date.past().toISOString().slice(0, 10),
-        undefined,
-      ]),
-      baseTime: faker.helpers.arrayElement([
-        faker.string.alpha({ length: { min: 10, max: 20 } }),
-        undefined,
-      ]),
-      stockCount: faker.helpers.arrayElement([faker.number.int(), undefined]),
-      indicatorCount: faker.helpers.arrayElement([
-        faker.number.int(),
-        undefined,
-      ]),
-      missingCount: faker.helpers.arrayElement([faker.number.int(), undefined]),
-      invalidRequiredFieldCount: faker.helpers.arrayElement([
-        faker.number.int(),
-        undefined,
-      ]),
-      complete: faker.helpers.arrayElement([
-        faker.datatype.boolean(),
-        undefined,
-      ]),
-      missingStocks: faker.helpers.arrayElement([
-        Array.from(
-          { length: faker.number.int({ min: 1, max: 10 }) },
-          (_, i) => i + 1,
-        ).map(() => ({
-          stockId: faker.helpers.arrayElement([faker.number.int(), undefined]),
-          stockCode: faker.helpers.arrayElement([
-            faker.string.alpha({ length: { min: 10, max: 20 } }),
-            undefined,
-          ]),
-          stockName: faker.helpers.arrayElement([
-            faker.string.alpha({ length: { min: 10, max: 20 } }),
-            undefined,
-          ]),
-        })),
-        undefined,
-      ]),
-    },
-    undefined,
-  ]),
-  ...overrideResponse,
-});
+export const getHtsConditionResultsResponseMock = (overrideResponse: Partial<Extract<ApiResponseListKisHtsConditionResultOutput, object>> = {}): ApiResponseListKisHtsConditionResultOutput => ({success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), data: faker.helpers.arrayElement([Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), name: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), price: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), chgrate: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), trade_amt: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), cttr: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), stotprice: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined]), ...overrideResponse})
 
-export const getRunStockIndicatorBatchMockHandler = (
-  overrideResponse?:
-    | ApiResponseBatchJobRunResponse
-    | ((
-        info: Parameters<Parameters<typeof http.post>[1]>[0],
-      ) =>
-        | Promise<ApiResponseBatchJobRunResponse>
-        | ApiResponseBatchJobRunResponse),
-  options?: RequestHandlerOptions,
-) => {
-  return http.post(
-    '*/api/local/kis/batch/stock-indicators',
-    async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
-      return HttpResponse.json(
-        overrideResponse !== undefined
-          ? typeof overrideResponse === 'function'
-            ? await overrideResponse(info)
-            : overrideResponse
-          : getRunStockIndicatorBatchResponseMock(),
-        { status: 200 },
-      );
-    },
-    options,
-  );
-};
+export const getGetStockIndicatorBatchStatusResponseMock = (overrideResponse: Partial<Extract<ApiResponseStockIndicatorBatchStatusResponse, object>> = {}): ApiResponseStockIndicatorBatchStatusResponse => ({success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), data: faker.helpers.arrayElement([{baseDate: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 10), undefined]), baseTime: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), stockCount: faker.helpers.arrayElement([faker.number.int(), undefined]), indicatorCount: faker.helpers.arrayElement([faker.number.int(), undefined]), missingCount: faker.helpers.arrayElement([faker.number.int(), undefined]), invalidRequiredFieldCount: faker.helpers.arrayElement([faker.number.int(), undefined]), complete: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), missingStocks: faker.helpers.arrayElement([Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({stockId: faker.helpers.arrayElement([faker.number.int(), undefined]), stockCode: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), stockName: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined])}, undefined]), ...overrideResponse})
 
-export const getRunHtsConditionBatchMockHandler = (
-  overrideResponse?:
-    | ApiResponseBatchJobRunResponse
-    | ((
-        info: Parameters<Parameters<typeof http.post>[1]>[0],
-      ) =>
-        | Promise<ApiResponseBatchJobRunResponse>
-        | ApiResponseBatchJobRunResponse),
-  options?: RequestHandlerOptions,
-) => {
-  return http.post(
-    '*/api/local/kis/batch/hts-conditions',
-    async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
-      return HttpResponse.json(
-        overrideResponse !== undefined
-          ? typeof overrideResponse === 'function'
-            ? await overrideResponse(info)
-            : overrideResponse
-          : getRunHtsConditionBatchResponseMock(),
-        { status: 200 },
-      );
-    },
-    options,
-  );
-};
 
-export const getSmokeMockHandler = (
-  overrideResponse?:
-    | ApiResponseKisSmokeResponse
-    | ((
-        info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) => Promise<ApiResponseKisSmokeResponse> | ApiResponseKisSmokeResponse),
-  options?: RequestHandlerOptions,
-) => {
-  return http.get(
-    '*/api/local/kis/smoke',
-    async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
-      return HttpResponse.json(
-        overrideResponse !== undefined
-          ? typeof overrideResponse === 'function'
-            ? await overrideResponse(info)
-            : overrideResponse
-          : getSmokeResponseMock(),
-        { status: 200 },
-      );
-    },
-    options,
-  );
-};
+export const getRunStockIndicatorBatchMockHandler = (overrideResponse?: ApiResponseBatchJobRunResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<ApiResponseBatchJobRunResponse> | ApiResponseBatchJobRunResponse), options?: RequestHandlerOptions) => {
+  return http.post('*/api/local/kis/batch/stock-indicators', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
 
-export const getHtsConditionTitlesMockHandler = (
-  overrideResponse?:
-    | ApiResponseListKisHtsConditionTitleOutput
-    | ((
-        info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) =>
-        | Promise<ApiResponseListKisHtsConditionTitleOutput>
-        | ApiResponseListKisHtsConditionTitleOutput),
-  options?: RequestHandlerOptions,
-) => {
-  return http.get(
-    '*/api/local/kis/hts/titles',
-    async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
-      return HttpResponse.json(
-        overrideResponse !== undefined
-          ? typeof overrideResponse === 'function'
-            ? await overrideResponse(info)
-            : overrideResponse
-          : getHtsConditionTitlesResponseMock(),
-        { status: 200 },
-      );
-    },
-    options,
-  );
-};
 
-export const getHtsConditionResultsMockHandler = (
-  overrideResponse?:
-    | ApiResponseListKisHtsConditionResultOutput
-    | ((
-        info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) =>
-        | Promise<ApiResponseListKisHtsConditionResultOutput>
-        | ApiResponseListKisHtsConditionResultOutput),
-  options?: RequestHandlerOptions,
-) => {
-  return http.get(
-    '*/api/local/kis/hts/results',
-    async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
-      return HttpResponse.json(
-        overrideResponse !== undefined
-          ? typeof overrideResponse === 'function'
-            ? await overrideResponse(info)
-            : overrideResponse
-          : getHtsConditionResultsResponseMock(),
-        { status: 200 },
-      );
-    },
-    options,
-  );
-};
+    return HttpResponse.json(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getRunStockIndicatorBatchResponseMock(),
+      { status: 200
+      })
+  }, options)
+}
 
-export const getGetStockIndicatorBatchStatusMockHandler = (
-  overrideResponse?:
-    | ApiResponseStockIndicatorBatchStatusResponse
-    | ((
-        info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) =>
-        | Promise<ApiResponseStockIndicatorBatchStatusResponse>
-        | ApiResponseStockIndicatorBatchStatusResponse),
-  options?: RequestHandlerOptions,
-) => {
-  return http.get(
-    '*/api/local/kis/batch/stock-indicators/status',
-    async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
-      return HttpResponse.json(
-        overrideResponse !== undefined
-          ? typeof overrideResponse === 'function'
-            ? await overrideResponse(info)
-            : overrideResponse
-          : getGetStockIndicatorBatchStatusResponseMock(),
-        { status: 200 },
-      );
-    },
-    options,
-  );
-};
+export const getRunHtsConditionBatchMockHandler = (overrideResponse?: ApiResponseBatchJobRunResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<ApiResponseBatchJobRunResponse> | ApiResponseBatchJobRunResponse), options?: RequestHandlerOptions) => {
+  return http.post('*/api/local/kis/batch/hts-conditions', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+
+
+    return HttpResponse.json(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getRunHtsConditionBatchResponseMock(),
+      { status: 200
+      })
+  }, options)
+}
+
+export const getSmokeMockHandler = (overrideResponse?: ApiResponseKisSmokeResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<ApiResponseKisSmokeResponse> | ApiResponseKisSmokeResponse), options?: RequestHandlerOptions) => {
+  return http.get('*/api/local/kis/smoke', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+
+
+    return HttpResponse.json(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getSmokeResponseMock(),
+      { status: 200
+      })
+  }, options)
+}
+
+export const getHtsConditionTitlesMockHandler = (overrideResponse?: ApiResponseListKisHtsConditionTitleOutput | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<ApiResponseListKisHtsConditionTitleOutput> | ApiResponseListKisHtsConditionTitleOutput), options?: RequestHandlerOptions) => {
+  return http.get('*/api/local/kis/hts/titles', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+
+
+    return HttpResponse.json(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getHtsConditionTitlesResponseMock(),
+      { status: 200
+      })
+  }, options)
+}
+
+export const getHtsConditionResultsMockHandler = (overrideResponse?: ApiResponseListKisHtsConditionResultOutput | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<ApiResponseListKisHtsConditionResultOutput> | ApiResponseListKisHtsConditionResultOutput), options?: RequestHandlerOptions) => {
+  return http.get('*/api/local/kis/hts/results', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+
+
+    return HttpResponse.json(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getHtsConditionResultsResponseMock(),
+      { status: 200
+      })
+  }, options)
+}
+
+export const getGetStockIndicatorBatchStatusMockHandler = (overrideResponse?: ApiResponseStockIndicatorBatchStatusResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<ApiResponseStockIndicatorBatchStatusResponse> | ApiResponseStockIndicatorBatchStatusResponse), options?: RequestHandlerOptions) => {
+  return http.get('*/api/local/kis/batch/stock-indicators/status', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+
+
+    return HttpResponse.json(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getGetStockIndicatorBatchStatusResponseMock(),
+      { status: 200
+      })
+  }, options)
+}
 export const getKisSmokeMock = () => [
   getRunStockIndicatorBatchMockHandler(),
   getRunHtsConditionBatchMockHandler(),
   getSmokeMockHandler(),
   getHtsConditionTitlesMockHandler(),
   getHtsConditionResultsMockHandler(),
-  getGetStockIndicatorBatchStatusMockHandler(),
-];
+  getGetStockIndicatorBatchStatusMockHandler()
+]

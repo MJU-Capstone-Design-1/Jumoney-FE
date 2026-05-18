@@ -5,99 +5,87 @@
  * 주머니의 백엔드 API 명세서입니다.
  * OpenAPI spec version: 1.0.0
  */
-import { useMutation } from '@tanstack/react-query';
+import {
+  useMutation
+} from '@tanstack/react-query';
 import type {
   MutationFunction,
   QueryClient,
   UseMutationOptions,
-  UseMutationResult,
+  UseMutationResult
 } from '@tanstack/react-query';
 
 import type {
   ApiResponseUserNicknameUpdateResponseDTO,
-  UserNicknameUpdateRequestDTO,
+  UserNicknameUpdateRequestDTO
 } from '../../model';
 
 import { customInstance } from '../../../custom-instance';
+
+
+
 
 /**
  * 최초 로그인 후 앱 내에서 사용할 닉네임을 설정합니다.
  * @summary 서비스 닉네임 설정
  */
 export const updateNickname = (
-  userNicknameUpdateRequestDTO: UserNicknameUpdateRequestDTO,
-  signal?: AbortSignal,
+    userNicknameUpdateRequestDTO: UserNicknameUpdateRequestDTO,
+ signal?: AbortSignal
 ) => {
-  return customInstance<ApiResponseUserNicknameUpdateResponseDTO>({
-    url: `/api/users/me/nickname`,
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    data: userNicknameUpdateRequestDTO,
-    signal,
-  });
-};
 
-export const getUpdateNicknameMutationOptions = <
-  TError = unknown,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof updateNickname>>,
-    TError,
-    { data: UserNicknameUpdateRequestDTO },
-    TContext
-  >;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof updateNickname>>,
-  TError,
-  { data: UserNicknameUpdateRequestDTO },
-  TContext
-> => {
-  const mutationKey = ['updateNickname'];
-  const { mutation: mutationOptions } = options
-    ? options.mutation &&
-      'mutationKey' in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof updateNickname>>,
-    { data: UserNicknameUpdateRequestDTO }
-  > = (props) => {
-    const { data } = props ?? {};
+      return customInstance<ApiResponseUserNicknameUpdateResponseDTO>(
+      {url: `/api/users/me/nickname`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: userNicknameUpdateRequestDTO, signal
+    },
+      );
+    }
 
-    return updateNickname(data);
-  };
 
-  return { mutationFn, ...mutationOptions };
-};
 
-export type UpdateNicknameMutationResult = NonNullable<
-  Awaited<ReturnType<typeof updateNickname>>
->;
-export type UpdateNicknameMutationBody = UserNicknameUpdateRequestDTO;
-export type UpdateNicknameMutationError = unknown;
+export const getUpdateNicknameMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateNickname>>, TError,{data: UserNicknameUpdateRequestDTO}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof updateNickname>>, TError,{data: UserNicknameUpdateRequestDTO}, TContext> => {
 
-/**
+const mutationKey = ['updateNickname'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateNickname>>, {data: UserNicknameUpdateRequestDTO}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateNickname(data,)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateNicknameMutationResult = NonNullable<Awaited<ReturnType<typeof updateNickname>>>
+    export type UpdateNicknameMutationBody = UserNicknameUpdateRequestDTO
+    export type UpdateNicknameMutationError = unknown
+
+    /**
  * @summary 서비스 닉네임 설정
  */
-export const useUpdateNickname = <TError = unknown, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof updateNickname>>,
-      TError,
-      { data: UserNicknameUpdateRequestDTO },
-      TContext
-    >;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof updateNickname>>,
-  TError,
-  { data: UserNicknameUpdateRequestDTO },
-  TContext
-> => {
-  return useMutation(getUpdateNicknameMutationOptions(options), queryClient);
-};
+export const useUpdateNickname = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateNickname>>, TError,{data: UserNicknameUpdateRequestDTO}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateNickname>>,
+        TError,
+        {data: UserNicknameUpdateRequestDTO},
+        TContext
+      > => {
+      return useMutation(getUpdateNicknameMutationOptions(options), queryClient);
+    }
