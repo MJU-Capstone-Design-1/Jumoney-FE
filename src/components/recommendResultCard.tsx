@@ -4,6 +4,7 @@
 import type { RecommendedStockResponse } from '@/api/generated/model';
 import { LOGIC_CODE_TO_KOREAN } from '@/constants/masters';
 import { masterSortMetricLabels } from '@/constants/masterLabels';
+import { labelMappings } from '@/constants/labelMappings';
 import Image from 'next/image';
 
 interface RecommendResultCardProps {
@@ -14,14 +15,43 @@ interface RecommendResultCardProps {
 }
 
 const RecommendResultCard = ({ data }: RecommendResultCardProps) => {
-  const formatChangeRate = (rate?: number) => {
-    if (rate === undefined) return '';
-    return rate > 0 ? `+${rate.toFixed(1)}% ▲` : `${rate.toFixed(1)}% ▼`;
-  };
-
   const formatPrice = (price?: number) => {
     if (price === undefined) return '0';
     return price.toLocaleString();
+  };
+
+  const formatMetricValue = (key: string, value: number) => {
+    const upperKey = key.toUpperCase();
+
+    if (
+      upperKey.includes('AMOUNT') ||
+      upperKey.includes('CAP') ||
+      upperKey.includes('VALUE') ||
+      upperKey.includes('PRICE') ||
+      upperKey.includes('BUY')
+    ) {
+      return `₩${value.toLocaleString()}`;
+    }
+
+    if (
+      upperKey.includes('PER') ||
+      upperKey.includes('PBR') ||
+      upperKey.includes('PEG')
+    ) {
+      return `${value}배`;
+    }
+
+    return `${value}%`;
+  };
+
+  const getMetricLabel = (key: string) => {
+    const upperKey = key.toUpperCase();
+    return (
+      masterSortMetricLabels[upperKey as keyof typeof masterSortMetricLabels] ||
+      LOGIC_CODE_TO_KOREAN[upperKey] ||
+      labelMappings[upperKey as keyof typeof labelMappings] ||
+      key
+    );
   };
 
   const stockTags = data.tags || [];
@@ -86,17 +116,31 @@ const RecommendResultCard = ({ data }: RecommendResultCardProps) => {
       </div>
 
       <div className='flex items-center gap-[0.5rem]'>
-        <p className='text-body-md font-semibold'>
-          {formatPrice(data.currentPrice)} ({formatChangeRate(data.changeRate)})
-        </p>
+        <div className='text-body-md flex items-center gap-[0.25rem] font-extrabold'>
+          <span>₩{formatPrice(data.currentPrice)}</span>
+          {data.changeRate !== undefined && (
+            <span
+              className={
+                data.changeRate > 0
+                  ? 'text-text-up'
+                  : data.changeRate < 0
+                    ? 'text-text-down'
+                    : ''
+              }
+            >
+              ({data.changeRate > 0 ? '+' : ''}
+              {data.changeRate.toFixed(1)}%{' '}
+              {data.changeRate > 0 ? '▲' : data.changeRate < 0 ? '▼' : ''})
+            </span>
+          )}
+        </div>
 
         {data.sortMetricKey && data.sortMetricValue !== undefined && (
           <>
             <div className='bg-secondary2 flex h-[0.75rem] w-[0.0625rem]' />
             <p className='text-body-md font-semibold'>
-              {masterSortMetricLabels[data.sortMetricKey.toUpperCase()] ||
-                data.sortMetricKey}{' '}
-              {data.sortMetricValue}%
+              {getMetricLabel(data.sortMetricKey)}{' '}
+              {formatMetricValue(data.sortMetricKey, data.sortMetricValue)}
             </p>
           </>
         )}
