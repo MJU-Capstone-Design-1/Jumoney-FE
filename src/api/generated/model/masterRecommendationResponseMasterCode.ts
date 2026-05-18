@@ -6,8 +6,8 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type MasterRecommendationResponseMasterCode =
-  (typeof MasterRecommendationResponseMasterCode)[keyof typeof MasterRecommendationResponseMasterCode];
+export type MasterRecommendationResponseMasterCode = typeof MasterRecommendationResponseMasterCode[keyof typeof MasterRecommendationResponseMasterCode];
+
 
 export const MasterRecommendationResponseMasterCode = {
   WARREN_BUFFETT: 'WARREN_BUFFETT',

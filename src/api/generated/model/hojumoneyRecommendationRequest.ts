@@ -8,8 +8,8 @@
 
 export interface HojumoneyRecommendationRequest {
   /**
-   * 오늘의 호주머니 설문 선택지 ID 목록. 각 질문에서 1개씩 총 3개를 전달합니다.
-   * @minItems 1
-   */
+     * 오늘의 호주머니 설문 선택지 ID 목록. 각 질문에서 1개씩 총 3개를 전달합니다.
+     * @minItems 1
+     */
   selectedOptionIds: number[];
 }

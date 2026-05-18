@@ -7,12 +7,12 @@
  */
 
 export type RunStockIndicatorBatchParams = {
-  /**
-   * prod 프로필 전용 관리자 키
-   */
-  adminKey?: string;
-  /**
-   * 지표 기준일. 직전 개장일 기준 배치는 다음 장 시작 전에 실행해야 합니다. 예시는 문서 생성일 기준 전날로 표시됩니다.
-   */
-  baseDate?: string;
+/**
+ * prod 프로필 전용 관리자 키
+ */
+adminKey?: string;
+/**
+ * 지표 기준일. 직전 개장일 기준 배치는 다음 장 시작 전에 실행해야 합니다. 예시는 문서 생성일 기준 전날로 표시됩니다.
+ */
+baseDate?: string;
 };

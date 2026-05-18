@@ -6,8 +6,8 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type SurveyOptionResponseLogicCode =
-  (typeof SurveyOptionResponseLogicCode)[keyof typeof SurveyOptionResponseLogicCode];
+export type SurveyOptionResponseLogicCode = typeof SurveyOptionResponseLogicCode[keyof typeof SurveyOptionResponseLogicCode];
+
 
 export const SurveyOptionResponseLogicCode = {
   CAPITAL_PROTECTION: 'CAPITAL_PROTECTION',

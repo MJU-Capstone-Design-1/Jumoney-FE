@@ -7,12 +7,12 @@
  */
 
 export type RunHtsConditionBatchParams = {
-  /**
-   * prod 프로필 전용 관리자 키
-   */
-  adminKey?: string;
-  /**
-   * 저장 기준일. 생략 시 오늘 날짜. 예시는 문서 생성일 기준 전날로 표시됩니다.
-   */
-  baseDate?: string;
+/**
+ * prod 프로필 전용 관리자 키
+ */
+adminKey?: string;
+/**
+ * 저장 기준일. 생략 시 오늘 날짜. 예시는 문서 생성일 기준 전날로 표시됩니다.
+ */
+baseDate?: string;
 };

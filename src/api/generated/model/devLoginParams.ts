@@ -7,5 +7,5 @@
  */
 
 export type DevLoginParams = {
-  nickname: string;
+nickname: string;
 };

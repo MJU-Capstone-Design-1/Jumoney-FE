@@ -5,134 +5,68 @@
  * 주머니의 백엔드 API 명세서입니다.
  * OpenAPI spec version: 1.0.0
  */
-import { faker } from '@faker-js/faker';
+import {
+  faker
+} from '@faker-js/faker';
 
-import { HttpResponse, http } from 'msw';
-import type { RequestHandlerOptions } from 'msw';
+import {
+  HttpResponse,
+  http
+} from 'msw';
+import type {
+  RequestHandlerOptions
+} from 'msw';
 
-import type { AuthLoginResponse, TokenRefreshResponse } from '../../model';
+import type {
+  AuthLoginResponse,
+  TokenRefreshResponse
+} from '../../model';
 
-export const getRefreshResponseMock = (
-  overrideResponse: Partial<Extract<TokenRefreshResponse, object>> = {},
-): TokenRefreshResponse => ({
-  accessToken: faker.helpers.arrayElement([
-    faker.string.alpha({ length: { min: 10, max: 20 } }),
-    undefined,
-  ]),
-  ...overrideResponse,
-});
 
-export const getDevLoginResponseMock = (
-  overrideResponse: Partial<Extract<AuthLoginResponse, object>> = {},
-): AuthLoginResponse => ({
-  accessToken: faker.helpers.arrayElement([
-    faker.string.alpha({ length: { min: 10, max: 20 } }),
-    undefined,
-  ]),
-  userId: faker.helpers.arrayElement([faker.number.int(), undefined]),
-  nickname: faker.helpers.arrayElement([
-    faker.string.alpha({ length: { min: 10, max: 20 } }),
-    undefined,
-  ]),
-  isNewMember: faker.helpers.arrayElement([
-    faker.datatype.boolean(),
-    undefined,
-  ]),
-  ...overrideResponse,
-});
+export const getRefreshResponseMock = (overrideResponse: Partial<Extract<TokenRefreshResponse, object>> = {}): TokenRefreshResponse => ({accessToken: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
 
-export const getKakaoLoginResponseMock = (
-  overrideResponse: Partial<Extract<AuthLoginResponse, object>> = {},
-): AuthLoginResponse => ({
-  accessToken: faker.helpers.arrayElement([
-    faker.string.alpha({ length: { min: 10, max: 20 } }),
-    undefined,
-  ]),
-  userId: faker.helpers.arrayElement([faker.number.int(), undefined]),
-  nickname: faker.helpers.arrayElement([
-    faker.string.alpha({ length: { min: 10, max: 20 } }),
-    undefined,
-  ]),
-  isNewMember: faker.helpers.arrayElement([
-    faker.datatype.boolean(),
-    undefined,
-  ]),
-  ...overrideResponse,
-});
+export const getDevLoginResponseMock = (overrideResponse: Partial<Extract<AuthLoginResponse, object>> = {}): AuthLoginResponse => ({accessToken: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), userId: faker.helpers.arrayElement([faker.number.int(), undefined]), nickname: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), isNewMember: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), ...overrideResponse})
 
-export const getRefreshMockHandler = (
-  overrideResponse?:
-    | TokenRefreshResponse
-    | ((
-        info: Parameters<Parameters<typeof http.post>[1]>[0],
-      ) => Promise<TokenRefreshResponse> | TokenRefreshResponse),
-  options?: RequestHandlerOptions,
-) => {
-  return http.post(
-    '*/api/auth/refresh',
-    async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
-      return HttpResponse.json(
-        overrideResponse !== undefined
-          ? typeof overrideResponse === 'function'
-            ? await overrideResponse(info)
-            : overrideResponse
-          : getRefreshResponseMock(),
-        { status: 200 },
-      );
-    },
-    options,
-  );
-};
+export const getKakaoLoginResponseMock = (overrideResponse: Partial<Extract<AuthLoginResponse, object>> = {}): AuthLoginResponse => ({accessToken: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), userId: faker.helpers.arrayElement([faker.number.int(), undefined]), nickname: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), isNewMember: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), ...overrideResponse})
 
-export const getDevLoginMockHandler = (
-  overrideResponse?:
-    | AuthLoginResponse
-    | ((
-        info: Parameters<Parameters<typeof http.post>[1]>[0],
-      ) => Promise<AuthLoginResponse> | AuthLoginResponse),
-  options?: RequestHandlerOptions,
-) => {
-  return http.post(
-    '*/api/auth/dev/login',
-    async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
-      return HttpResponse.json(
-        overrideResponse !== undefined
-          ? typeof overrideResponse === 'function'
-            ? await overrideResponse(info)
-            : overrideResponse
-          : getDevLoginResponseMock(),
-        { status: 200 },
-      );
-    },
-    options,
-  );
-};
 
-export const getKakaoLoginMockHandler = (
-  overrideResponse?:
-    | AuthLoginResponse
-    | ((
-        info: Parameters<Parameters<typeof http.get>[1]>[0],
-      ) => Promise<AuthLoginResponse> | AuthLoginResponse),
-  options?: RequestHandlerOptions,
-) => {
-  return http.get(
-    '*/api/auth/kakao/login',
-    async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
-      return HttpResponse.json(
-        overrideResponse !== undefined
-          ? typeof overrideResponse === 'function'
-            ? await overrideResponse(info)
-            : overrideResponse
-          : getKakaoLoginResponseMock(),
-        { status: 200 },
-      );
-    },
-    options,
-  );
-};
+export const getRefreshMockHandler = (overrideResponse?: TokenRefreshResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<TokenRefreshResponse> | TokenRefreshResponse), options?: RequestHandlerOptions) => {
+  return http.post('*/api/auth/refresh', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+
+
+    return HttpResponse.json(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getRefreshResponseMock(),
+      { status: 200
+      })
+  }, options)
+}
+
+export const getDevLoginMockHandler = (overrideResponse?: AuthLoginResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<AuthLoginResponse> | AuthLoginResponse), options?: RequestHandlerOptions) => {
+  return http.post('*/api/auth/dev/login', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+
+
+    return HttpResponse.json(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getDevLoginResponseMock(),
+      { status: 200
+      })
+  }, options)
+}
+
+export const getKakaoLoginMockHandler = (overrideResponse?: AuthLoginResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<AuthLoginResponse> | AuthLoginResponse), options?: RequestHandlerOptions) => {
+  return http.get('*/api/auth/kakao/login', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+
+
+    return HttpResponse.json(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getKakaoLoginResponseMock(),
+      { status: 200
+      })
+  }, options)
+}
 export const getAuthControllerMock = () => [
   getRefreshMockHandler(),
   getDevLoginMockHandler(),
-  getKakaoLoginMockHandler(),
-];
+  getKakaoLoginMockHandler()
+]

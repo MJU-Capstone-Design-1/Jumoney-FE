@@ -5,7 +5,10 @@
  * 주머니의 백엔드 API 명세서입니다.
  * OpenAPI spec version: 1.0.0
  */
-import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQuery
+} from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -18,366 +21,267 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
+  UseQueryResult
 } from '@tanstack/react-query';
 
 import type {
   ApiResponseHojumoneyRecommendationResponse,
   ApiResponseHojumoneySurveyResponse,
-  HojumoneyRecommendationRequest,
+  HojumoneyRecommendationRequest
 } from '../../model';
 
 import { customInstance } from '../../../custom-instance';
+
+
+
 
 /**
  * 설문 선택지 ID 3개를 기반으로 오늘의 호주머니 추천을 수행하여 추천 종목을 조회합니다.
  * @summary 오늘의 호주머니 추천
  */
 export const recommend = (
-  hojumoneyRecommendationRequest: HojumoneyRecommendationRequest,
-  signal?: AbortSignal,
+    hojumoneyRecommendationRequest: HojumoneyRecommendationRequest,
+ signal?: AbortSignal
 ) => {
-  return customInstance<ApiResponseHojumoneyRecommendationResponse>({
-    url: `/api/hojumoney/recommendations`,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    data: hojumoneyRecommendationRequest,
-    signal,
-  });
-};
 
-export const getRecommendMutationOptions = <
-  TError = unknown,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof recommend>>,
-    TError,
-    { data: HojumoneyRecommendationRequest },
-    TContext
-  >;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof recommend>>,
-  TError,
-  { data: HojumoneyRecommendationRequest },
-  TContext
-> => {
-  const mutationKey = ['recommend'];
-  const { mutation: mutationOptions } = options
-    ? options.mutation &&
-      'mutationKey' in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof recommend>>,
-    { data: HojumoneyRecommendationRequest }
-  > = (props) => {
-    const { data } = props ?? {};
+      return customInstance<ApiResponseHojumoneyRecommendationResponse>(
+      {url: `/api/hojumoney/recommendations`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: hojumoneyRecommendationRequest, signal
+    },
+      );
+    }
 
-    return recommend(data);
-  };
 
-  return { mutationFn, ...mutationOptions };
-};
 
-export type RecommendMutationResult = NonNullable<
-  Awaited<ReturnType<typeof recommend>>
->;
-export type RecommendMutationBody = HojumoneyRecommendationRequest;
-export type RecommendMutationError = unknown;
+export const getRecommendMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof recommend>>, TError,{data: HojumoneyRecommendationRequest}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof recommend>>, TError,{data: HojumoneyRecommendationRequest}, TContext> => {
 
-/**
+const mutationKey = ['recommend'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof recommend>>, {data: HojumoneyRecommendationRequest}> = (props) => {
+          const {data} = props ?? {};
+
+          return  recommend(data,)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RecommendMutationResult = NonNullable<Awaited<ReturnType<typeof recommend>>>
+    export type RecommendMutationBody = HojumoneyRecommendationRequest
+    export type RecommendMutationError = unknown
+
+    /**
  * @summary 오늘의 호주머니 추천
  */
-export const useRecommend = <TError = unknown, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof recommend>>,
-      TError,
-      { data: HojumoneyRecommendationRequest },
-      TContext
-    >;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof recommend>>,
-  TError,
-  { data: HojumoneyRecommendationRequest },
-  TContext
-> => {
-  return useMutation(getRecommendMutationOptions(options), queryClient);
-};
-/**
+export const useRecommend = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof recommend>>, TError,{data: HojumoneyRecommendationRequest}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof recommend>>,
+        TError,
+        {data: HojumoneyRecommendationRequest},
+        TContext
+      > => {
+      return useMutation(getRecommendMutationOptions(options), queryClient);
+    }
+    /**
  * 오늘의 호주머니 추천에 필요한 설문 문항과 선택지를 표시 순서대로 조회합니다.
  * @summary 오늘의 호주머니 설문 조회
  */
-export const getHojumoneySurvey = (signal?: AbortSignal) => {
-  return customInstance<ApiResponseHojumoneySurveyResponse>({
-    url: `/api/hojumoney/survey`,
-    method: 'GET',
-    signal,
-  });
-};
+export const getHojumoneySurvey = (
+
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<ApiResponseHojumoneySurveyResponse>(
+      {url: `/api/hojumoney/survey`, method: 'GET', signal
+    },
+      );
+    }
+
+
+
 
 export const getGetHojumoneySurveyQueryKey = () => {
-  return [`/api/hojumoney/survey`] as const;
-};
+    return [
+    `/api/hojumoney/survey`
+    ] as const;
+    }
 
-export const getGetHojumoneySurveyQueryOptions = <
-  TData = Awaited<ReturnType<typeof getHojumoneySurvey>>,
-  TError = unknown,
->(options?: {
-  query?: Partial<
-    UseQueryOptions<
-      Awaited<ReturnType<typeof getHojumoneySurvey>>,
-      TError,
-      TData
-    >
-  >;
-}) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getGetHojumoneySurveyQueryKey();
+export const getGetHojumoneySurveyQueryOptions = <TData = Awaited<ReturnType<typeof getHojumoneySurvey>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getHojumoneySurvey>>, TError, TData>>, }
+) => {
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof getHojumoneySurvey>>
-  > = ({ signal }) => getHojumoneySurvey(signal);
+const {query: queryOptions} = options ?? {};
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getHojumoneySurvey>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+  const queryKey =  queryOptions?.queryKey ?? getGetHojumoneySurveyQueryKey();
 
-export type GetHojumoneySurveyQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getHojumoneySurvey>>
->;
-export type GetHojumoneySurveyQueryError = unknown;
 
-export function useGetHojumoneySurvey<
-  TData = Awaited<ReturnType<typeof getHojumoneySurvey>>,
-  TError = unknown,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getHojumoneySurvey>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getHojumoneySurvey>>> = ({ signal }) => getHojumoneySurvey(signal);
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getHojumoneySurvey>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetHojumoneySurveyQueryResult = NonNullable<Awaited<ReturnType<typeof getHojumoneySurvey>>>
+export type GetHojumoneySurveyQueryError = unknown
+
+
+export function useGetHojumoneySurvey<TData = Awaited<ReturnType<typeof getHojumoneySurvey>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getHojumoneySurvey>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getHojumoneySurvey>>,
           TError,
           Awaited<ReturnType<typeof getHojumoneySurvey>>
-        >,
-        'initialData'
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetHojumoneySurvey<
-  TData = Awaited<ReturnType<typeof getHojumoneySurvey>>,
-  TError = unknown,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getHojumoneySurvey>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetHojumoneySurvey<TData = Awaited<ReturnType<typeof getHojumoneySurvey>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getHojumoneySurvey>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getHojumoneySurvey>>,
           TError,
           Awaited<ReturnType<typeof getHojumoneySurvey>>
-        >,
-        'initialData'
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetHojumoneySurvey<
-  TData = Awaited<ReturnType<typeof getHojumoneySurvey>>,
-  TError = unknown,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getHojumoneySurvey>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetHojumoneySurvey<TData = Awaited<ReturnType<typeof getHojumoneySurvey>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getHojumoneySurvey>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary 오늘의 호주머니 설문 조회
  */
 
-export function useGetHojumoneySurvey<
-  TData = Awaited<ReturnType<typeof getHojumoneySurvey>>,
-  TError = unknown,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getHojumoneySurvey>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getGetHojumoneySurveyQueryOptions(options);
+export function useGetHojumoneySurvey<TData = Awaited<ReturnType<typeof getHojumoneySurvey>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getHojumoneySurvey>>, TError, TData>>, }
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const queryOptions = getGetHojumoneySurveyQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
+
+
 
 /**
  * 로그인 사용자의 가장 최근 오늘의 호주머니 추천 결과를 조회합니다.
  * @summary 오늘의 호주머니 추천 결과 조회
  */
-export const getLatest = (signal?: AbortSignal) => {
-  return customInstance<ApiResponseHojumoneyRecommendationResponse>({
-    url: `/api/hojumoney/recommendations/latest`,
-    method: 'GET',
-    signal,
-  });
-};
+export const getLatest = (
+
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<ApiResponseHojumoneyRecommendationResponse>(
+      {url: `/api/hojumoney/recommendations/latest`, method: 'GET', signal
+    },
+      );
+    }
+
+
+
 
 export const getGetLatestQueryKey = () => {
-  return [`/api/hojumoney/recommendations/latest`] as const;
-};
+    return [
+    `/api/hojumoney/recommendations/latest`
+    ] as const;
+    }
 
-export const getGetLatestQueryOptions = <
-  TData = Awaited<ReturnType<typeof getLatest>>,
-  TError = unknown,
->(options?: {
-  query?: Partial<
-    UseQueryOptions<Awaited<ReturnType<typeof getLatest>>, TError, TData>
-  >;
-}) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getGetLatestQueryKey();
+export const getGetLatestQueryOptions = <TData = Awaited<ReturnType<typeof getLatest>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getLatest>>, TError, TData>>, }
+) => {
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getLatest>>> = ({
-    signal,
-  }) => getLatest(signal);
+const {query: queryOptions} = options ?? {};
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getLatest>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+  const queryKey =  queryOptions?.queryKey ?? getGetLatestQueryKey();
 
-export type GetLatestQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getLatest>>
->;
-export type GetLatestQueryError = unknown;
 
-export function useGetLatest<
-  TData = Awaited<ReturnType<typeof getLatest>>,
-  TError = unknown,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getLatest>>, TError, TData>
-    > &
-      Pick<
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getLatest>>> = ({ signal }) => getLatest(signal);
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getLatest>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetLatestQueryResult = NonNullable<Awaited<ReturnType<typeof getLatest>>>
+export type GetLatestQueryError = unknown
+
+
+export function useGetLatest<TData = Awaited<ReturnType<typeof getLatest>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getLatest>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getLatest>>,
           TError,
           Awaited<ReturnType<typeof getLatest>>
-        >,
-        'initialData'
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetLatest<
-  TData = Awaited<ReturnType<typeof getLatest>>,
-  TError = unknown,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getLatest>>, TError, TData>
-    > &
-      Pick<
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetLatest<TData = Awaited<ReturnType<typeof getLatest>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getLatest>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getLatest>>,
           TError,
           Awaited<ReturnType<typeof getLatest>>
-        >,
-        'initialData'
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetLatest<
-  TData = Awaited<ReturnType<typeof getLatest>>,
-  TError = unknown,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getLatest>>, TError, TData>
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetLatest<TData = Awaited<ReturnType<typeof getLatest>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getLatest>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary 오늘의 호주머니 추천 결과 조회
  */
 
-export function useGetLatest<
-  TData = Awaited<ReturnType<typeof getLatest>>,
-  TError = unknown,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getLatest>>, TError, TData>
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getGetLatestQueryOptions(options);
+export function useGetLatest<TData = Awaited<ReturnType<typeof getLatest>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getLatest>>, TError, TData>>, }
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const queryOptions = getGetLatestQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
+
+
+
