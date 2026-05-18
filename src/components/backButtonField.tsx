@@ -28,11 +28,10 @@ const BackButtonField = ({ color, label, onClick }: BackButtonFieldProps) => {
   };
 
   return (
-    <div
-      onClick={handleBack}
-      className={`flex cursor-pointer items-center gap-[0.75rem] ${textColorClass}`}
-    >
-      <BackButtonIcon color={color} />
+    <div className={`flex items-center gap-[0.75rem] ${textColorClass}`}>
+      <div onClick={handleBack} className='cursor-pointer'>
+        <BackButtonIcon color={color} />
+      </div>
       <div className='text-body-xl font-extrabold'>{label}</div>
     </div>
   );

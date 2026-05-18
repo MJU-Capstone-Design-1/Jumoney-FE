@@ -1,5 +1,4 @@
-// hooks/useMasterRecommend.ts
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { MASTERS_DATA, CRITERIA_DESCRIPTIONS } from '@/constants/masters';
 import {
   useGetMaster,

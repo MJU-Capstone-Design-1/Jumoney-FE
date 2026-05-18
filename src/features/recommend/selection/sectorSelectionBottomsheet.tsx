@@ -1,9 +1,8 @@
 'use client';
 
-import React from 'react';
 import { Drawer as DrawerPrimitive } from 'vaul';
-import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 import BottomButton from '@/components/bottomButton';
 import { SECTORS } from '@/constants/sectors';
 

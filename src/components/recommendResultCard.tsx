@@ -1,7 +1,6 @@
 'use client';
 
-import React from 'react';
-/* import VerificationButton from './verificationButton'; */
+/*import VerificationButton from './verificationButton';*/
 import type { RecommendedStockResponse } from '@/api/generated/model';
 import { LOGIC_CODE_TO_KOREAN } from '@/constants/masters';
 import { masterSortMetricLabels } from '@/constants/masterLabels';

@@ -1,8 +1,7 @@
 'use client';
 
-import React from 'react';
-import CheckIcon from '@/components/icons/checkIcon';
 import { motion } from 'framer-motion';
+import CheckIcon from '@/components/icons/checkIcon';
 
 export default function FloatingButton({ onClick }: { onClick?: () => void }) {
   return (
