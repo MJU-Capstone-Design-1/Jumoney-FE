@@ -3,28 +3,29 @@
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import React from 'react';
+import Link from 'next/link';
 
 const TERMS = [
   {
-    id: 'concept',
+    id: '1',
     name: '기초 개념',
     activeBg: 'bg-main1',
     activeShadow: 'shadow-select-orange',
   },
   {
-    id: 'diagnosis',
+    id: '2',
     name: '기업 진단',
     activeBg: 'bg-main2',
     activeShadow: 'shadow-select-brown',
   },
   {
-    id: 'chart',
+    id: '3',
     name: '차트 분석',
     activeBg: 'bg-main3',
     activeShadow: 'shadow-select-yellow',
   },
   {
-    id: 'trading',
+    id: '4',
     name: '거래 실무',
     activeBg: 'bg-main4',
     activeShadow: 'shadow-select-gray',
@@ -46,8 +47,9 @@ export const TermsIntroCardSelect = () => {
       className='grid w-full grid-cols-2 gap-4'
     >
       {TERMS.map((term) => (
-        <div
+        <Link
           key={term.id}
+          href={`/terms/${term.id}`}
           className={cn(
             'text-body-xl flex h-[10.25rem] w-full items-end justify-start rounded-[2rem] p-[1rem] text-end font-bold font-extrabold',
             term.activeBg,
@@ -55,7 +57,7 @@ export const TermsIntroCardSelect = () => {
           )}
         >
           {term.name}
-        </div>
+        </Link>
       ))}
     </motion.div>
   );
