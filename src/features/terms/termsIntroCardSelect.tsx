@@ -7,25 +7,25 @@ import Link from 'next/link';
 
 const TERMS = [
   {
-    id: '1',
+    id: 'basic',
     name: '기초 개념',
     activeBg: 'bg-main1',
     activeShadow: 'shadow-select-orange',
   },
   {
-    id: '2',
+    id: 'diagnosis',
     name: '기업 진단',
     activeBg: 'bg-main2',
     activeShadow: 'shadow-select-brown',
   },
   {
-    id: '3',
+    id: 'chart',
     name: '차트 분석',
     activeBg: 'bg-main3',
     activeShadow: 'shadow-select-yellow',
   },
   {
-    id: '4',
+    id: 'trading',
     name: '거래 실무',
     activeBg: 'bg-main4',
     activeShadow: 'shadow-select-gray',
