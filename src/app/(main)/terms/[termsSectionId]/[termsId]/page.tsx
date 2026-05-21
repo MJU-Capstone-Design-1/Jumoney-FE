@@ -1,7 +1,9 @@
+'use client';
+
 import BackButtonField from '@/components/backButtonField';
 import BottomButton from '@/components/bottomButton';
 import { TermsScrapButton } from '@/features/terms/termsScrapButton';
-
+import { motion } from 'framer-motion';
 import React from 'react';
 
 const page = () => {
@@ -19,19 +21,34 @@ const page = () => {
       </div>
 
       <div className='bg-secondary1 shadow-card-shadow flex h-[60rem] w-[60rem] translate-x-[-18.28125rem] flex-col items-center gap-[1rem] rounded-[77.125rem] pt-[2.25rem]'>
-        <h1 className='text-heading-md text-main2 leading-[120%] font-extrabold'>
+        <motion.h1
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1, ease: 'easeOut' }}
+          className='text-heading-md text-main2 leading-[120%] font-extrabold'
+        >
           매수
-        </h1>
+        </motion.h1>
         <div className='flex flex-col gap-[0.5rem] text-center'>
-          <p className='text-label-md leading-[120%] font-extrabold'>
+          <motion.p
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.5, ease: 'easeOut' }}
+            className='text-label-md leading-[120%] font-extrabold'
+          >
             주식을 사는 행위
-          </p>
-          <p className='text-body-lg text-text-main leading-[120%] font-semibold'>
+          </motion.p>
+          <motion.p
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.8, ease: 'easeOut' }}
+            className='text-body-lg text-text-main leading-[120%] font-semibold'
+          >
             매수란 주식을 사는 것을 말해요.
             <br />
             회사의 주식을 판매하는 사람을 매도자라고 하는데, <br />
             매도자에게 주식을 구매하는 행위에요.
-          </p>
+          </motion.p>
         </div>
       </div>
 
