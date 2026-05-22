@@ -11,6 +11,7 @@ const toggleVariants = cva(
     variants: {
       theme: {
         primary: 'bg-primaryMuted',
+        reverse: 'bg-secondary1',
         sub1: 'bg-secondary1',
         sub2: 'bg-secondary1',
         sub3: 'bg-secondary1',
@@ -32,6 +33,7 @@ const pillVariants = cva('absolute h-full rounded-[77.125rem]', {
   variants: {
     theme: {
       primary: 'bg-secondary1',
+      reverse: 'bg-primary',
       sub1: 'bg-main1',
       sub2: 'bg-main2',
       sub3: 'bg-main3',
@@ -79,6 +81,10 @@ const CustomToggle = React.forwardRef<HTMLDivElement, CustomToggleProps>(
       primary: {
         active: 'text-primary',
         inactive: 'text-secondary1',
+      },
+      reverse: {
+        active: 'text-secondary1',
+        inactive: 'text-primaryMuted',
       },
       sub1: {
         active: 'text-secondary1',
