@@ -14,7 +14,7 @@ export const PortfolioSelectInvestmentPhilosophy = ({
 }: PortfolioSelectInvestmentPhilosophyProps) => {
   return (
     <div
-      className={`${master.bgColor} text-secondary1 flex max-w-[21.25rem] flex-col rounded-[2.5rem] p-[1rem]`}
+      className={`${master.bgColor} text-secondary1 shadow-card-shadow flex max-w-[21.25rem] flex-col rounded-[2.5rem] p-[1rem]`}
     >
       <PortfolioSelectCloseButton onClick={onClose} bgColor={master.bgColor} />
 
