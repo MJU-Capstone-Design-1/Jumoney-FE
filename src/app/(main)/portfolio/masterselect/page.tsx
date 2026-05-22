@@ -7,9 +7,11 @@ import { PortfolioMasterDetail } from '@/features/portfolio/masterselect/portfol
 import { PortfolioMasterCarousel } from '@/features/portfolio/masterselect/portfolioSelectMasterCarousel';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PortfolioSelectInvestmentPhilosophy } from '@/features/portfolio/masterselect/portfolioSelectInvestmentPhilosophy';
+import { useRouter } from 'next/navigation';
 import BottomButton from '@/components/bottomButton';
 
 const Page = () => {
+  const router = useRouter();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isPhilosophyOpen, setIsPhilosophyOpen] = useState(false);
   const selectedMaster = MASTERS[selectedIndex];
@@ -76,7 +78,12 @@ const Page = () => {
         </AnimatePresence>
       </div>
 
-      <BottomButton label='선택하기' />
+      <BottomButton
+        label='선택하기'
+        onClick={() =>
+          router.push(`/portfolio/selected?master=${selectedIndex}`)
+        }
+      />
     </div>
   );
 };
