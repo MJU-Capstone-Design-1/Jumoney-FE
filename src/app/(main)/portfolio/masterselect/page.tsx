@@ -7,6 +7,7 @@ import { PortfolioMasterDetail } from '@/features/portfolio/portfolioSelectMaste
 import { PortfolioMasterCarousel } from '@/features/portfolio/portfolioSelectMasterCarousel';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PortfolioSelectInvestmentPhilosophy } from '@/features/portfolio/portfolioSelectInvestmentPhilosophy';
+import BottomButton from '@/components/bottomButton';
 
 const Page = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -74,6 +75,8 @@ const Page = () => {
           )}
         </AnimatePresence>
       </div>
+
+      <BottomButton label='선택하기' />
     </div>
   );
 };
