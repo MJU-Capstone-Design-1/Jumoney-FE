@@ -18,6 +18,21 @@ export const PortfolioMasterCarousel = ({
   const isScrolling = useRef(false);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
 
+  React.useEffect(() => {
+    if (!scrollContainerRef.current) return;
+    const container = scrollContainerRef.current;
+    const items = container.children[0].children;
+    const item = items[selectedIndex] as HTMLElement;
+
+    if (item) {
+      const offset =
+        item.offsetLeft - container.clientWidth / 2 + item.clientWidth / 2;
+      container.scrollTo({ left: offset, behavior: 'instant' });
+    }
+    // 오류 제거 주석
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleScroll = () => {
     if (!scrollContainerRef.current) return;
 
