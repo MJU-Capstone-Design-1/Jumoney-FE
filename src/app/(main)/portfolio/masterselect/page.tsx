@@ -5,10 +5,12 @@ import { useState } from 'react';
 import { MASTERS } from '@/features/portfolio/portfolioSelectInformations';
 import { PortfolioMasterDetail } from '@/features/portfolio/portfolioSelectMasterDetail';
 import { PortfolioMasterCarousel } from '@/features/portfolio/portfolioSelectMasterCarousel';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { PortfolioSelectInvestmentPhilosophy } from '@/features/portfolio/portfolioSelectInvestmentPhilosophy';
 
 const Page = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [isPhilosophyOpen, setIsPhilosophyOpen] = useState(false);
   const selectedMaster = MASTERS[selectedIndex];
 
   return (
@@ -17,18 +19,61 @@ const Page = () => {
         <BackButtonField color='secondary2' label='거장 포트폴리오' />
       </div>
 
-      <PortfolioMasterDetail master={selectedMaster} />
+      <div className='relative w-full'>
+        <AnimatePresence mode='popLayout'>
+          {!isPhilosophyOpen ? (
+            <motion.div
+              key='master-view'
+              exit={{ opacity: 0, transition: { duration: 0.3 } }}
+              className='w-full'
+            >
+              <PortfolioMasterDetail
+                master={selectedMaster}
+                onOpenPhilosophy={() => setIsPhilosophyOpen(true)}
+              />
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut', delay: 0.5 }}
-      >
-        <PortfolioMasterCarousel
-          selectedIndex={selectedIndex}
-          setSelectedIndex={setSelectedIndex}
-        />
-      </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, transition: { duration: 0.3 } }}
+                transition={{ duration: 0.6, ease: 'easeOut', delay: 0.5 }}
+              >
+                <PortfolioMasterCarousel
+                  selectedIndex={selectedIndex}
+                  setSelectedIndex={setSelectedIndex}
+                />
+              </motion.div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key='philosophy-view'
+              className='flex w-full flex-col items-center gap-[1.5rem]'
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, transition: { duration: 0.3 } }}
+              transition={{ duration: 0.5 }}
+            >
+              <motion.h1
+                layoutId='masterName'
+                className='text-label-xl z-10 font-extrabold'
+              >
+                {selectedMaster.name}
+              </motion.h1>
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                className='flex w-full justify-center'
+              >
+                <PortfolioSelectInvestmentPhilosophy
+                  master={selectedMaster}
+                  onClose={() => setIsPhilosophyOpen(false)}
+                />
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 };
