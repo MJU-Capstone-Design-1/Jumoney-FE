@@ -2,11 +2,11 @@
 
 import BackButtonField from '@/components/backButtonField';
 import { useState } from 'react';
-import { MASTERS } from '@/features/portfolio/portfolioSelectInformations';
-import { PortfolioMasterDetail } from '@/features/portfolio/portfolioSelectMasterDetail';
-import { PortfolioMasterCarousel } from '@/features/portfolio/portfolioSelectMasterCarousel';
+import { MASTERS } from '@/features/portfolio/masterselect/portfolioSelectInformations';
+import { PortfolioMasterDetail } from '@/features/portfolio/masterselect/portfolioSelectMasterDetail';
+import { PortfolioMasterCarousel } from '@/features/portfolio/masterselect/portfolioSelectMasterCarousel';
 import { motion, AnimatePresence } from 'framer-motion';
-import { PortfolioSelectInvestmentPhilosophy } from '@/features/portfolio/portfolioSelectInvestmentPhilosophy';
+import { PortfolioSelectInvestmentPhilosophy } from '@/features/portfolio/masterselect/portfolioSelectInvestmentPhilosophy';
 import BottomButton from '@/components/bottomButton';
 
 const Page = () => {
