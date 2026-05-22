@@ -19,7 +19,7 @@ export const PortfolioSelectedMasterHeader = ({
   tags,
 }: MasterHeaderProps) => {
   return (
-    <div className='relative p-[1rem]'>
+    <div className='relative pt-[1rem]'>
       <div className='flex justify-between'>
         <BackButtonField color='secondary1' label='거장 포트폴리오' />
       </div>
