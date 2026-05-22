@@ -5,7 +5,7 @@ import { CustomToggle } from '@/components/customToggle';
 import { StockListSelectIcon } from '@/components/icons/stockListSelectIcon';
 import { WheelSection } from '@/features/portfolio/detail/wheelSection';
 import Image from 'next/image';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
 const Page = () => {
@@ -13,6 +13,17 @@ const Page = () => {
   const [isPrimaryMode, setIsPrimaryMode] = useState(false);
   const [wheelRotation, setWheelRotation] = useState(0);
   const [dragOffset, setDragOffset] = useState(0);
+
+  useEffect(() => {
+    Promise.resolve().then(() => {
+      if (typeof window !== 'undefined') {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('mode') === 'reverse') {
+          setIsPrimaryMode(true);
+        }
+      }
+    });
+  }, []);
 
   return (
     <div

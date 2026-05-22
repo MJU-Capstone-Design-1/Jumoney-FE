@@ -4,8 +4,12 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { PortfolioDefaultInformationIcon } from '@/components/icons/portfolioDefaultInformationIcon';
 import { PortfolioDetailInformationIcon } from '@/components/icons/PortfolioDetailInformationIcon';
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 export const PortfolioSelectedMasterButtons = () => {
+  const router = useRouter();
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0 }}
@@ -18,12 +22,18 @@ export const PortfolioSelectedMasterButtons = () => {
       }}
       className='relative flex justify-between px-[1.75rem] pt-[0.5rem]'
     >
-      <div className='bg-primary flex h-[4rem] w-[4rem] items-center justify-center rounded-full'>
+      <Button
+        className='bg-primary hover:bg-primary flex h-[4rem] w-[4rem] items-center justify-center rounded-full p-0 shadow-none [&_svg]:!h-[24px] [&_svg]:!w-[24px]'
+        onClick={() => router.push('/portfolio/selected/detail?mode=sub1')}
+      >
         <PortfolioDefaultInformationIcon />
-      </div>
-      <div className='bg-primary flex h-[4rem] w-[4rem] items-center justify-center rounded-full'>
+      </Button>
+      <Button
+        className='bg-primary hover:bg-primary flex h-[4rem] w-[4rem] items-center justify-center rounded-full p-0 shadow-none [&_svg]:!h-[24px] [&_svg]:!w-[24px]'
+        onClick={() => router.push('/portfolio/selected/detail?mode=reverse')}
+      >
         <PortfolioDetailInformationIcon />
-      </div>
+      </Button>
     </motion.div>
   );
 };
