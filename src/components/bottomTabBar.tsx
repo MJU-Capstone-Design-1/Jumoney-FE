@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useMemo, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 import { BottomTabBarArea } from './icons/bottomTabBarArea';
 import { BottomTabBarInvestmentIcon } from './icons/bottomTabBarInvestmentIcon';
 import { BottomTabBarPortfolioIcon } from './icons/bottomTabBarPortfolioIcon';
@@ -11,7 +11,16 @@ import { BottomTabBarHomeIcon } from './icons/BottomTabBarHomeIcon';
 
 export const BottomTabBar = () => {
   const router = useRouter();
-  const [selectedTab, setSelectedTab] = useState<string | null>(null);
+  const pathname = usePathname();
+
+  const selectedTab = useMemo(() => {
+    if (pathname === '/home') return 'home';
+    if (pathname === '/terms') return 'terms';
+    if (pathname.startsWith('/portfolio')) return 'portfolio';
+    if (pathname === '/recommend') return 'recommend';
+    if (pathname === '/mockinvestment') return 'mockinvestment';
+    return null;
+  }, [pathname]);
 
   return (
     <div className='pointer-events-none fixed bottom-0 left-1/2 z-50 h-[9rem] w-full max-w-[23.4375rem] -translate-x-1/2'>
@@ -21,8 +30,7 @@ export const BottomTabBar = () => {
           <button
             type='button'
             onClick={() => {
-              setSelectedTab('home');
-              // router.push('/'); // TODO: 경로 추가
+              router.push('/home');
             }}
             className='pointer-events-auto relative flex h-6 w-6 items-center justify-center focus:outline-none'
           >
@@ -41,7 +49,6 @@ export const BottomTabBar = () => {
             <button
               type='button'
               onClick={() => {
-                setSelectedTab('terms');
                 router.push('/terms');
               }}
               className='pointer-events-auto relative flex h-6 w-6 items-center justify-center focus:outline-none'
@@ -57,7 +64,6 @@ export const BottomTabBar = () => {
             <button
               type='button'
               onClick={() => {
-                setSelectedTab('portfolio');
                 router.push('/portfolio/selected');
               }}
               className='pointer-events-auto relative flex h-6 w-6 items-center justify-center focus:outline-none'
@@ -77,7 +83,6 @@ export const BottomTabBar = () => {
             <button
               type='button'
               onClick={() => {
-                setSelectedTab('recommend');
                 router.push('/recommend');
               }}
               className='pointer-events-auto relative flex h-6 w-6 items-center justify-center focus:outline-none'
@@ -95,17 +100,16 @@ export const BottomTabBar = () => {
             <button
               type='button'
               onClick={() => {
-                setSelectedTab('investment');
-                // router.push('/investment'); // TODO: 경로 추가
+                router.push('/mockinvestment');
               }}
               className='pointer-events-auto relative flex h-6 w-6 items-center justify-center focus:outline-none'
             >
-              {selectedTab === 'investment' && (
+              {selectedTab === 'mockinvestment' && (
                 <div className='bg-primary pointer-events-none absolute z-[-1] h-[3rem] w-[3rem] rounded-full' />
               )}
               <BottomTabBarInvestmentIcon
                 color={
-                  selectedTab === 'investment' ? 'secondary1' : 'secondary2'
+                  selectedTab === 'mockinvestment' ? 'secondary1' : 'secondary2'
                 }
               />
             </button>
