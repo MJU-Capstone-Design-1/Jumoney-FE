@@ -165,7 +165,7 @@ const MockInvestmentIntroPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: 'easeOut' }}
-              className='mb-[2rem] flex w-full items-center justify-center gap-[1rem]'
+              className='mb-[2.75rem] flex w-full items-center justify-center gap-[1rem]'
             >
               <button
                 type='button'
@@ -250,12 +250,13 @@ const MockInvestmentIntroPage = () => {
         )}
       </div>
 
-      <div className='mt-auto flex flex-col items-center pb-[9.5rem]'>
+      <div className='mt-auto flex flex-col items-center'>
         <motion.div
           key={`indicator-${step}`}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: 'easeOut', delay: 0.2 }}
+          className='mb-[9.625rem]'
         >
           <StepIndicator step={step} />
         </motion.div>
