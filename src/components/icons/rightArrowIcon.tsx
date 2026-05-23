@@ -1,12 +1,31 @@
-export const RightArrowIcon = () => {
+import { cn } from '@/lib/utils';
+
+interface RightArrowIconProps {
+  className?: string;
+  color?: 'secondary1' | 'secondary2';
+  size?: number;
+}
+
+export const RightArrowIcon = ({
+  className,
+  color = 'secondary2',
+  size,
+}: RightArrowIconProps) => {
+  const colorMap = {
+    secondary1: 'text-secondary1',
+    secondary2: 'text-secondary2',
+  };
+
+  const textColorClass = colorMap[color];
+
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
-      width='12'
-      height='13'
+      width={size ?? 12}
+      height={size ? (size * 13) / 12 : 13}
       viewBox='0 0 12 13'
       fill='none'
-      className='size-3'
+      className={cn(textColorClass, !size && 'size-3', className)}
     >
       <path
         d='M1 6.00781L10.5 6.00781'
