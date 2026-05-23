@@ -16,7 +16,7 @@ export const AllToggle = ({ isSelected, onSelectedChange }: AllToggleProps) => {
           : 'text-secondary2 bg-transparent'
       }`}
     >
-      <span className='text-body-md mt-[0.125rem] font-semibold'>전체</span>
+      <span className='text-body-md font-semibold'>전체</span>
     </Toggle>
   );
 };
