@@ -1,8 +1,14 @@
 'use client';
 
 import React from 'react';
+import { motion } from 'framer-motion';
+import { KakaoLoginButton } from '@/components/kakaoLoginButton';
+import { StartButton } from '@/components/startButton';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
+  const router = useRouter();
+
   const handleKakaoLogin = () => {
     const KAKAO_CLIENT_ID = 'e2f4eba4a68c8ff2f5b4e804b7f97e11';
     const origin =
@@ -10,8 +16,6 @@ export default function LoginPage() {
         ? window.location.origin
         : 'http://localhost:3000';
 
-    // 카카오 개발자 콘솔에 등록되어 있는 프론트엔드 리다이렉트 주소로 설정합니다.
-    // 5173과 3000 포트 모두 동적으로 대응하기 위해 window.location.origin을 기반으로 처리합니다.
     const redirectUri = `${origin}/oauth/kakao/callback`;
 
     const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${encodeURIComponent(
@@ -22,25 +26,93 @@ export default function LoginPage() {
   };
 
   return (
-    <div className='flex min-h-screen flex-col items-center justify-center px-6 select-none'>
-      <div className='z-10 flex w-full max-w-[390px] flex-col items-center'>
-        {/* 카카오 로그인 버튼 */}
-        <button
-          onClick={handleKakaoLogin}
-          className='relative flex w-full cursor-pointer items-center justify-center gap-3 rounded-2xl bg-[#FEE500] px-6 py-4 text-[15px] font-bold text-[#191919] shadow-lg shadow-yellow-500/5 transition duration-300 hover:scale-[1.02] hover:bg-[#FDE200] active:scale-[0.98]'
-        >
-          {/* 카카오 말풍선 SVG 아이콘 */}
-          <svg
-            width='18'
-            height='18'
-            viewBox='0 0 24 24'
-            fill='currentColor'
-            className='text-[#191919]'
+    <div className='flex flex-col gap-[2.75rem] px-[1.5rem]'>
+      <div className='flex flex-col items-center gap-[4.125rem] pt-[5.5rem]'>
+        <div className='bg-primary flex h-[12.5rem] w-[12.5rem] items-center justify-center'>
+          로고 OR 이미지
+        </div>
+
+        <div className='flex flex-col gap-[2.5rem]'>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
+            className='text-label-lg text-center leading-[120%] font-extrabold'
           >
-            <path d='M12 3C6.477 3 2 6.48 2 10.75c0 2.76 1.87 5.18 4.67 6.47-.18.66-.66 2.4-0.75 2.76-.12.44.15.43.31.33.13-.08 2.05-1.4 2.87-1.96C10.02 18.47 11 18.5 12 18.5c5.523 0 10-3.48 10-7.75S17.523 3 12 3z' />
-          </svg>
-          카카오로 3초 만에 시작하기
-        </button>
+            기초부터 실전까지,
+            <br />
+            당신의 든든한 투자 가이드
+          </motion.p>
+
+          <div className='text-body-xl text-text-main flex flex-col gap-[2rem] leading-[120%] font-semibold'>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, ease: 'easeOut', delay: 0.5 }}
+              className='flex flex-col gap-[0.5rem]'
+            >
+              <div className='flex justify-center gap-[0.25rem]'>
+                <div className='flex'>
+                  <p className='text-secondary2 text-label-sm font-bold'>
+                    기초 용어 설명
+                  </p>
+                  부터
+                </div>
+                <div className='flex'>
+                  <p className='text-secondary2 text-label-sm font-bold'>
+                    실시간 모의투자
+                  </p>
+                  까지
+                </div>
+              </div>
+
+              <div className='flex justify-center'>
+                당신만의 투자 원칙을 완성하세요
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, ease: 'easeOut', delay: 1.0 }}
+              className='flex flex-col gap-[0.5rem]'
+            >
+              <div className='flex justify-center gap-[0.25rem]'>
+                <p>검증된 </p>
+                <div className='flex'>
+                  <p className='text-secondary2 text-label-sm font-bold'>
+                    거장의 포트폴리오
+                  </p>
+                  를 엿보고,
+                </div>
+              </div>
+
+              <div className='flex justify-center'>
+                <div className='flex gap-[0.25rem]'>
+                  최적의
+                  <div className='flex'>
+                    <p className='text-secondary2 text-label-sm font-bold'>
+                      맞춤 종목을 추천
+                    </p>
+                    해 드려요
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </div>
+
+      <div className='flex flex-col gap-[1rem]'>
+        <StartButton onClick={() => router.push('/intro')} />
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, ease: 'easeOut', delay: 1.8 }}
+        >
+          <KakaoLoginButton onClick={handleKakaoLogin} />
+        </motion.div>
       </div>
     </div>
   );
