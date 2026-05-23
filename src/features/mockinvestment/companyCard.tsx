@@ -1,11 +1,22 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
+
 interface CompanyCardProps {
   showBadge?: boolean;
 }
 
 export const CompanyCard = ({ showBadge = true }: CompanyCardProps) => {
+  const router = useRouter();
+
+  const handleClick = () => {
+    router.push('/mockinvestment/detail');
+  };
+
   return (
     <div
       role='button'
+      onClick={handleClick}
       className='bg-secondary1 text-secondary2 shadow-card-shadow flex w-full cursor-pointer flex-col gap-[1rem] rounded-[1.5rem] p-[1rem] text-left'
     >
       <div className='flex w-full min-w-0 items-center gap-[1rem]'>
