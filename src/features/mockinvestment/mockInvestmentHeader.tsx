@@ -54,10 +54,10 @@ const MockInvestmentHeader = ({
       </div>
       {isExpanded && (
         <div className='flex w-full flex-col items-center justify-center gap-[0.75rem] pb-[0.5rem]'>
-          <CompanyCard />
-          <CompanyCard />
-          <CompanyCard />
-          <CompanyCard />
+          <CompanyCard showBadge={false} />
+          <CompanyCard showBadge={false} />
+          <CompanyCard showBadge={false} />
+          <CompanyCard showBadge={false} />
         </div>
       )}
     </div>
