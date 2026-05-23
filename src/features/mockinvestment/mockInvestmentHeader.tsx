@@ -26,7 +26,7 @@ const MockInvestmentHeader = ({
   };
 
   return (
-    <div className='bg-secondary2 gap-full text-secondary1 flex h-auto flex-col gap-[0.5rem] rounded-[2.5rem] p-[1rem]'>
+    <div className='bg-secondary2 text-secondary1 flex flex-col gap-[0.5rem] rounded-[2.5rem] p-[1rem]'>
       <BackButtonField color='secondary1' label='모의 투자' />
       <div className='flex flex-col px-[1rem] pt-[1.25rem]'>
         <div className='text-label-md font-extrabold'>내 투자</div>
