@@ -1,0 +1,52 @@
+import React from 'react';
+import { cn } from '@/lib/utils';
+
+interface BottomTabBarIconProps extends React.SVGProps<SVGSVGElement> {
+  color?: 'secondary1' | 'secondary2';
+}
+
+export const BottomTabBarHomeIcon = ({
+  color = 'secondary2',
+  className,
+  ...props
+}: BottomTabBarIconProps) => {
+  const colorMap = {
+    secondary1: 'text-secondary1',
+    secondary2: 'text-secondary2',
+  };
+
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      width='24'
+      height='24'
+      viewBox='0 0 24 24'
+      fill='none'
+      className={cn(colorMap[color], className)}
+      {...props}
+    >
+      <path
+        d='M3 10L9.17158 3.82842C10.7337 2.26633 13.2663 2.26633 14.8284 3.82843L21 10'
+        stroke='currentColor'
+        strokeWidth='2'
+        strokeLinejoin='round'
+      />
+      <path
+        d='M6 7V14C6 17.3137 8.68629 20 12 20C15.3137 20 18 17.3137 18 14V7'
+        stroke='currentColor'
+        strokeWidth='2'
+        strokeLinejoin='round'
+      />
+      <rect
+        x='10'
+        y='12'
+        width='4'
+        height='4'
+        rx='2'
+        stroke='currentColor'
+        strokeWidth='2'
+        strokeLinejoin='round'
+      />
+    </svg>
+  );
+};
