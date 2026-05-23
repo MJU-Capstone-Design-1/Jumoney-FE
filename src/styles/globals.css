@@ -254,16 +254,16 @@
   --inactive: #e8ddd9;
 
   /* Industry Fields */
-  --field-it: #003399;
-  --field-mobility: #707070;
-  --field-finance: #d4af37;
-  --field-bio: #2ecc71;
-  --field-steal: #b23133;
-  --field-energy: #e67e22;
-  --field-communication: #9b59b6;
-  --field-staples: #556b2f;
-  --field-mechanic: #3498db;
-  --field-utility: #cd7f32;
+  --field-it: #7fa8ff;
+  --field-mobility: #5fc6b4;
+  --field-finance: #8ccf7e;
+  --field-bio: #ff9db2;
+  --field-steal: #c96b5c;
+  --field-energy: #fe814b;
+  --field-communication: #a18fff;
+  --field-staples: #ffce5c;
+  --field-mechanic: #8da9c4;
+  --field-utility: #c58b61;
 }
 
 /* 3. 기본 베이스 스타일 */
