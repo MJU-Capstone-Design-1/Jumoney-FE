@@ -25,9 +25,9 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
-  ApiResponseMasterRecommendationResponse,
+  ApiResponseMasterChoiceResponse,
   ApiResponseMasterResponse,
-  MasterRecommendationRequest
+  MasterChoiceRequest
 } from '../../model';
 
 import { customInstance } from '../../../custom-instance';
@@ -41,15 +41,15 @@ import { customInstance } from '../../../custom-instance';
  */
 export const recommendMaster = (
     masterId: number,
-    masterRecommendationRequest: MasterRecommendationRequest,
+    masterChoiceRequest: MasterChoiceRequest,
  signal?: AbortSignal
 ) => {
 
 
-      return customInstance<ApiResponseMasterRecommendationResponse>(
+      return customInstance<ApiResponseMasterChoiceResponse>(
       {url: `/api/master-choice/masters/${masterId}/recommendations`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
-      data: masterRecommendationRequest, signal
+      data: masterChoiceRequest, signal
     },
       );
     }
@@ -57,8 +57,8 @@ export const recommendMaster = (
 
 
 export const getRecommendMasterMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof recommendMaster>>, TError,{masterId: number;data: MasterRecommendationRequest}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof recommendMaster>>, TError,{masterId: number;data: MasterRecommendationRequest}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof recommendMaster>>, TError,{masterId: number;data: MasterChoiceRequest}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof recommendMaster>>, TError,{masterId: number;data: MasterChoiceRequest}, TContext> => {
 
 const mutationKey = ['recommendMaster'];
 const {mutation: mutationOptions} = options ?
@@ -70,7 +70,7 @@ const {mutation: mutationOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof recommendMaster>>, {masterId: number;data: MasterRecommendationRequest}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof recommendMaster>>, {masterId: number;data: MasterChoiceRequest}> = (props) => {
           const {masterId,data} = props ?? {};
 
           return  recommendMaster(masterId,data,)
@@ -84,18 +84,18 @@ const {mutation: mutationOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type RecommendMasterMutationResult = NonNullable<Awaited<ReturnType<typeof recommendMaster>>>
-    export type RecommendMasterMutationBody = MasterRecommendationRequest
+    export type RecommendMasterMutationBody = MasterChoiceRequest
     export type RecommendMasterMutationError = unknown
 
     /**
  * @summary 거장의 선택 추천
  */
 export const useRecommendMaster = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof recommendMaster>>, TError,{masterId: number;data: MasterRecommendationRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof recommendMaster>>, TError,{masterId: number;data: MasterChoiceRequest}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof recommendMaster>>,
         TError,
-        {masterId: number;data: MasterRecommendationRequest},
+        {masterId: number;data: MasterChoiceRequest},
         TContext
       > => {
       return useMutation(getRecommendMasterMutationOptions(options), queryClient);
