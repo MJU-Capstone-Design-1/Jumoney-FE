@@ -1,3 +1,4 @@
+import { BottomTabBar } from '@/components/bottomTabBar';
 import { TermsIntroCardSelect } from '@/features/terms/termsIntroCardSelect';
 import { TermsIntroHeader } from '@/features/terms/termsIntroHeader';
 import { TermsIntroScrapSection } from '@/features/terms/termsIntroScrapSection';
@@ -13,6 +14,8 @@ const Page = () => {
 
         <TermsIntroScrapSection />
       </div>
+
+      <BottomTabBar />
     </div>
   );
 };
