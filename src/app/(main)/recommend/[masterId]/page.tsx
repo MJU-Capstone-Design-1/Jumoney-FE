@@ -21,11 +21,12 @@ import {
 } from '@/api/generated/endpoints/거장의-선택/거장의-선택';
 import type {
   MasterOptionResponse,
-  MasterRecommendationRequest,
+  MasterChoiceRequest,
+  MasterChoiceRequestSectorTypesItem,
 } from '@/api/generated/model';
 
 type MasterRecommendationSectorTypes = NonNullable<
-  MasterRecommendationRequest['sectorTypes']
+  MasterChoiceRequest['sectorTypes']
 >;
 
 const containerVariants: Variants = {
@@ -116,9 +117,11 @@ export default function MasterRecommendPage({
       sectorType as MasterRecommendationSectorTypes[number];
 
     if (currentKey === 'dalio') {
-      setSelectedSectorTypes((prev) =>
+      setSelectedSectorTypes((prev: MasterRecommendationSectorTypes) =>
         prev.includes(typedSectorType)
-          ? prev.filter((t) => t !== typedSectorType)
+          ? prev.filter(
+              (t: MasterChoiceRequestSectorTypesItem) => t !== typedSectorType,
+            )
           : [...prev, typedSectorType],
       );
     } else {
@@ -151,7 +154,7 @@ export default function MasterRecommendPage({
   const handleResultSubmit = () => {
     setIsAnimationTrigger(false);
 
-    const requestData: MasterRecommendationRequest = {
+    const requestData: MasterChoiceRequest = {
       selectedOptionIds,
     };
 
@@ -185,7 +188,9 @@ export default function MasterRecommendPage({
     (!submittedSectorTypes && selectedSectorTypes.length === 0) ||
     (submittedSectorTypes !== undefined &&
       selectedSectorTypes.length === submittedSectorTypes.length &&
-      selectedSectorTypes.every((type) => submittedSectorTypes.includes(type)));
+      selectedSectorTypes.every((type: MasterChoiceRequestSectorTypesItem) =>
+        submittedSectorTypes.includes(type),
+      ));
 
   const isButtonDisabled =
     recommendMutation.isPending ||
