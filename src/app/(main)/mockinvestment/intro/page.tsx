@@ -5,7 +5,7 @@ import BottomButton from '@/components/bottomButton';
 import { StepIndicator } from '@/features/mockinvestment/intro/stepIndicator';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { FloatingLogoCircle } from '@/features/mockinvestment/intro/floatingLogoCircle';
 import LeftChevronIcon from '@/components/icons/leftChevronIcon';
 import RightChevronIcon from '@/components/icons/rightChevronIcon';
@@ -28,6 +28,7 @@ const MockInvestmentIntroPage = () => {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [direction, setDirection] = useState(0);
   const userName = '사용자';
 
   const bgColors: Record<number, string> = {
@@ -38,10 +39,12 @@ const MockInvestmentIntroPage = () => {
   };
 
   const handlePrevField = () => {
+    setDirection(-1);
     setCurrentIndex((prev) => (prev === 0 ? FIELDS.length - 1 : prev - 1));
   };
 
   const handleNextField = () => {
+    setDirection(1);
     setCurrentIndex((prev) => (prev === FIELDS.length - 1 ? 0 : prev + 1));
   };
 
@@ -65,6 +68,12 @@ const MockInvestmentIntroPage = () => {
     } else {
       router.back();
     }
+  };
+
+  const slideVariants = {
+    enter: (dir: number) => ({ x: dir > 0 ? 50 : -50, opacity: 0 }),
+    center: { x: 0, opacity: 1 },
+    exit: (dir: number) => ({ x: dir > 0 ? -50 : 50, opacity: 0 }),
   };
 
   return (
@@ -172,33 +181,60 @@ const MockInvestmentIntroPage = () => {
                 onClick={handlePrevField}
                 aria-label='이전 분야'
               >
-                <LeftChevronIcon />
+                <motion.div
+                  whileTap={{ scale: 0.8 }}
+                  transition={{ duration: 0.1 }}
+                >
+                  <LeftChevronIcon />
+                </motion.div>
               </button>
-              <div className='flex h-[9.375rem] w-[9.375rem] items-center justify-center overflow-hidden'>
-                <Image
-                  src={`/images/${FIELDS[currentIndex].id}.svg`}
-                  alt={FIELDS[currentIndex].name}
-                  width={150}
-                  height={150}
-                  className='object-cover'
-                />
-              </div>
+              <AnimatePresence mode='wait' custom={direction}>
+                <motion.div
+                  key={FIELDS[currentIndex].id + direction}
+                  custom={direction}
+                  variants={slideVariants}
+                  initial='enter'
+                  animate='center'
+                  exit='exit'
+                  transition={{ duration: 0.5, ease: 'easeInOut' }}
+                  className='flex h-[9.375rem] w-[9.375rem] items-center justify-center overflow-hidden'
+                >
+                  <Image
+                    src={`/images/${FIELDS[currentIndex].id}.svg`}
+                    alt={FIELDS[currentIndex].name}
+                    width={150}
+                    height={150}
+                    className='object-cover'
+                  />
+                </motion.div>
+              </AnimatePresence>
               <button
                 type='button'
                 onClick={handleNextField}
                 aria-label='다음 분야'
               >
-                <RightChevronIcon />
+                <motion.div
+                  whileTap={{ scale: 0.8 }}
+                  transition={{ duration: 0.1 }}
+                >
+                  <RightChevronIcon />
+                </motion.div>
               </button>
             </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className='text-label-xl text-secondary2 font-extrabold'
-            >
-              {FIELDS[currentIndex].name}
-            </motion.div>
+            <AnimatePresence mode='wait' custom={direction}>
+              <motion.div
+                key={FIELDS[currentIndex].id + direction}
+                custom={direction}
+                variants={slideVariants}
+                initial='enter'
+                animate='center'
+                exit='exit'
+                transition={{ duration: 0.5, ease: 'easeInOut' }}
+                className='text-label-xl text-secondary2 font-extrabold'
+              >
+                {FIELDS[currentIndex].name}
+              </motion.div>
+            </AnimatePresence>
           </>
         )}
 
