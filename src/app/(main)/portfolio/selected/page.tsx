@@ -9,6 +9,7 @@ import { PortfolioSelectedMasterHeader } from '@/features/portfolio/selected/por
 import { PortfolioSelectedMasterPhilosophy } from '@/features/portfolio/selected/portfolioSelectedMasterPhilosophy';
 import { PortfolioSelectedMasterPrinciples } from '@/features/portfolio/selected/portfolioSelectedMasterPrinciples';
 import { PortfolioSelectedMasterButtons } from '@/features/portfolio/selected/portfolioSelectedMasterButtons';
+import { BottomTabBar } from '@/components/bottomTabBar';
 
 const PageContent = () => {
   const searchParams = useSearchParams();
@@ -49,6 +50,8 @@ const PageContent = () => {
       <PortfolioSelectedMasterPrinciples
         principles={master.investment_principles}
       />
+
+      <BottomTabBar />
     </div>
   );
 };
