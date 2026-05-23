@@ -41,9 +41,9 @@ const DetailPage = () => {
 
   const handleAllClick = () => {
     setIsAllSelected((prev) => {
-      const next = !prev;
-      if (next) setSelectedPeriod(undefined);
-      return next;
+      if (prev) return prev;
+      setSelectedPeriod(undefined);
+      return true;
     });
   };
 
