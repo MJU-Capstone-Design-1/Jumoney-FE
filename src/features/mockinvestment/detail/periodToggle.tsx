@@ -10,7 +10,7 @@ const PERIODS = [
   { value: '5y', label: '5년' },
 ] as const;
 
-type PeriodValue = (typeof PERIODS)[number]['value'];
+export type PeriodValue = (typeof PERIODS)[number]['value'];
 
 interface PeriodToggleProps {
   className?: string;
@@ -20,16 +20,9 @@ interface PeriodToggleProps {
 
 export function PeriodToggle({
   className,
-  value = '1d',
+  value,
   onValueChange,
 }: PeriodToggleProps) {
-  const [selected, setSelected] = React.useState<PeriodValue>(value);
-
-  const handleSelect = (val: PeriodValue) => {
-    setSelected(val);
-    onValueChange?.(val);
-  };
-
   return (
     <div
       className={cn(
@@ -38,13 +31,13 @@ export function PeriodToggle({
       )}
     >
       {PERIODS.map((period) => {
-        const isSelected = selected === period.value;
+        const isSelected = value !== undefined && value === period.value;
 
         return (
           <button
             key={period.value}
             type='button'
-            onClick={() => handleSelect(period.value)}
+            onClick={() => onValueChange?.(period.value)}
             className={cn(
               'text-body-md relative flex h-full w-[4.2875rem] shrink-0 cursor-pointer items-center justify-center font-semibold transition-colors duration-300',
               isSelected ? 'text-secondary1' : 'text-text-main',
