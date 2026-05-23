@@ -95,17 +95,17 @@ export const BottomTabBar = () => {
             <button
               type='button'
               onClick={() => {
-                setSelectedTab('investment');
-                // router.push('/investment'); // TODO: 경로 추가
+                setSelectedTab('mockinvestment');
+                router.push('/mockinvestment');
               }}
               className='pointer-events-auto relative flex h-6 w-6 items-center justify-center focus:outline-none'
             >
-              {selectedTab === 'investment' && (
+              {selectedTab === 'mockinvestment' && (
                 <div className='bg-primary pointer-events-none absolute z-[-1] h-[3rem] w-[3rem] rounded-full' />
               )}
               <BottomTabBarInvestmentIcon
                 color={
-                  selectedTab === 'investment' ? 'secondary1' : 'secondary2'
+                  selectedTab === 'mockinvestment' ? 'secondary1' : 'secondary2'
                 }
               />
             </button>
