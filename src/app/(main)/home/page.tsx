@@ -27,10 +27,12 @@ export const HomePage = () => {
       if (!container) return;
       const { scrollLeft, scrollWidth, clientWidth } = container;
       const children = Array.from(container.children) as HTMLElement[];
+
       if (Math.ceil(scrollLeft + clientWidth) >= scrollWidth - 5) {
         setActiveIndex(children.length - 1);
         return;
       }
+
       let closestIndex = 0;
       let minDistance = Infinity;
       children.forEach((child, i) => {
@@ -46,6 +48,7 @@ export const HomePage = () => {
       });
       setActiveIndex(closestIndex);
     };
+
     const element = scrollRef.current;
     element?.addEventListener('scroll', handleScroll);
     return () => element?.removeEventListener('scroll', handleScroll);
@@ -146,13 +149,21 @@ export const HomePage = () => {
           <div className='flex w-full flex-col gap-[1rem]'>
             <div
               ref={scrollRef}
-              className='scrollbar-hide flex gap-[0.625rem] overflow-x-auto whitespace-nowrap'
+              className='scrollbar-hide flex cursor-grab gap-[0.625rem] overflow-x-auto whitespace-nowrap active:cursor-grabbing'
               style={{ scrollSnapType: 'x mandatory' }}
             >
-              <MasterPortfolio />
-              <MasterPortfolio />
-              <MasterPortfolio />
-              <MasterPortfolio />
+              <div className='snap-center'>
+                <MasterPortfolio />
+              </div>
+              <div className='snap-center'>
+                <MasterPortfolio />
+              </div>
+              <div className='snap-center'>
+                <MasterPortfolio />
+              </div>
+              <div className='snap-center'>
+                <MasterPortfolio />
+              </div>
             </div>
             <div className='mb-[8.3125rem] flex items-center justify-center'>
               <PortfolioPagination activeIndex={activeIndex} />
@@ -164,7 +175,7 @@ export const HomePage = () => {
       <ProfileModal
         isOpen={isProfileModalOpen}
         onClose={() => setIsProfileModalOpen(false)}
-        onRecommendClick={() => router.push('portfolio/masterselect')}
+        onRecommendClick={() => router.push('/portfolio/masterselect')}
       />
     </div>
   );
