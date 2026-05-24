@@ -1,32 +1,47 @@
+'use client';
+
 import { CloseIcon } from '@/components/icons/closeIcon';
 import { FeedbackIcon } from '@/components/icons/feedbackIcon';
 import { LogoutIcon } from '@/components/icons/logoutIcon';
 import { ProfileCircleIcon } from '@/components/icons/profileCircleIcon';
 import { SmallPencilIcon } from '@/components/icons/smallPencilcon';
 import { WithdrawIcon } from '@/components/icons/withdrawIcon';
+import { useProfileStore } from '@/store/useProfileStore';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
 interface ProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onRecommendClick: () => void;
 }
 
 export const ProfileModal = ({
   isOpen,
   onClose,
   onRecommendClick,
-}: ProfileModalProps & { onRecommendClick: () => void }) => {
-  const [name, setName] = useState('이름이름이름이름이름이름이름');
+}: ProfileModalProps) => {
+  const { name, setName } = useProfileStore();
   const [isEditing, setIsEditing] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const handleToggleEdit = () => {
+    if (isEditing) {
+      if (name.trim() === '') {
+        setName('이름을 입력하세요');
+      }
+      setIsEditing(false);
+    } else {
+      setIsEditing(true);
+    }
+  };
 
   useEffect(() => {
     if (isEditing && textareaRef.current) {
       const el = textareaRef.current;
       requestAnimationFrame(() => {
         el.focus();
-        el.select();
+        el.setSelectionRange(el.value.length, el.value.length);
       });
     }
   }, [isEditing]);
@@ -59,19 +74,24 @@ export const ProfileModal = ({
                 <button
                   type='button'
                   onClick={onClose}
-                  arial-label='닫기'
+                  aria-label='닫기'
                   className='cursor-pointer'
                 >
                   <CloseIcon />
                 </button>
               </div>
+
               <div className='bg-secondary1 shadow-card-shadow mt-[1.5rem] flex h-auto w-[15.0625rem] flex-col items-center justify-center rounded-[1.5rem] p-[1.25rem]'>
                 <div className='flex items-center gap-[1rem]'>
                   <div className='bg-default h-[4.125rem] w-[4.125rem] flex-shrink-0 rounded-full' />
                   <div className='flex items-center justify-center gap-[0.5rem]'>
                     <button
-                      onClick={() => setIsEditing(!isEditing)}
-                      className='flex-shrink-0'
+                      onClick={handleToggleEdit}
+                      className={`flex-shrink-0 transition-opacity ${
+                        name.trim() === ''
+                          ? 'cursor-not-allowed opacity-30'
+                          : 'opacity-100'
+                      }`}
                     >
                       <SmallPencilIcon />
                     </button>
@@ -81,19 +101,18 @@ export const ProfileModal = ({
                         ref={textareaRef}
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        onBlur={() => setIsEditing(false)}
+                        onBlur={handleToggleEdit}
                         rows={2}
-                        className='text-body-lg w-[5.5rem] resize-none bg-transparent text-center leading-[120%] font-extrabold break-words whitespace-normal outline-none'
+                        className='text-body-lg w-[5.5rem] resize-none bg-transparent text-center leading-[120%] font-extrabold outline-none'
                       />
                     ) : (
-                      <div className='text-body-lg w-[5.5rem] text-center leading-[120%] font-extrabold break-words whitespace-normal'>
-                        이름이름이름이
-                        <br />
-                        름이름이름이름
+                      <div className='text-body-lg w-[5.5rem] text-center leading-[120%] font-extrabold break-words'>
+                        {name}
                       </div>
                     )}
                   </div>
                 </div>
+
                 <div className='self-end'>
                   <button
                     onClick={onRecommendClick}
@@ -106,6 +125,7 @@ export const ProfileModal = ({
                   </button>
                 </div>
               </div>
+
               <div className='bg-secondary1 shadow-card-shadow mt-[1.25rem] flex h-auto w-[15rem] flex-col items-start rounded-[1.5rem] p-[1.25rem]'>
                 <div className='flex items-start gap-[0.25rem]'>
                   <FeedbackIcon />
@@ -118,6 +138,7 @@ export const ProfileModal = ({
                   추첨을 통해 OOOOOO를 드려요
                 </div>
               </div>
+
               <div className='mt-[1.6875rem] flex gap-[1.5rem]'>
                 <div className='bg-secondary1 shadow-card-shadow flex h-auto items-center justify-center gap-[0.5rem] rounded-[1.5rem] px-[1rem] py-[0.5rem]'>
                   <LogoutIcon />
