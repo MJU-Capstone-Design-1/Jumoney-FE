@@ -30,8 +30,8 @@ export const RankingChart = () => {
   ];
 
   return (
-    <div className='relative h-[16.5rem] w-[20.4375rem]'>
-      <div className='absolute top-0 right-0 bottom-0 left-0 z-0 flex flex-col justify-center gap-[2.75rem]'>
+    <div className='relative mx-auto h-[16.5rem] w-full max-w-[20.4375rem]'>
+      <div className='absolute inset-0 z-0 flex flex-col justify-center gap-[2.75rem]'>
         {[...Array(7)].map((_, i) => (
           <div
             key={i}
@@ -40,7 +40,7 @@ export const RankingChart = () => {
         ))}
       </div>
 
-      <div className='absolute top-0 right-0 -bottom-[0.75rem] left-0 z-10 flex items-end justify-center gap-[0.25rem]'>
+      <div className='absolute inset-0 -bottom-[0.625rem] z-10 flex items-end justify-center gap-[0.25rem]'>
         {DATA.map((item) => (
           <div
             key={item.id}

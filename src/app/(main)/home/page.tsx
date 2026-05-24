@@ -56,15 +56,17 @@ export const HomePage = () => {
   }, []);
 
   return (
-    <div className='flex h-full flex-col px-[1rem] pt-[1.25rem]'>
-      <header className='flex items-center justify-between'>
-        <div className='bg-default ml-[0.25rem] h-[4rem] w-[4rem] rounded-full' />
-        <div className='mr-[0.75rem]'>
-          <ProfileIcon />
+    <div className='relative flex h-screen flex-col overflow-x-hidden'>
+      <header className='bg-background sticky top-0 z-50 rounded-b-[2.5rem] px-[1rem]'>
+        <div className='flex h-[6.5rem] items-center justify-between py-[1.25rem]'>
+          <div className='bg-default ml-[0.25rem] h-[4rem] w-[4rem] rounded-full' />
+          <div className='mr-[0.75rem]'>
+            <ProfileIcon />
+          </div>
         </div>
       </header>
-      <main className='flex flex-col gap-[0.75rem] pt-[4rem]'>
-        <section className='flex flex-col gap-[0.5rem]'>
+      <main className='flex flex-col gap-[0.75rem] px-[1rem]'>
+        <section className='flex flex-col gap-[0.5rem] pt-[2.625rem]'>
           <div className='text-label-md text-secondary2 font-extrabold'>
             오늘의 뉴스
           </div>
@@ -77,10 +79,10 @@ export const HomePage = () => {
             모의 투자 랭킹
           </div>
           <RankProfile />
-          <div className='pt-[0.625rem]'>
+          <div className='flex w-full justify-center pt-[0.625rem]'>
             <MasterToggle />
           </div>
-          <div className='pt-[1.5rem]'>
+          <div className='flex w-full justify-center pt-[1.5rem]'>
             <RankingChart />
           </div>
         </section>

@@ -52,7 +52,7 @@ export const MasterToggle = () => {
         onValueChange={(value) => {
           if (value) setSelectedMaster(value);
         }}
-        className='flex items-center gap-[1.25rem]'
+        className='flex flex-wrap items-center justify-center gap-[1.25rem]'
       >
         {MASTERS.map((master) => (
           <ToggleGroupItem
@@ -65,29 +65,31 @@ export const MasterToggle = () => {
                 selectedMaster === master.id ? master.color : undefined,
             }}
           >
-            <motion.div
-              variants={iconVariants}
-              initial='initial'
-              animate={selectedMaster === master.id ? 'active' : 'initial'}
-              whileTap='tap'
-              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-              className='flex flex-col items-center justify-center'
-            >
-              {master.image ? (
-                <Image
-                  src={master.image}
-                  alt={master.name}
-                  width={28}
-                  height={28}
-                  className={`object-contain transition-all ${selectedMaster === master.id ? 'opacity-100' : 'opacity-80'}`}
-                  style={{
-                    clipPath: 'inset(1px 1px 1px 1px round 50% 50% 0 0)',
-                  }}
-                />
-              ) : (
-                <span className='text-body-md font-bold'>전체</span>
-              )}
-            </motion.div>
+            <div className='relative flex h-full w-full items-center justify-center'>
+              <motion.div
+                variants={iconVariants}
+                initial='initial'
+                animate={selectedMaster === master.id ? 'active' : 'initial'}
+                whileTap='tap'
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                className='absolute flex items-center justify-center'
+              >
+                {master.image ? (
+                  <Image
+                    src={master.image}
+                    alt={master.name}
+                    width={28}
+                    height={28}
+                    className={`object-contain transition-all ${selectedMaster === master.id ? 'opacity-100' : 'opacity-80'}`}
+                    style={{
+                      clipPath: 'inset(1px 1px 1px 1px round 50% 50% 0 0)',
+                    }}
+                  />
+                ) : (
+                  <span className='text-body-md font-bold'>전체</span>
+                )}
+              </motion.div>
+            </div>
           </ToggleGroupItem>
         ))}
       </ToggleGroup>
