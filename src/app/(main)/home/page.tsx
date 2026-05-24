@@ -11,48 +11,39 @@ import { RankingChart } from '@/features/home/rankingChart';
 import { RankProfile } from '@/features/home/rankProfile';
 import { TodayNewsCard } from '@/features/home/todayNewsCard';
 import { TodayTermCard } from '@/features/home/todayTermCard';
-import { useEffect, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion, useMotionValue } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 
 export const HomePage = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
+  const x = useMotionValue(0);
+  const itemCount = 4;
+  const itemWidth = 224;
+  const gap = 10;
+  const maxDrag = -(itemCount * (itemWidth + gap) - 350);
+
   useEffect(() => {
-    const handleScroll = () => {
-      const container = scrollRef.current;
-      if (!container) return;
-      const { scrollLeft, scrollWidth, clientWidth } = container;
-      const children = Array.from(container.children) as HTMLElement[];
-
-      if (Math.ceil(scrollLeft + clientWidth) >= scrollWidth - 5) {
-        setActiveIndex(children.length - 1);
-        return;
-      }
-
+    const unsubscribe = x.on('change', (latest) => {
+      const containerCenter = 350 / 2;
       let closestIndex = 0;
       let minDistance = Infinity;
-      children.forEach((child, i) => {
-        const rect = child.getBoundingClientRect();
-        const containerRect = container.getBoundingClientRect();
-        const childCenter = rect.left + rect.width / 2;
-        const containerCenter = containerRect.left + containerRect.width / 2;
+
+      for (let i = 0; i < itemCount; i++) {
+        const childCenter = (itemWidth + gap) * i + itemWidth / 2 + latest;
         const distance = Math.abs(childCenter - containerCenter);
         if (distance < minDistance) {
           minDistance = distance;
           closestIndex = i;
         }
-      });
+      }
       setActiveIndex(closestIndex);
-    };
-
-    const element = scrollRef.current;
-    element?.addEventListener('scroll', handleScroll);
-    return () => element?.removeEventListener('scroll', handleScroll);
-  }, []);
+    });
+    return () => unsubscribe();
+  }, [x]);
 
   return (
     <div className='relative flex h-screen flex-col overflow-x-hidden'>
@@ -81,7 +72,7 @@ export const HomePage = () => {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: 'easeOut' as const }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
             className='text-label-md text-secondary2 font-extrabold'
           >
             오늘의 뉴스
@@ -93,7 +84,7 @@ export const HomePage = () => {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: 'easeOut' as const }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
             className='text-label-md text-secondary2 font-extrabold'
           >
             모의 투자 랭킹
@@ -112,7 +103,7 @@ export const HomePage = () => {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: 'easeOut' as const }}
+              transition={{ duration: 0.5, ease: 'easeOut' }}
               className='text-label-md text-secondary2 font-extrabold'
             >
               오늘의 추천 용어
@@ -127,7 +118,7 @@ export const HomePage = () => {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: 'easeOut' as const }}
+              transition={{ duration: 0.5, ease: 'easeOut' }}
               className='text-label-md text-secondary2 font-extrabold'
             >
               모의 투자
@@ -141,29 +132,26 @@ export const HomePage = () => {
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: 'easeOut' as const }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
             className='text-label-md text-secondary2 font-extrabold'
           >
             거장 포트폴리오
           </motion.div>
           <div className='flex w-full flex-col gap-[1rem]'>
-            <div
-              ref={scrollRef}
-              className='scrollbar-hide flex cursor-grab gap-[0.625rem] overflow-x-auto whitespace-nowrap active:cursor-grabbing'
-              style={{ scrollSnapType: 'x mandatory' }}
-            >
-              <div className='snap-center'>
-                <MasterPortfolio />
-              </div>
-              <div className='snap-center'>
-                <MasterPortfolio />
-              </div>
-              <div className='snap-center'>
-                <MasterPortfolio />
-              </div>
-              <div className='snap-center'>
-                <MasterPortfolio />
-              </div>
+            <div className='w-full overflow-hidden'>
+              <motion.div
+                style={{ x }}
+                className='flex cursor-grab gap-[0.625rem] active:cursor-grabbing'
+                drag='x'
+                dragConstraints={{ left: maxDrag, right: 0 }}
+                dragElastic={0.1}
+              >
+                {[...Array(itemCount)].map((_, i) => (
+                  <div key={i} className='shrink-0'>
+                    <MasterPortfolio />
+                  </div>
+                ))}
+              </motion.div>
             </div>
             <div className='mb-[8.3125rem] flex items-center justify-center'>
               <PortfolioPagination activeIndex={activeIndex} />
