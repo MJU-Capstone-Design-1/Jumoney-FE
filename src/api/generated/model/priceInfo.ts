@@ -6,12 +6,13 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export interface MockInvestmentSectorStockItemResponse {
-  stockId?: number;
-  stockCode?: string;
-  stockName?: string;
+export interface PriceInfo {
+  /** 현재가 */
   currentPrice?: number;
+  /** 전일 대비 등락률 */
   changeRate?: number;
-  isMarketLeader?: boolean;
-  tags?: string[];
+  /** 시가총액 */
+  marketCap?: number;
+  /** 누적 거래대금 */
+  accumulatedTradeAmount?: number;
 }

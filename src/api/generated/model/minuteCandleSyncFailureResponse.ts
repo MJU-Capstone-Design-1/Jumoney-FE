@@ -6,12 +6,8 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export interface MockInvestmentSectorStockItemResponse {
-  stockId?: number;
+export interface MinuteCandleSyncFailureResponse {
   stockCode?: string;
   stockName?: string;
-  currentPrice?: number;
-  changeRate?: number;
-  isMarketLeader?: boolean;
-  tags?: string[];
+  message?: string;
 }

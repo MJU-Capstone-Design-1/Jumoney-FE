@@ -29,13 +29,23 @@ import type {
   ApiResponseKisSmokeResponse,
   ApiResponseListKisHtsConditionResultOutput,
   ApiResponseListKisHtsConditionTitleOutput,
+  ApiResponseMinuteCandleSyncResponse,
+  ApiResponseMinuteCandleSyncStatusResponse,
+  ApiResponseMockInvestmentChartCandleSyncResponse,
+  ApiResponseMockInvestmentChartCandleSyncStatusResponse,
   ApiResponseStockIndicatorBatchStatusResponse,
+  GetChartCandleSyncStatusParams,
   GetStockIndicatorBatchStatusParams,
+  GetTodayMinuteCandleSyncStatusParams,
   HtsConditionResultsParams,
   HtsConditionTitlesParams,
   RunHtsConditionBatchParams,
   RunStockIndicatorBatchParams,
-  SmokeParams
+  SmokeParams,
+  SyncChartCandlesInRangeParams,
+  SyncChartCandlesParams,
+  SyncMinuteCandlesByTradingDayParams,
+  SyncTodayMinuteCandlesParams
 } from '../../model';
 
 import { customInstance } from '../../../custom-instance';
@@ -44,6 +54,258 @@ import { customInstance } from '../../../custom-instance';
 
 
 /**
+ * 차트 period 기준으로 필요한 캔들을 동기화합니다. period 생략 시 ONE_DAY, ONE_WEEK, THREE_MONTHS, ONE_YEAR, FIVE_YEARS를 오늘 또는 직전 개장일 기준으로 모두 채웁니다. ONE_DAY/ONE_WEEK는 분봉 동기화와 30분봉 집계를 사용하고, THREE_MONTHS/ONE_YEAR는 DAY, FIVE_YEARS는 WEEK 기간봉을 사용합니다. stockCode를 생략하면 등록된 전체 종목을 대상으로 실행합니다. prod 프로필에서는 adminKey가 필요합니다.
+ * @summary 차트 기간 기준 수동 동기화
+ */
+export const syncChartCandles = (
+    params?: SyncChartCandlesParams,
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<ApiResponseMockInvestmentChartCandleSyncResponse>(
+      {url: `/api/local/kis/chart/sync`, method: 'POST',
+        params, signal
+    },
+      );
+    }
+
+
+
+export const getSyncChartCandlesMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof syncChartCandles>>, TError,{params?: SyncChartCandlesParams}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof syncChartCandles>>, TError,{params?: SyncChartCandlesParams}, TContext> => {
+
+const mutationKey = ['syncChartCandles'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof syncChartCandles>>, {params?: SyncChartCandlesParams}> = (props) => {
+          const {params} = props ?? {};
+
+          return  syncChartCandles(params,)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SyncChartCandlesMutationResult = NonNullable<Awaited<ReturnType<typeof syncChartCandles>>>
+
+    export type SyncChartCandlesMutationError = unknown
+
+    /**
+ * @summary 차트 기간 기준 수동 동기화
+ */
+export const useSyncChartCandles = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof syncChartCandles>>, TError,{params?: SyncChartCandlesParams}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof syncChartCandles>>,
+        TError,
+        {params?: SyncChartCandlesParams},
+        TContext
+      > => {
+      return useMutation(getSyncChartCandlesMutationOptions(options), queryClient);
+    }
+    /**
+ * 지정한 기간만 차트 원천 캔들로 보정합니다. ONE_DAY/ONE_WEEK는 해당 기간의 영업일 분봉을 동기화하고 30분봉을 재집계합니다. THREE_MONTHS/ONE_YEAR는 DAY 기간봉, FIVE_YEARS는 WEEK 기간봉을 지정 기간만 upsert합니다. stockCode를 생략하면 등록된 전체 종목을 대상으로 실행합니다. prod 프로필에서는 adminKey가 필요합니다.
+ * @summary 차트 특정 기간 수동 동기화
+ */
+export const syncChartCandlesInRange = (
+    params: SyncChartCandlesInRangeParams,
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<ApiResponseMockInvestmentChartCandleSyncResponse>(
+      {url: `/api/local/kis/chart/sync/range`, method: 'POST',
+        params, signal
+    },
+      );
+    }
+
+
+
+export const getSyncChartCandlesInRangeMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof syncChartCandlesInRange>>, TError,{params: SyncChartCandlesInRangeParams}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof syncChartCandlesInRange>>, TError,{params: SyncChartCandlesInRangeParams}, TContext> => {
+
+const mutationKey = ['syncChartCandlesInRange'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof syncChartCandlesInRange>>, {params: SyncChartCandlesInRangeParams}> = (props) => {
+          const {params} = props ?? {};
+
+          return  syncChartCandlesInRange(params,)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SyncChartCandlesInRangeMutationResult = NonNullable<Awaited<ReturnType<typeof syncChartCandlesInRange>>>
+
+    export type SyncChartCandlesInRangeMutationError = unknown
+
+    /**
+ * @summary 차트 특정 기간 수동 동기화
+ */
+export const useSyncChartCandlesInRange = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof syncChartCandlesInRange>>, TError,{params: SyncChartCandlesInRangeParams}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof syncChartCandlesInRange>>,
+        TError,
+        {params: SyncChartCandlesInRangeParams},
+        TContext
+      > => {
+      return useMutation(getSyncChartCandlesInRangeMutationOptions(options), queryClient);
+    }
+    /**
+ * KIS 주식당일분봉조회(FHKST03010200)를 30분 단위 입력 시각으로 여러 번 호출해 당일 1분봉을 stock_candles 테이블에 upsert합니다. stockCode를 생략하면 등록된 전체 종목을 대상으로 실행합니다. KIS 응답의 최근 분봉은 아직 확정되지 않았을 수 있어 요청 시각 기준 최근 2분은 저장하지 않습니다. prod 프로필에서는 adminKey가 필요합니다.
+ * @summary 당일 분봉 수동 동기화
+ */
+export const syncTodayMinuteCandles = (
+    params?: SyncTodayMinuteCandlesParams,
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<ApiResponseMinuteCandleSyncResponse>(
+      {url: `/api/local/kis/chart/minute/sync`, method: 'POST',
+        params, signal
+    },
+      );
+    }
+
+
+
+export const getSyncTodayMinuteCandlesMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof syncTodayMinuteCandles>>, TError,{params?: SyncTodayMinuteCandlesParams}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof syncTodayMinuteCandles>>, TError,{params?: SyncTodayMinuteCandlesParams}, TContext> => {
+
+const mutationKey = ['syncTodayMinuteCandles'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof syncTodayMinuteCandles>>, {params?: SyncTodayMinuteCandlesParams}> = (props) => {
+          const {params} = props ?? {};
+
+          return  syncTodayMinuteCandles(params,)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SyncTodayMinuteCandlesMutationResult = NonNullable<Awaited<ReturnType<typeof syncTodayMinuteCandles>>>
+
+    export type SyncTodayMinuteCandlesMutationError = unknown
+
+    /**
+ * @summary 당일 분봉 수동 동기화
+ */
+export const useSyncTodayMinuteCandles = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof syncTodayMinuteCandles>>, TError,{params?: SyncTodayMinuteCandlesParams}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof syncTodayMinuteCandles>>,
+        TError,
+        {params?: SyncTodayMinuteCandlesParams},
+        TContext
+      > => {
+      return useMutation(getSyncTodayMinuteCandlesMutationOptions(options), queryClient);
+    }
+    /**
+ * KIS 주식일별분봉조회(FHKST03010230)를 이용해 특정 영업일의 1분봉을 stock_candles 테이블에 upsert합니다. stockCode를 생략하면 등록된 전체 종목을 대상으로 실행합니다. 오늘 날짜를 넣으면 당일 분봉과 동일하게 최근 2분은 저장하지 않고, 과거 영업일을 넣으면 장 마감 15:30까지 전량 확정 분봉을 저장합니다. 휴장일이나 주말은 허용하지 않습니다. prod 프로필에서는 adminKey가 필요합니다.
+ * @summary 특정 영업일 분봉 수동 동기화
+ */
+export const syncMinuteCandlesByTradingDay = (
+    params: SyncMinuteCandlesByTradingDayParams,
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<ApiResponseMinuteCandleSyncResponse>(
+      {url: `/api/local/kis/chart/minute/sync/trading-day`, method: 'POST',
+        params, signal
+    },
+      );
+    }
+
+
+
+export const getSyncMinuteCandlesByTradingDayMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof syncMinuteCandlesByTradingDay>>, TError,{params: SyncMinuteCandlesByTradingDayParams}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof syncMinuteCandlesByTradingDay>>, TError,{params: SyncMinuteCandlesByTradingDayParams}, TContext> => {
+
+const mutationKey = ['syncMinuteCandlesByTradingDay'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof syncMinuteCandlesByTradingDay>>, {params: SyncMinuteCandlesByTradingDayParams}> = (props) => {
+          const {params} = props ?? {};
+
+          return  syncMinuteCandlesByTradingDay(params,)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SyncMinuteCandlesByTradingDayMutationResult = NonNullable<Awaited<ReturnType<typeof syncMinuteCandlesByTradingDay>>>
+
+    export type SyncMinuteCandlesByTradingDayMutationError = unknown
+
+    /**
+ * @summary 특정 영업일 분봉 수동 동기화
+ */
+export const useSyncMinuteCandlesByTradingDay = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof syncMinuteCandlesByTradingDay>>, TError,{params: SyncMinuteCandlesByTradingDayParams}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof syncMinuteCandlesByTradingDay>>,
+        TError,
+        {params: SyncMinuteCandlesByTradingDayParams},
+        TContext
+      > => {
+      return useMutation(getSyncMinuteCandlesByTradingDayMutationOptions(options), queryClient);
+    }
+    /**
  * Stock 테이블 전체 종목을 순회하며 KIS 지표를 조회해 stock_indicators 테이블에 upsert합니다. prod 프로필에서는 adminKey가 필요합니다. 수동 실행은 요청한 baseDate를 그대로 사용하며, 정기 스케줄처럼 직전 개장일 기준 배치는 다음 장 시작 전에 실행해야 합니다. 단, 오늘 기준 실행은 KIS 투자자매매동향 일별 API 제한 때문에 15:40 이후에만 가능합니다. 정기 스케줄은 직전 평일 기준으로 실행됩니다.
  * @summary 종목 지표 배치 수동 실행
  */
@@ -440,6 +702,194 @@ export function useHtsConditionResults<TData = Awaited<ReturnType<typeof htsCond
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getHtsConditionResultsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+/**
+ * stock_candles 테이블에 저장된 특정 종목의 차트 period별 원천 캔들 범위와 건수를 확인합니다. period를 생략하면 ONE_DAY, ONE_WEEK, THREE_MONTHS, ONE_YEAR, FIVE_YEARS 상태를 모두 반환합니다. 부족하면 /api/local/kis/chart/sync로 보정합니다. prod 프로필에서는 adminKey가 필요합니다.
+ * @summary 차트 기간 기준 동기화 상태 확인
+ */
+export const getChartCandleSyncStatus = (
+    params: GetChartCandleSyncStatusParams,
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<ApiResponseMockInvestmentChartCandleSyncStatusResponse>(
+      {url: `/api/local/kis/chart/sync/status`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+
+
+
+
+export const getGetChartCandleSyncStatusQueryKey = (params?: GetChartCandleSyncStatusParams,) => {
+    return [
+    `/api/local/kis/chart/sync/status`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetChartCandleSyncStatusQueryOptions = <TData = Awaited<ReturnType<typeof getChartCandleSyncStatus>>, TError = unknown>(params: GetChartCandleSyncStatusParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getChartCandleSyncStatus>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetChartCandleSyncStatusQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getChartCandleSyncStatus>>> = ({ signal }) => getChartCandleSyncStatus(params, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getChartCandleSyncStatus>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetChartCandleSyncStatusQueryResult = NonNullable<Awaited<ReturnType<typeof getChartCandleSyncStatus>>>
+export type GetChartCandleSyncStatusQueryError = unknown
+
+
+export function useGetChartCandleSyncStatus<TData = Awaited<ReturnType<typeof getChartCandleSyncStatus>>, TError = unknown>(
+ params: GetChartCandleSyncStatusParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getChartCandleSyncStatus>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getChartCandleSyncStatus>>,
+          TError,
+          Awaited<ReturnType<typeof getChartCandleSyncStatus>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetChartCandleSyncStatus<TData = Awaited<ReturnType<typeof getChartCandleSyncStatus>>, TError = unknown>(
+ params: GetChartCandleSyncStatusParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getChartCandleSyncStatus>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getChartCandleSyncStatus>>,
+          TError,
+          Awaited<ReturnType<typeof getChartCandleSyncStatus>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetChartCandleSyncStatus<TData = Awaited<ReturnType<typeof getChartCandleSyncStatus>>, TError = unknown>(
+ params: GetChartCandleSyncStatusParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getChartCandleSyncStatus>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 차트 기간 기준 동기화 상태 확인
+ */
+
+export function useGetChartCandleSyncStatus<TData = Awaited<ReturnType<typeof getChartCandleSyncStatus>>, TError = unknown>(
+ params: GetChartCandleSyncStatusParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getChartCandleSyncStatus>>, TError, TData>>, }
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetChartCandleSyncStatusQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+/**
+ * stock_candles 테이블에 저장된 특정 종목의 당일 1분봉 범위와 건수를 확인합니다. 동기화 직후 firstCandleTime, lastCandleTime, dbExpectedCandleCount, candleCount로 저장 여부를 검증할 수 있습니다. realtimeExpectedStartTime과 realtimeExpectedEndTime은 Redis 미확정 분봉으로 확인해야 하는 구간입니다. prod 프로필에서는 adminKey가 필요합니다.
+ * @summary 당일 분봉 동기화 상태 확인
+ */
+export const getTodayMinuteCandleSyncStatus = (
+    params: GetTodayMinuteCandleSyncStatusParams,
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<ApiResponseMinuteCandleSyncStatusResponse>(
+      {url: `/api/local/kis/chart/minute/sync/status`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+
+
+
+
+export const getGetTodayMinuteCandleSyncStatusQueryKey = (params?: GetTodayMinuteCandleSyncStatusParams,) => {
+    return [
+    `/api/local/kis/chart/minute/sync/status`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetTodayMinuteCandleSyncStatusQueryOptions = <TData = Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>, TError = unknown>(params: GetTodayMinuteCandleSyncStatusParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetTodayMinuteCandleSyncStatusQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>> = ({ signal }) => getTodayMinuteCandleSyncStatus(params, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetTodayMinuteCandleSyncStatusQueryResult = NonNullable<Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>>
+export type GetTodayMinuteCandleSyncStatusQueryError = unknown
+
+
+export function useGetTodayMinuteCandleSyncStatus<TData = Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>, TError = unknown>(
+ params: GetTodayMinuteCandleSyncStatusParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>,
+          TError,
+          Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetTodayMinuteCandleSyncStatus<TData = Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>, TError = unknown>(
+ params: GetTodayMinuteCandleSyncStatusParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>,
+          TError,
+          Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetTodayMinuteCandleSyncStatus<TData = Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>, TError = unknown>(
+ params: GetTodayMinuteCandleSyncStatusParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 당일 분봉 동기화 상태 확인
+ */
+
+export function useGetTodayMinuteCandleSyncStatus<TData = Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>, TError = unknown>(
+ params: GetTodayMinuteCandleSyncStatusParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>, TError, TData>>, }
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetTodayMinuteCandleSyncStatusQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

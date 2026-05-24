@@ -24,7 +24,9 @@ import type {
   ApiResponseMockInvestmentOrderResponse,
   ApiResponseMockInvestmentPortfolioListResponse,
   ApiResponseMockInvestmentSectorLeaderResponse,
-  ApiResponseMockInvestmentSectorStocksResponse
+  ApiResponseMockInvestmentSectorStocksResponse,
+  ApiResponseMockInvestmentStockDetailResponse,
+  ApiResponseMockInvestmentStockSearchResponse
 } from '../../model';
 
 
@@ -34,7 +36,11 @@ export const getBuyResponseMock = (overrideResponse: Partial<Extract<ApiResponse
 
 export const getInitializeAccountResponseMock = (overrideResponse: Partial<Extract<ApiResponseMockInvestmentAccountResponse, object>> = {}): ApiResponseMockInvestmentAccountResponse => ({success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), data: faker.helpers.arrayElement([{accountId: faker.helpers.arrayElement([faker.number.int(), undefined]), seedMoney: faker.helpers.arrayElement([faker.number.float({fractionDigits: 2}), undefined]), cashBalance: faker.helpers.arrayElement([faker.number.float({fractionDigits: 2}), undefined]), totalPurchaseAmount: faker.helpers.arrayElement([faker.number.float({fractionDigits: 2}), undefined]), totalAsset: faker.helpers.arrayElement([faker.number.float({fractionDigits: 2}), undefined]), totalProfitRate: faker.helpers.arrayElement([faker.number.float({fractionDigits: 2}), undefined]), created: faker.helpers.arrayElement([faker.datatype.boolean(), undefined])}, undefined]), ...overrideResponse})
 
-export const getGetSectorStocksResponseMock = (overrideResponse: Partial<Extract<ApiResponseMockInvestmentSectorStocksResponse, object>> = {}): ApiResponseMockInvestmentSectorStocksResponse => ({success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), data: faker.helpers.arrayElement([{sectorId: faker.helpers.arrayElement([faker.number.int(), undefined]), sectorName: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), stocks: faker.helpers.arrayElement([Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({stockId: faker.helpers.arrayElement([faker.number.int(), undefined]), stockCode: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), stockName: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), currentPrice: faker.helpers.arrayElement([faker.number.float({fractionDigits: 2}), undefined]), changeRate: faker.helpers.arrayElement([faker.number.float({fractionDigits: 2}), undefined]), isMarketLeader: faker.helpers.arrayElement([faker.datatype.boolean(), undefined])})), undefined])}, undefined]), ...overrideResponse})
+export const getGetStockDetailResponseMock = (overrideResponse: Partial<Extract<ApiResponseMockInvestmentStockDetailResponse, object>> = {}): ApiResponseMockInvestmentStockDetailResponse => ({success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), data: faker.helpers.arrayElement([{stockId: faker.helpers.arrayElement([faker.number.int(), undefined]), stockCode: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), stockName: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), sector: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), isMarketLeader: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), tags: faker.helpers.arrayElement([Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 10, max: 20}}))), undefined]), price: faker.helpers.arrayElement([{currentPrice: faker.helpers.arrayElement([faker.number.float({fractionDigits: 2}), undefined]), changeRate: faker.helpers.arrayElement([faker.number.float({fractionDigits: 2}), undefined]), marketCap: faker.helpers.arrayElement([faker.number.int(), undefined]), accumulatedTradeAmount: faker.helpers.arrayElement([faker.number.int(), undefined])}, undefined]), investmentMetrics: faker.helpers.arrayElement([{pbr: faker.helpers.arrayElement([faker.number.float({fractionDigits: 2}), undefined]), per: faker.helpers.arrayElement([faker.number.float({fractionDigits: 2}), undefined]), roe: faker.helpers.arrayElement([faker.number.float({fractionDigits: 2}), undefined]), dividendYield: faker.helpers.arrayElement([faker.number.float({fractionDigits: 2}), undefined]), payoutRatio: faker.helpers.arrayElement([faker.number.float({fractionDigits: 2}), undefined]), executionStrength: faker.helpers.arrayElement([faker.number.float({fractionDigits: 2}), undefined]), instNetBuy20Days: faker.helpers.arrayElement([faker.number.int(), undefined])}, undefined]), financialMetrics: faker.helpers.arrayElement([{sales: faker.helpers.arrayElement([faker.number.int(), undefined]), operatingProfit: faker.helpers.arrayElement([faker.number.int(), undefined]), debtRatio: faker.helpers.arrayElement([faker.number.float({fractionDigits: 2}), undefined])}, undefined]), description: faker.helpers.arrayElement([Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 10, max: 20}}))), undefined])}, undefined]), ...overrideResponse})
+
+export const getSearchStocksResponseMock = (overrideResponse: Partial<Extract<ApiResponseMockInvestmentStockSearchResponse, object>> = {}): ApiResponseMockInvestmentStockSearchResponse => ({success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), data: faker.helpers.arrayElement([{keyword: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), stocks: faker.helpers.arrayElement([Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({stockId: faker.helpers.arrayElement([faker.number.int(), undefined]), stockCode: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), stockName: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), currentPrice: faker.helpers.arrayElement([faker.number.float({fractionDigits: 2}), undefined]), changeRate: faker.helpers.arrayElement([faker.number.float({fractionDigits: 2}), undefined]), isMarketLeader: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), tags: faker.helpers.arrayElement([Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 10, max: 20}}))), undefined])})), undefined])}, undefined]), ...overrideResponse})
+
+export const getGetSectorStocksResponseMock = (overrideResponse: Partial<Extract<ApiResponseMockInvestmentSectorStocksResponse, object>> = {}): ApiResponseMockInvestmentSectorStocksResponse => ({success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), data: faker.helpers.arrayElement([{sectorId: faker.helpers.arrayElement([faker.number.int(), undefined]), sectorName: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), stocks: faker.helpers.arrayElement([Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({stockId: faker.helpers.arrayElement([faker.number.int(), undefined]), stockCode: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), stockName: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), currentPrice: faker.helpers.arrayElement([faker.number.float({fractionDigits: 2}), undefined]), changeRate: faker.helpers.arrayElement([faker.number.float({fractionDigits: 2}), undefined]), isMarketLeader: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), tags: faker.helpers.arrayElement([Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 10, max: 20}}))), undefined])})), undefined])}, undefined]), ...overrideResponse})
 
 export const getGetSectorLeaderResponseMock = (overrideResponse: Partial<Extract<ApiResponseMockInvestmentSectorLeaderResponse, object>> = {}): ApiResponseMockInvestmentSectorLeaderResponse => ({success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), data: faker.helpers.arrayElement([{sectorId: faker.helpers.arrayElement([faker.number.int(), undefined]), sectorName: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), stockCode: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), stockName: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), currentPrice: faker.helpers.arrayElement([faker.number.float({fractionDigits: 2}), undefined]), changeRate: faker.helpers.arrayElement([faker.number.float({fractionDigits: 2}), undefined])}, undefined]), ...overrideResponse})
 
@@ -76,6 +82,30 @@ export const getInitializeAccountMockHandler = (overrideResponse?: ApiResponseMo
     return HttpResponse.json(overrideResponse !== undefined
     ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
     : getInitializeAccountResponseMock(),
+      { status: 200
+      })
+  }, options)
+}
+
+export const getGetStockDetailMockHandler = (overrideResponse?: ApiResponseMockInvestmentStockDetailResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<ApiResponseMockInvestmentStockDetailResponse> | ApiResponseMockInvestmentStockDetailResponse), options?: RequestHandlerOptions) => {
+  return http.get('*/api/mock-investments/stocks/:stockCode', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+
+
+    return HttpResponse.json(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getGetStockDetailResponseMock(),
+      { status: 200
+      })
+  }, options)
+}
+
+export const getSearchStocksMockHandler = (overrideResponse?: ApiResponseMockInvestmentStockSearchResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<ApiResponseMockInvestmentStockSearchResponse> | ApiResponseMockInvestmentStockSearchResponse), options?: RequestHandlerOptions) => {
+  return http.get('*/api/mock-investments/stocks/search', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+
+
+    return HttpResponse.json(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getSearchStocksResponseMock(),
       { status: 200
       })
   }, options)
@@ -144,6 +174,8 @@ export const getMock = () => [
   getSellMockHandler(),
   getBuyMockHandler(),
   getInitializeAccountMockHandler(),
+  getGetStockDetailMockHandler(),
+  getSearchStocksMockHandler(),
   getGetSectorStocksMockHandler(),
   getGetSectorLeaderMockHandler(),
   getGetPortfoliosMockHandler(),

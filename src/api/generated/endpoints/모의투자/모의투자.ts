@@ -32,7 +32,10 @@ import type {
   ApiResponseMockInvestmentPortfolioListResponse,
   ApiResponseMockInvestmentSectorLeaderResponse,
   ApiResponseMockInvestmentSectorStocksResponse,
-  MockInvestmentOrderRequest
+  ApiResponseMockInvestmentStockDetailResponse,
+  ApiResponseMockInvestmentStockSearchResponse,
+  MockInvestmentOrderRequest,
+  SearchStocksParams
 } from '../../model';
 
 import { customInstance } from '../../../custom-instance';
@@ -231,8 +234,195 @@ export const useInitializeAccount = <TError = unknown,
       return useMutation(getInitializeAccountMutationOptions(options), queryClient);
     }
     /**
+ * 차트 제외, 종목 코드 기준으로 종목 기본 정보와 현재 시세, 최신 지표 중심의 상세 정보를 조회합니다.
+ * @summary 모의투자 종목 상세 조회
+ */
+export const getStockDetail = (
+    stockCode: string,
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<ApiResponseMockInvestmentStockDetailResponse>(
+      {url: `/api/mock-investments/stocks/${stockCode}`, method: 'GET', signal
+    },
+      );
+    }
+
+
+
+
+export const getGetStockDetailQueryKey = (stockCode: string,) => {
+    return [
+    `/api/mock-investments/stocks/${stockCode}`
+    ] as const;
+    }
+
+
+export const getGetStockDetailQueryOptions = <TData = Awaited<ReturnType<typeof getStockDetail>>, TError = unknown>(stockCode: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStockDetail>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetStockDetailQueryKey(stockCode);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getStockDetail>>> = ({ signal }) => getStockDetail(stockCode, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: stockCode !== null && stockCode !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getStockDetail>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetStockDetailQueryResult = NonNullable<Awaited<ReturnType<typeof getStockDetail>>>
+export type GetStockDetailQueryError = unknown
+
+
+export function useGetStockDetail<TData = Awaited<ReturnType<typeof getStockDetail>>, TError = unknown>(
+ stockCode: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStockDetail>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getStockDetail>>,
+          TError,
+          Awaited<ReturnType<typeof getStockDetail>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetStockDetail<TData = Awaited<ReturnType<typeof getStockDetail>>, TError = unknown>(
+ stockCode: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStockDetail>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getStockDetail>>,
+          TError,
+          Awaited<ReturnType<typeof getStockDetail>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetStockDetail<TData = Awaited<ReturnType<typeof getStockDetail>>, TError = unknown>(
+ stockCode: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStockDetail>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 모의투자 종목 상세 조회
+ */
+
+export function useGetStockDetail<TData = Awaited<ReturnType<typeof getStockDetail>>, TError = unknown>(
+ stockCode: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStockDetail>>, TError, TData>>, }
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetStockDetailQueryOptions(stockCode,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+/**
+ * 입력한 검색어가 종목명에 포함된 종목 목록을 조회합니다. 이름 순, 주가 높은 순, 주가 낮은 순, 시가총액 순, 거래대금 순으로 정렬할 수 있습니다.
+ * @summary 종목 검색
+ */
+export const searchStocks = (
+    params: SearchStocksParams,
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<ApiResponseMockInvestmentStockSearchResponse>(
+      {url: `/api/mock-investments/stocks/search`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+
+
+
+
+export const getSearchStocksQueryKey = (params?: SearchStocksParams,) => {
+    return [
+    `/api/mock-investments/stocks/search`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getSearchStocksQueryOptions = <TData = Awaited<ReturnType<typeof searchStocks>>, TError = unknown>(params: SearchStocksParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof searchStocks>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getSearchStocksQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof searchStocks>>> = ({ signal }) => searchStocks(params, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof searchStocks>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type SearchStocksQueryResult = NonNullable<Awaited<ReturnType<typeof searchStocks>>>
+export type SearchStocksQueryError = unknown
+
+
+export function useSearchStocks<TData = Awaited<ReturnType<typeof searchStocks>>, TError = unknown>(
+ params: SearchStocksParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof searchStocks>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof searchStocks>>,
+          TError,
+          Awaited<ReturnType<typeof searchStocks>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSearchStocks<TData = Awaited<ReturnType<typeof searchStocks>>, TError = unknown>(
+ params: SearchStocksParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof searchStocks>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof searchStocks>>,
+          TError,
+          Awaited<ReturnType<typeof searchStocks>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSearchStocks<TData = Awaited<ReturnType<typeof searchStocks>>, TError = unknown>(
+ params: SearchStocksParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof searchStocks>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 종목 검색
+ */
+
+export function useSearchStocks<TData = Awaited<ReturnType<typeof searchStocks>>, TError = unknown>(
+ params: SearchStocksParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof searchStocks>>, TError, TData>>, }
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getSearchStocksQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+/**
  * 선택한 섹터에 속한 종목 목록을 시가총액 순으로 조회합니다.
- * @summary 섹터별 기업 리스트 조회
+ * @summary 섹터별 종목 리스트 조회
  */
 export const getSectorStocks = (
     sectorId: number,
@@ -303,7 +493,7 @@ export function useGetSectorStocks<TData = Awaited<ReturnType<typeof getSectorSt
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary 섹터별 기업 리스트 조회
+ * @summary 섹터별 종목 리스트 조회
  */
 
 export function useGetSectorStocks<TData = Awaited<ReturnType<typeof getSectorStocks>>, TError = unknown>(
@@ -418,7 +608,7 @@ export function useGetSectorLeader<TData = Awaited<ReturnType<typeof getSectorLe
 
 /**
  * 현재 보유 중인 종목 목록을 최근 매매순으로 조회합니다.
- * @summary 내 보유 기업 리스트 조회
+ * @summary 내 보유 종목 리스트 조회
  */
 export const getPortfolios = (
 
@@ -489,7 +679,7 @@ export function useGetPortfolios<TData = Awaited<ReturnType<typeof getPortfolios
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary 내 보유 기업 리스트 조회
+ * @summary 내 보유 종목 리스트 조회
  */
 
 export function useGetPortfolios<TData = Awaited<ReturnType<typeof getPortfolios>>, TError = unknown>(

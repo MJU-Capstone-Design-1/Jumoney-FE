@@ -30,8 +30,8 @@ import { customInstance } from '../../../custom-instance';
 
 
 /**
- * 로그인 사용자가 자신의 팀으로 사용할 거장을 선택하거나 변경합니다.
- * @summary 거장 선택
+ * 로그인 사용자가 거장을 선택하거나 변경합니다. 변경 시 모의투자 계좌가 초기화됩니다.
+ * @summary 거장 선택/변경
  */
 export const selectMaster = (
     masterId: number,
@@ -79,7 +79,7 @@ const {mutation: mutationOptions} = options ?
     export type SelectMasterMutationError = unknown
 
     /**
- * @summary 거장 선택
+ * @summary 거장 선택/변경
  */
 export const useSelectMaster = <TError = unknown,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof selectMaster>>, TError,{masterId: number}, TContext>, }
