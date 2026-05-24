@@ -12,7 +12,11 @@ interface ProfileModalProps {
   onClose: () => void;
 }
 
-export const ProfileModal = ({ isOpen, onClose }: ProfileModalProps) => {
+export const ProfileModal = ({
+  isOpen,
+  onClose,
+  onRecommendClick,
+}: ProfileModalProps & { onRecommendClick: () => void }) => {
   const [name, setName] = useState('이름이름이름이름이름이름이름');
   const [isEditing, setIsEditing] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -91,12 +95,15 @@ export const ProfileModal = ({ isOpen, onClose }: ProfileModalProps) => {
                   </div>
                 </div>
                 <div className='self-end'>
-                  <div className='bg-secondary2 flex items-center justify-center gap-[0.5625rem] rounded-full px-[1rem] py-[0.5rem]'>
+                  <button
+                    onClick={onRecommendClick}
+                    className='bg-secondary2 flex items-center justify-center gap-[0.5625rem] rounded-full px-[1rem] py-[0.5rem]'
+                  >
                     <ProfileCircleIcon />
                     <div className='text-body-sm text-secondary1 leading-[120%] font-bold'>
                       거장 변경하기
                     </div>
-                  </div>
+                  </button>
                 </div>
               </div>
               <div className='bg-secondary1 shadow-card-shadow mt-[1.25rem] flex h-auto w-[15rem] flex-col items-start rounded-[1.5rem] p-[1.25rem]'>

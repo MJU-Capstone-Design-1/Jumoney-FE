@@ -13,11 +13,13 @@ import { TodayNewsCard } from '@/features/home/todayNewsCard';
 import { TodayTermCard } from '@/features/home/todayTermCard';
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 
 export const HomePage = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -162,6 +164,7 @@ export const HomePage = () => {
       <ProfileModal
         isOpen={isProfileModalOpen}
         onClose={() => setIsProfileModalOpen(false)}
+        onRecommendClick={() => router.push('portfolio/masterselect')}
       />
     </div>
   );
