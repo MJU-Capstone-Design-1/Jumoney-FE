@@ -1,8 +1,16 @@
+'use client';
+
 import Image from 'next/image';
+import { motion } from 'framer-motion';
 
 export const TodayTermCard = () => {
   return (
-    <div className='relative w-full'>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: 'easeOut' }}
+      className='relative w-full'
+    >
       <Image
         src='/images/todayTermBg.svg'
         alt='오늘의 추천 용어 배경'
@@ -28,6 +36,6 @@ export const TodayTermCard = () => {
           설명설명설명설명설명설명설명설명설명설명설명설명설명설명
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };

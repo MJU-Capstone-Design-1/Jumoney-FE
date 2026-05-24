@@ -3,7 +3,7 @@
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import Image from 'next/image';
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 
 const MASTERS = [
   { id: 'all', name: '전체', color: 'var(--primary)' },
@@ -33,7 +33,28 @@ const MASTERS = [
   },
 ];
 
-const iconVariants = {
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 },
+  },
+};
+
+const itemVariants: Variants = {
+  hidden: { scale: 0, opacity: 0 },
+  visible: {
+    scale: 1,
+    opacity: 1,
+    transition: {
+      type: 'spring' as const,
+      stiffness: 400,
+      damping: 15,
+    },
+  },
+};
+
+const iconVariants: Variants = {
   initial: { scale: 1 },
   active: { scale: 1.15 },
   tap: { scale: 0.9 },
@@ -41,8 +62,6 @@ const iconVariants = {
 
 export const MasterToggle = () => {
   const [selectedMaster, setSelectedMaster] = useState<string>('all');
-
-  const currentMaster = MASTERS.find((m) => m.id === selectedMaster);
 
   return (
     <div className='flex flex-col items-center justify-center'>
@@ -53,45 +72,60 @@ export const MasterToggle = () => {
           if (value) setSelectedMaster(value);
         }}
         className='flex flex-wrap items-center justify-center gap-[1.25rem]'
+        asChild
       >
-        {MASTERS.map((master) => (
-          <ToggleGroupItem
-            key={master.id}
-            value={master.id}
-            aria-label={master.name}
-            className={`bg-default data-[state=on]:shadow-card-shadow flex h-[3.25rem] w-[3.25rem] flex-col items-center justify-center !rounded-full p-0 transition-all data-[state=on]:text-white`}
-            style={{
-              backgroundColor:
-                selectedMaster === master.id ? master.color : undefined,
-            }}
-          >
-            <div className='relative flex h-full w-full items-center justify-center'>
-              <motion.div
-                variants={iconVariants}
-                initial='initial'
-                animate={selectedMaster === master.id ? 'active' : 'initial'}
-                whileTap='tap'
-                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                className='absolute flex items-center justify-center'
+        <motion.div
+          variants={containerVariants}
+          initial='hidden'
+          animate='visible'
+          className='flex flex-wrap items-center justify-center gap-[1.25rem]'
+        >
+          {MASTERS.map((master) => (
+            <motion.div key={master.id} variants={itemVariants}>
+              <ToggleGroupItem
+                value={master.id}
+                aria-label={master.name}
+                className={`bg-default data-[state=on]:shadow-card-shadow flex h-[3.25rem] w-[3.25rem] flex-col items-center justify-center !rounded-full p-0 transition-all data-[state=on]:text-white`}
+                style={{
+                  backgroundColor:
+                    selectedMaster === master.id ? master.color : undefined,
+                }}
               >
-                {master.image ? (
-                  <Image
-                    src={master.image}
-                    alt={master.name}
-                    width={28}
-                    height={28}
-                    className={`object-contain transition-all ${selectedMaster === master.id ? 'opacity-100' : 'opacity-80'}`}
-                    style={{
-                      clipPath: 'inset(1px 1px 1px 1px round 50% 50% 0 0)',
+                <div className='relative flex h-full w-full items-center justify-center'>
+                  <motion.div
+                    variants={iconVariants}
+                    initial='initial'
+                    animate={
+                      selectedMaster === master.id ? 'active' : 'initial'
+                    }
+                    whileTap='tap'
+                    transition={{
+                      type: 'spring' as const,
+                      stiffness: 300,
+                      damping: 20,
                     }}
-                  />
-                ) : (
-                  <span className='text-body-md font-bold'>전체</span>
-                )}
-              </motion.div>
-            </div>
-          </ToggleGroupItem>
-        ))}
+                    className='absolute flex items-center justify-center'
+                  >
+                    {master.image ? (
+                      <Image
+                        src={master.image}
+                        alt={master.name}
+                        width={28}
+                        height={28}
+                        className={`object-contain transition-all ${selectedMaster === master.id ? 'opacity-100' : 'opacity-80'}`}
+                        style={{
+                          clipPath: 'inset(1px 1px 1px 1px round 50% 50% 0 0)',
+                        }}
+                      />
+                    ) : (
+                      <span className='text-body-md font-bold'>전체</span>
+                    )}
+                  </motion.div>
+                </div>
+              </ToggleGroupItem>
+            </motion.div>
+          ))}
+        </motion.div>
       </ToggleGroup>
     </div>
   );

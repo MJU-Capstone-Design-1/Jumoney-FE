@@ -1,10 +1,18 @@
+'use client';
+
 import { SpeechBubble } from '@/components/icons/speechBubble';
 import Image from 'next/image';
 import { NavigateButton } from './navigateButton';
+import { motion } from 'framer-motion';
 
 export const TodayNewsCard = () => {
   return (
-    <div className='relative w-full'>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: 'easeOut' }}
+      className='relative w-full'
+    >
       <Image
         src='/images/todayNewsBackground.svg'
         alt='오늘의 뉴스 배경'
@@ -25,6 +33,6 @@ export const TodayNewsCard = () => {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
