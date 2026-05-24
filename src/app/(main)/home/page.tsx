@@ -96,7 +96,7 @@ export const HomePage = () => {
             모의 투자 랭킹
           </motion.div>
           <RankProfile />
-          <div className='flex w-full justify-center pt-[0.625rem]'>
+          <div className='flex w-full justify-center pt-[1.5rem]'>
             <MasterToggle />
           </div>
           <div className='flex w-full justify-center pt-[1.5rem]'>
