@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 
 const popUpMotion = {
   initial: { opacity: 0, scale: 0 },
@@ -14,15 +15,22 @@ const popUpMotion = {
   },
 };
 
-export const MasterPortfolio = () => {
+interface MasterPortfolioProps {
+  name: string;
+  path: string;
+}
+
+export const MasterPortfolio = ({ name, path }: MasterPortfolioProps) => {
+  const router = useRouter();
   return (
-    <motion.div
+    <motion.button
       {...popUpMotion}
+      onClick={() => router.push(path)}
       className='bg-secondary1 shadow-card-shadow flex h-[12.75rem] w-[14rem] flex-col rounded-[1.5rem] p-[1rem]'
     >
       <div className='flex items-center gap-[1rem]'>
         <div className='bg-default h-[4rem] w-[4rem] rounded-full' />
-        <div className='text-label-md font-extrabold'>워런 버핏</div>
+        <div className='text-label-md font-extrabold'>{name}</div>
       </div>
       <div className='flex items-center gap-[0.5rem] pt-[0.75rem]'>
         <div className='bg-background text-main2 text-body-sm flex items-center justify-center rounded-[6.25rem] px-[0.625rem] py-[0.25rem] font-bold'>
@@ -43,6 +51,6 @@ export const MasterPortfolio = () => {
           />
         ))}
       </div>
-    </motion.div>
+    </motion.button>
   );
 };

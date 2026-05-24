@@ -146,11 +146,22 @@ export const HomePage = () => {
                 dragConstraints={{ left: maxDrag, right: 0 }}
                 dragElastic={0.1}
               >
-                {[...Array(itemCount)].map((_, i) => (
-                  <div key={i} className='shrink-0'>
-                    <MasterPortfolio />
-                  </div>
-                ))}
+                <MasterPortfolio
+                  name='워런 버핏'
+                  path='/portfolio/selected?master=0'
+                />
+                <MasterPortfolio
+                  name='피터 린치'
+                  path='/portfolio/selected?master=1'
+                />
+                <MasterPortfolio
+                  name='레이 달리오'
+                  path='/portfolio/selected?master=2'
+                />
+                <MasterPortfolio
+                  name='윌리엄 오닐'
+                  path='/portfolio/selected?master=3'
+                />
               </motion.div>
             </div>
             <div className='mb-[8.3125rem] flex items-center justify-center'>
