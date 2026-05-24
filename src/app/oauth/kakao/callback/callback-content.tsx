@@ -10,9 +10,17 @@ export default function KakaoCallbackContent() {
   const router = useRouter();
   const code = searchParams.get('code');
 
+  const origin =
+    typeof window !== 'undefined'
+      ? window.location.origin
+      : 'http://localhost:3000';
+  const redirectUri =
+    process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI ||
+    `${origin}/oauth/kakao/callback`;
+
   // code가 존재할 때만 API를 호출하도록 enabled 설정
   const { data, isLoading, error, isSuccess } = useKakaoLogin(
-    { code: code || '' },
+    { code: code || '', redirectUri },
     {
       query: {
         enabled: !!code,
