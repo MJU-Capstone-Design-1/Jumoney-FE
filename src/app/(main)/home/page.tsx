@@ -6,6 +6,7 @@ import { MasterToggle } from '@/features/home/masterToggle';
 import { MockInvestment } from '@/features/home/mockInvestment';
 import { NavigateButton } from '@/features/home/navigateButton';
 import { PortfolioPagination } from '@/features/home/portfolioPagination';
+import { ProfileModal } from '@/features/home/profileModal';
 import { RankingChart } from '@/features/home/rankingChart';
 import { RankProfile } from '@/features/home/rankProfile';
 import { TodayNewsCard } from '@/features/home/todayNewsCard';
@@ -14,6 +15,7 @@ import { useEffect, useRef, useState } from 'react';
 
 export const HomePage = () => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -57,11 +59,18 @@ export const HomePage = () => {
 
   return (
     <div className='relative flex h-screen flex-col overflow-x-hidden'>
-      <header className='bg-background sticky top-0 z-50 rounded-b-[2.5rem] px-[1rem]'>
+      <header className='bg-background sticky top-0 z-15 rounded-b-[2.5rem] px-[1rem]'>
         <div className='flex h-[6.5rem] items-center justify-between py-[1.25rem]'>
           <div className='bg-default ml-[0.25rem] h-[4rem] w-[4rem] rounded-full' />
           <div className='mr-[0.75rem]'>
-            <ProfileIcon />
+            <button
+              type='button'
+              onClick={() => setIsProfileModalOpen(true)}
+              aria-label='프로필 페이지로 이동'
+              className='flex items-center justify-center'
+            >
+              <ProfileIcon />
+            </button>
           </div>
         </div>
       </header>
@@ -129,6 +138,11 @@ export const HomePage = () => {
           </div>
         </section>
       </main>
+
+      <ProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+      />
     </div>
   );
 };
