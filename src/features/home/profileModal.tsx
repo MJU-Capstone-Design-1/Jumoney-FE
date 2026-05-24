@@ -14,12 +14,16 @@ interface ProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
   onRecommendClick: () => void;
+  onLogout?: () => void;
+  onWithdraw?: () => void;
 }
 
 export const ProfileModal = ({
   isOpen,
   onClose,
   onRecommendClick,
+  onLogout,
+  onWithdraw,
 }: ProfileModalProps) => {
   const { name, setName } = useProfileStore();
   const [isEditing, setIsEditing] = useState(false);
@@ -140,14 +144,22 @@ export const ProfileModal = ({
               </div>
 
               <div className='mt-[1.6875rem] flex gap-[1.5rem]'>
-                <div className='bg-secondary1 shadow-card-shadow flex h-auto items-center justify-center gap-[0.5rem] rounded-[1.5rem] px-[1rem] py-[0.5rem]'>
+                <button
+                  type='button'
+                  onClick={onLogout}
+                  className='bg-secondary1 shadow-card-shadow flex h-auto items-center justify-center gap-[0.5rem] rounded-[1.5rem] px-[1rem] py-[0.5rem]'
+                >
                   <LogoutIcon />
                   <div className='text-body-md font-extrabold'>로그아웃</div>
-                </div>
-                <div className='bg-secondary1 shadow-card-shadow flex h-auto items-center justify-center gap-[0.5rem] rounded-[1.5rem] px-[1rem] py-[0.5rem]'>
+                </button>
+                <button
+                  type='button'
+                  onClick={onWithdraw}
+                  className='bg-secondary1 shadow-card-shadow flex h-auto items-center justify-center gap-[0.5rem] rounded-[1.5rem] px-[1rem] py-[0.5rem]'
+                >
                   <WithdrawIcon />
                   <div className='text-body-md font-extrabold'>회원탈퇴</div>
-                </div>
+                </button>
               </div>
             </div>
           </motion.div>
