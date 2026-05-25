@@ -295,4 +295,11 @@
   *::-webkit-scrollbar {
     display: none; /* Chrome, Safari and Opera */
   }
+
+  .recharts-wrapper *:focus,
+  .recharts-bar-rectangle:focus,
+  .recharts-cell:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
 }
