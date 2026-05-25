@@ -9,6 +9,7 @@ import {
   ISeriesApi,
   CandlestickData,
 } from 'lightweight-charts';
+
 import { useGetChart } from '@/api/generated/endpoints/모의투자-차트/모의투자-차트';
 import { PeriodValue } from './periodToggle';
 import { MockInvestmentChartResponsePeriod } from '@/api/generated/model';
@@ -31,6 +32,23 @@ const mapPeriodToApi = (
   return period ? mapping[period] : 'ONE_DAY';
 };
 
+const formatCrosshairTime = (time: UTCTimestamp) => {
+  const d = new Date(time * 1000);
+
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  const hh = String(d.getHours()).padStart(2, '0');
+  const min = String(d.getMinutes()).padStart(2, '0');
+
+  const hour = d.getHours();
+
+  if (hour === 0 && min === '00') return `${yyyy}.${mm}.${dd}`;
+  if (hour < 9) return `${yyyy}.${mm}.${dd}`;
+  if (hour < 15) return `${mm}.${dd}`;
+  return `${mm}.${dd} ${hh}:${min}`;
+};
+
 export default function CompanyCandleChart({
   stockCode,
   period,
@@ -47,72 +65,101 @@ export default function CompanyCandleChart({
   useEffect(() => {
     if (!chartContainerRef.current) return;
 
-    chartRef.current = createChart(chartContainerRef.current, {
-      layout: {
-        textColor: '#4b3425',
-        fontFamily: 'Freesentation',
-        fontSize: 12,
-        background: { color: '#f7f4f2' },
-      },
-      width: 343,
-      height: 228,
-      rightPriceScale: {
-        borderVisible: false,
-      },
-      timeScale: {
-        rightOffset: 0,
-        barSpacing: 0,
-        fixLeftEdge: true,
-        fixRightEdge: true,
-      },
-      grid: {
-        vertLines: { visible: false },
-        horzLines: { visible: false },
-      },
-      crosshair: {
-        vertLine: {
-          color: '#926247',
-          labelBackgroundColor: '#926247',
+    if (!chartRef.current) {
+      const chart = createChart(chartContainerRef.current, {
+        layout: {
+          textColor: '#4b3425',
+          fontFamily: 'Freesentation',
+          fontSize: 12,
+          background: { color: '#f7f4f2' },
         },
-        horzLine: {
-          color: '#926247',
-          labelBackgroundColor: '#926247',
+        width: 343,
+        height: 228,
+        rightPriceScale: {
+          borderVisible: false,
         },
-      },
-    });
-
-    seriesRef.current = chartRef.current.addSeries(CandlestickSeries, {
-      upColor: '#df4b01',
-      downColor: '#3d16ca',
-      borderVisible: false,
-      wickUpColor: '#df4b01',
-      wickDownColor: '#3d16ca',
-    });
-
-    const handleResize = () => {
-      chartRef.current?.applyOptions({
-        width: chartContainerRef.current?.clientWidth || 343,
+        timeScale: {
+          rightOffset: 0,
+          barSpacing: 0,
+          fixLeftEdge: true,
+          fixRightEdge: true,
+        },
+        grid: {
+          vertLines: { visible: false },
+          horzLines: { visible: false },
+        },
+        crosshair: {
+          vertLine: {
+            color: '#926247',
+            labelBackgroundColor: '#926247',
+          },
+          horzLine: {
+            color: '#926247',
+            labelBackgroundColor: '#926247',
+          },
+        },
+        localization: {
+          timeFormatter: (time: UTCTimestamp) => formatCrosshairTime(time),
+        },
       });
-    };
-    window.addEventListener('resize', handleResize);
 
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      chartRef.current?.remove();
-    };
+      chartRef.current = chart;
+
+      const series = chart.addSeries(CandlestickSeries, {
+        upColor: '#df4b01',
+        downColor: '#3d16ca',
+        borderVisible: false,
+        wickUpColor: '#df4b01',
+        wickDownColor: '#3d16ca',
+      });
+
+      seriesRef.current = series;
+
+      const handleResize = () => {
+        if (!chartContainerRef.current || !chartRef.current) return;
+
+        chartRef.current.applyOptions({
+          width: chartContainerRef.current.clientWidth || 343,
+        });
+      };
+
+      window.addEventListener('resize', handleResize);
+
+      return () => {
+        window.removeEventListener('resize', handleResize);
+        chartRef.current?.remove();
+        chartRef.current = null;
+        seriesRef.current = null;
+      };
+    }
   }, []);
 
   useEffect(() => {
     if (!seriesRef.current || !chartResponse?.data?.candles) return;
 
     const formattedData: CandlestickData[] = chartResponse.data.candles
-      .filter((c) => !!c.candleTime && c.openPrice != null)
+      .filter(
+        (
+          c,
+        ): c is {
+          candleTime: string;
+          openPrice: number;
+          highPrice: number;
+          lowPrice: number;
+          closePrice: number;
+        } =>
+          !!c.candleTime &&
+          c.openPrice != null &&
+          c.highPrice != null &&
+          c.lowPrice != null &&
+          c.closePrice != null,
+      )
       .map((candle) => ({
-        time: (new Date(candle.candleTime!).getTime() / 1000) as UTCTimestamp,
-        open: candle.openPrice!,
-        high: candle.highPrice!,
-        low: candle.lowPrice!,
-        close: candle.closePrice!,
+        time: (new Date(candle.candleTime).getTime() / 1000) as UTCTimestamp,
+        open: candle.openPrice,
+        high: candle.highPrice,
+        low: candle.lowPrice,
+        close: candle.closePrice,
       }));
 
     seriesRef.current.setData(formattedData);
@@ -126,6 +173,7 @@ export default function CompanyCandleChart({
           차트를 불러오고 있어요...
         </div>
       )}
+
       <div ref={chartContainerRef} style={{ width: '100%', height: '228px' }} />
     </div>
   );

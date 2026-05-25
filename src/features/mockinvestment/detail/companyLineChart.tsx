@@ -9,6 +9,7 @@ import {
   ISeriesApi,
   LineData,
 } from 'lightweight-charts';
+
 import { useGetChart } from '@/api/generated/endpoints/모의투자-차트/모의투자-차트';
 import { PeriodValue } from './periodToggle';
 import { MockInvestmentChartResponsePeriod } from '@/api/generated/model';
@@ -29,6 +30,23 @@ const mapPeriodToApi = (
     '5y': 'FIVE_YEARS',
   };
   return period ? mapping[period] : 'ONE_DAY';
+};
+
+const formatCrosshairTime = (time: UTCTimestamp) => {
+  const d = new Date(time * 1000);
+
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  const hh = String(d.getHours()).padStart(2, '0');
+  const min = String(d.getMinutes()).padStart(2, '0');
+
+  const hour = d.getHours();
+
+  if (hour === 0 && min === '00') return `${yyyy}.${mm}.${dd}`;
+  if (hour < 9) return `${yyyy}.${mm}.${dd}`;
+  if (hour < 15) return `${mm}.${dd}`;
+  return `${mm}.${dd} ${hh}:${min}`;
 };
 
 export default function CompanyLineChart({
@@ -81,6 +99,9 @@ export default function CompanyLineChart({
             labelBackgroundColor: '#926247',
           },
         },
+        localization: {
+          timeFormatter: (time: UTCTimestamp) => formatCrosshairTime(time),
+        },
       });
 
       chartRef.current = chart;
@@ -89,6 +110,7 @@ export default function CompanyLineChart({
         color: '#4b3425',
         lineWidth: 3,
       });
+
       seriesRef.current = series;
 
       const handleResize = () => {
