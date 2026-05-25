@@ -3,15 +3,19 @@
 import { ChartIcon } from '@/components/icons/chartIcon';
 import { GraphIcon } from '@/components/icons/graphIcon';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
 
-export const SwitchChartButton = () => {
-  const [isChart, setIsChart] = useState(false);
+interface SwitchChartButtonProps {
+  isChart: boolean;
+  setIsChart: (value: React.SetStateAction<boolean>) => void;
+}
 
+export const SwitchChartButton = ({
+  isChart,
+  setIsChart,
+}: SwitchChartButtonProps) => {
   const handleToggle = () => {
     setIsChart((prev) => !prev);
   };
-
   return (
     <motion.button
       type='button'
