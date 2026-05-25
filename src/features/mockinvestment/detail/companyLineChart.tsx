@@ -58,7 +58,8 @@ export default function CompanyLineChart({
         width: 343,
         height: 228,
         rightPriceScale: {
-          visible: false,
+          visible: true,
+          borderVisible: false,
         },
         timeScale: {
           rightOffset: 0,
@@ -69,6 +70,16 @@ export default function CompanyLineChart({
         grid: {
           vertLines: { visible: false },
           horzLines: { visible: false },
+        },
+        crosshair: {
+          vertLine: {
+            color: '#926247',
+            labelBackgroundColor: '#926247',
+          },
+          horzLine: {
+            color: '#926247',
+            labelBackgroundColor: '#926247',
+          },
         },
       });
 
