@@ -6,7 +6,11 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type KakaoLoginParams = {
-code: string;
-redirectUri: string;
-};
+export interface FinancialMetrics {
+  /** 매출액 */
+  sales?: number;
+  /** 영업이익 */
+  operatingProfit?: number;
+  /** 부채비율 */
+  debtRatio?: number;
+}

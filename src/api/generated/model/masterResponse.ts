@@ -16,4 +16,5 @@ export interface MasterResponse {
   recommendationDescription?: string;
   options?: MasterOptionResponse[];
   sectorOptions?: SectorOptionResponse[];
+  isSelected?: boolean;
 }

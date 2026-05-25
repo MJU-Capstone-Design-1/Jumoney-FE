@@ -5,13 +5,11 @@
  * 주머니의 백엔드 API 명세서입니다.
  * OpenAPI spec version: 1.0.0
  */
+import type { PeriodStatus } from './periodStatus';
 
-export interface MockInvestmentSectorStockItemResponse {
-  stockId?: number;
+export interface MockInvestmentChartCandleSyncStatusResponse {
   stockCode?: string;
   stockName?: string;
-  currentPrice?: number;
-  changeRate?: number;
-  isMarketLeader?: boolean;
-  tags?: string[];
+  targetDate?: string;
+  periods?: PeriodStatus[];
 }

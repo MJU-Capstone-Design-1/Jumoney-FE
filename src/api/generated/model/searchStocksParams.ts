@@ -5,8 +5,9 @@
  * 주머니의 백엔드 API 명세서입니다.
  * OpenAPI spec version: 1.0.0
  */
+import type { SearchStocksSort } from './searchStocksSort';
 
-export type KakaoLoginParams = {
-code: string;
-redirectUri: string;
+export type SearchStocksParams = {
+keyword: string;
+sort?: SearchStocksSort;
 };
