@@ -128,7 +128,7 @@ export const HomePage = () => {
           <MockInvestment />
         </section>
 
-        <section className='flex flex-col gap-[0.5rem] pt-[1.5rem]'>
+        <section className='flex flex-col gap-[0.5rem] pt-[0.125rem]'>
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
