@@ -302,4 +302,8 @@
     outline: none !important;
     box-shadow: none !important;
   }
+
+  #tv-attr-logo {
+    display: none !important;
+  }
 }
