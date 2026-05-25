@@ -140,6 +140,7 @@ export function MasterSectorChart({ masterId }: Props) {
                   ]}
                   indicator='dashed'
                   className='bg-secondary1 items-start text-left opacity-100'
+                  labelClassName='font-semibold text-body-md'
                 />
               );
             }}
