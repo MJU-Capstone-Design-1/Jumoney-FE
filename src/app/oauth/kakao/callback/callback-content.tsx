@@ -45,8 +45,8 @@ export default function KakaoCallbackContent() {
       // access token 저장
       setAccessToken(data.accessToken);
 
-      // 메인 추천 페이지(/recommend)로 이동
-      router.replace('/recommend');
+      // 메인 홈 페이지(/home)로 이동
+      router.replace('/home');
     }
   }, [isSuccess, data, router]);
 
