@@ -89,6 +89,7 @@ export default function CompanyCandleChart({
           horzLines: { visible: false },
         },
         crosshair: {
+          mode: 0,
           vertLine: {
             color: '#926247',
             labelBackgroundColor: '#926247',
