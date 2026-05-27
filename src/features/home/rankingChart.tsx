@@ -3,13 +3,29 @@ import { ChartHappyIcon } from '@/components/icons/chartHappyIcon';
 import { ChartNeturalIcon } from '@/components/icons/chartNeturalIcon';
 import { ChartSadIcon } from '@/components/icons/chartSadIcon';
 import { ChartSmileIcon } from '@/components/icons/chartSmileIcon';
+import { MASTER_RANK_DATA } from '@/constants/rankData';
 
 interface RankingChartProps {
   selectedId: string;
   onSelect: (id: string) => void;
+  masterFilter: string;
 }
 
-export const RankingChart = ({ selectedId, onSelect }: RankingChartProps) => {
+export const RankingChart = ({
+  selectedId,
+  onSelect,
+  masterFilter,
+}: RankingChartProps) => {
+  const masterData = MASTER_RANK_DATA[masterFilter] || MASTER_RANK_DATA['all'];
+
+  const rankList = [
+    masterData['1'],
+    masterData['2'],
+    masterData['3'],
+    masterData['4'],
+    masterData['5'],
+  ];
+
   const getFaceIcon = (id: string) => {
     switch (id) {
       case '1':
@@ -62,9 +78,9 @@ export const RankingChart = ({ selectedId, onSelect }: RankingChartProps) => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 + index * 0.05 }}
-              className='text-body-sm text-secondary2 mb-[0.5rem] text-center font-semibold'
+              className='text-body-sm text-secondary2 mb-[0.5rem] block w-[3.375rem] truncate text-center font-semibold'
             >
-              이름이름이름
+              {rankList[index]?.name || '-'}
             </motion.span>
 
             <motion.div
