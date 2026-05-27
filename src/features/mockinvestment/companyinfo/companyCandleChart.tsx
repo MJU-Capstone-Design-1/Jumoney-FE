@@ -29,24 +29,8 @@ const mapPeriodToApi = (
     '1y': 'ONE_YEAR',
     '5y': 'FIVE_YEARS',
   };
+
   return period ? mapping[period] : 'ONE_DAY';
-};
-
-const formatCrosshairTime = (time: UTCTimestamp) => {
-  const d = new Date(time * 1000);
-
-  const yyyy = d.getFullYear();
-  const mm = String(d.getMonth() + 1).padStart(2, '0');
-  const dd = String(d.getDate()).padStart(2, '0');
-  const hh = String(d.getHours()).padStart(2, '0');
-  const min = String(d.getMinutes()).padStart(2, '0');
-
-  const hour = d.getHours();
-
-  if (hour === 0 && min === '00') return `${yyyy}.${mm}.${dd}`;
-  if (hour < 9) return `${yyyy}.${mm}.${dd}`;
-  if (hour < 15) return `${mm}.${dd}`;
-  return `${mm}.${dd} ${hh}:${min}`;
 };
 
 export default function CompanyCandleChart({
@@ -57,10 +41,39 @@ export default function CompanyCandleChart({
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
 
+  const barSpacingRef = useRef(0);
+
   const apiPeriod = mapPeriodToApi(period);
+
   const { data: chartResponse, isLoading } = useGetChart(stockCode, {
     period: apiPeriod,
   });
+
+  const formatCrosshairTime = (time: UTCTimestamp) => {
+    const d = new Date(time * 1000);
+
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    const hh = String(d.getHours()).padStart(2, '0');
+    const min = String(d.getMinutes()).padStart(2, '0');
+
+    if (period === '1d') {
+      return `${yyyy}.${mm}.${dd} ${hh}:${min}`;
+    }
+
+    if (period === '1w') {
+      const showTime = barSpacingRef.current > 10;
+
+      if (showTime) {
+        return `${yyyy}.${mm}.${dd} ${hh}:${min}`;
+      }
+
+      return `${yyyy}.${mm}.${dd}`;
+    }
+
+    return `${yyyy}.${mm}.${dd}`;
+  };
 
   useEffect(() => {
     if (!chartContainerRef.current) return;
@@ -77,6 +90,10 @@ export default function CompanyCandleChart({
         height: 228,
         rightPriceScale: {
           borderVisible: false,
+          scaleMargins: {
+            top: 0.25,
+            bottom: 0.1,
+          },
         },
         timeScale: {
           rightOffset: 0,
@@ -116,6 +133,13 @@ export default function CompanyCandleChart({
 
       seriesRef.current = series;
 
+      barSpacingRef.current = chart.timeScale().options().barSpacing ?? 0;
+
+      chart.timeScale().subscribeVisibleLogicalRangeChange(() => {
+        barSpacingRef.current =
+          chart.timeScale().options().barSpacing ?? barSpacingRef.current;
+      });
+
       const handleResize = () => {
         if (!chartContainerRef.current || !chartRef.current) return;
 
@@ -128,12 +152,13 @@ export default function CompanyCandleChart({
 
       return () => {
         window.removeEventListener('resize', handleResize);
+
         chartRef.current?.remove();
         chartRef.current = null;
         seriesRef.current = null;
       };
     }
-  }, []);
+  }, [period]);
 
   useEffect(() => {
     if (!seriesRef.current || !chartResponse?.data?.candles) return;
@@ -164,6 +189,7 @@ export default function CompanyCandleChart({
       }));
 
     seriesRef.current.setData(formattedData);
+
     chartRef.current?.timeScale().fitContent();
   }, [chartResponse, period]);
 
