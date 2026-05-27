@@ -18,6 +18,7 @@ import { useRouter } from 'next/navigation';
 export const HomePage = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [selectedRankId, setSelectedRankId] = useState('3');
   const router = useRouter();
 
   const x = useMotionValue(0);
@@ -89,12 +90,15 @@ export const HomePage = () => {
           >
             모의 투자 랭킹
           </motion.div>
-          <RankProfile />
+          <RankProfile selectedId={selectedRankId} />
           <div className='flex w-full justify-center pt-[1.5rem]'>
             <MasterToggle />
           </div>
           <div className='flex w-full justify-center pt-[1.5rem]'>
-            <RankingChart />
+            <RankingChart
+              selectedId={selectedRankId}
+              onSelect={setSelectedRankId}
+            />
           </div>
         </section>
 

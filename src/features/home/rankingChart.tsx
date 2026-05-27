@@ -4,7 +4,12 @@ import { ChartNeturalIcon } from '@/components/icons/chartNeturalIcon';
 import { ChartSadIcon } from '@/components/icons/chartSadIcon';
 import { ChartSmileIcon } from '@/components/icons/chartSmileIcon';
 
-export const RankingChart = () => {
+interface RankingChartProps {
+  selectedId: string;
+  onSelect: (id: string) => void;
+}
+
+export const RankingChart = ({ selectedId, onSelect }: RankingChartProps) => {
   const getFaceIcon = (id: string) => {
     switch (id) {
       case '1':
@@ -50,6 +55,7 @@ export const RankingChart = () => {
         {DATA.map((item, index) => (
           <div
             key={item.id}
+            onClick={() => onSelect(item.id)}
             className='flex h-full w-[3.75rem] flex-col items-center justify-end'
           >
             <motion.span
@@ -70,7 +76,7 @@ export const RankingChart = () => {
                 damping: 12,
                 delay: index * 0.05,
               }}
-              className={`${item.color} flex w-full justify-center rounded-t-[6.25rem] pt-[0.75rem]`}
+              className={`${item.color} pointer-events-none flex w-full justify-center rounded-t-[6.25rem] pt-[0.75rem]`}
             >
               <motion.div
                 initial={{ opacity: 0 }}
