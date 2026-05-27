@@ -16,7 +16,7 @@ const EXCLUDED_PATHS_FOR_BOTTOM_TAB = [
   '/portfolio/masterselect',
   '/portfolio/selected/detail',
   '/recommend/*',
-  '/mockinvestment/intro',
+  '/mockinvestment/*',
 ];
 
 export default function Providers({ children }: { children: React.ReactNode }) {

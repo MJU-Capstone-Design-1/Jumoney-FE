@@ -10,7 +10,7 @@ export const CompanyCard = ({ showBadge = true }: CompanyCardProps) => {
   const router = useRouter();
 
   const handleClick = () => {
-    router.push('/mockinvestment/detail');
+    router.push('/mockinvestment/companyinfo');
   };
 
   return (
