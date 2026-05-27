@@ -7,6 +7,8 @@ import { WheelSection } from '@/features/portfolio/detail/wheelSection';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { MasterSectorChart } from '@/features/portfolio/detail/masterSectorChart';
+import { MasterCompanyChart } from '@/features/portfolio/detail/masterCompanyChart';
 
 const Page = () => {
   const [toggleValue, setToggleValue] = useState<'left' | 'right'>('left');
@@ -155,14 +157,14 @@ const Page = () => {
               <div className='bg-default text-body-md flex h-[2rem] w-[3.625rem] items-center justify-center self-end rounded-[77.125rem] text-center font-semibold'>
                 2025년
               </div>
-              <div className='bg-default'>분야별 차트 영역</div>
+              <MasterSectorChart masterId={1} />
             </div>
           ) : (
             <div className='bg-secondary1 shadow-card-shadow flex h-[33.625rem] flex-col gap-[1rem] rounded-[1.5rem] p-[1rem]'>
               <div className='bg-default text-body-md flex h-[2rem] w-[3.625rem] items-center justify-center self-end rounded-[77.125rem] text-center font-semibold'>
                 2025년
               </div>
-              <div className='bg-default'>투자 기업 비율 영역</div>
+              <MasterCompanyChart masterId={1} />
             </div>
           )}
         </div>

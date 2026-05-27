@@ -7,12 +7,14 @@ import BottomButton from '@/components/bottomButton';
 import { BulbIcon } from '@/components/icons/bulbIcon';
 import { KeyIcon } from '@/components/icons/keyIcon';
 import { PencilIcon } from '@/components/icons/pencilIcon';
-import { CompanyInformationCard } from '@/features/mockinvestment/detail/companyInformationCard';
+import { CompanyInformationCard } from '@/features/mockinvestment/companyinfo/companyInformationCard';
 import {
   PeriodToggle,
   PeriodValue,
-} from '@/features/mockinvestment/detail/periodToggle';
-import { SwitchChartButton } from '@/features/mockinvestment/detail/switchChartButton';
+} from '@/features/mockinvestment/companyinfo/periodToggle';
+import { SwitchChartButton } from '@/features/mockinvestment/companyinfo/switchChartButton';
+import CompanyLineChart from '@/features/mockinvestment/companyinfo/companyLineChart';
+import CompanyCandleChart from '@/features/mockinvestment/companyinfo/companyCandleChart';
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -38,6 +40,7 @@ const DetailPage = () => {
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodValue | undefined>(
     '1d',
   );
+  const [isChart, setIsChart] = useState(false);
 
   const handleAllClick = () => {
     setIsAllSelected((prev) => {
@@ -86,7 +89,7 @@ const DetailPage = () => {
           >
             <span className='text-body-md font-semibold'>전체</span>
           </motion.button>
-          <SwitchChartButton />
+          <SwitchChartButton isChart={isChart} setIsChart={setIsChart} />
         </div>
 
         <div className='pt-[0.5rem]'>
@@ -100,16 +103,17 @@ const DetailPage = () => {
         </div>
       </motion.div>
 
-      <motion.div
-        variants={itemVariants}
-        className='bg-secondary2 text-secondary1 mt-[2.5rem] h-[14.25rem] w-full text-center'
-      >
-        차트 위치
+      <motion.div variants={itemVariants} className='pt-[1rem]'>
+        {isChart ? (
+          <CompanyCandleChart stockCode='005930' period={selectedPeriod} />
+        ) : (
+          <CompanyLineChart stockCode='005930' period={selectedPeriod} />
+        )}
       </motion.div>
 
       <motion.div
         variants={itemVariants}
-        className='text-text-main text-label-sm pt-[2.5rem] text-center leading-[120%] font-bold'
+        className='text-text-main text-label-sm pt-[1.5rem] text-center leading-[120%] font-bold'
       >
         <span>
           {'{'}기업명{'}'}이 어떤 회사냐면요

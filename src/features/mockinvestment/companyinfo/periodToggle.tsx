@@ -5,7 +5,7 @@ import React from 'react';
 const PERIODS = [
   { value: '1d', label: '1일' },
   { value: '1w', label: '1주일' },
-  { value: '1m', label: '1개월' },
+  { value: '3m', label: '3개월' },
   { value: '1y', label: '1년' },
   { value: '5y', label: '5년' },
 ] as const;

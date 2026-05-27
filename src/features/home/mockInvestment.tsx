@@ -1,6 +1,9 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import CompanyLineChart from '../mockinvestment/companyinfo/companyLineChart';
+import { useState } from 'react';
+import { PeriodValue } from '../mockinvestment/companyinfo/periodToggle';
 
 const itemMotion = {
   initial: { opacity: 0, scale: 0.9 },
@@ -14,13 +17,17 @@ const itemMotion = {
 };
 
 export const MockInvestment = () => {
+  const [selectedPeriod, setSelectedPeriod] = useState<PeriodValue | undefined>(
+    '1w',
+  );
+
   return (
     <div className='flex w-full flex-col'>
       <div className='flex w-full'>
         <motion.div
           {...itemMotion}
           transition={{ ...itemMotion.transition, delay: 0.1 }}
-          className='flex flex-col items-center justify-center'
+          className='flex flex-col items-center justify-center pt-[0.25rem]'
         >
           <div className='text-body-lg text-text-sub font-bold'>총 자산</div>
           <div className='text-label-md font-extrabold'>₩ nn,nnn,nnn</div>
@@ -40,7 +47,7 @@ export const MockInvestment = () => {
         </motion.div>
       </div>
 
-      <div className='flex flex-col pt-[0.5rem]'>
+      <div className='flex flex-col pt-[1.25rem]'>
         <motion.div
           {...itemMotion}
           transition={{ ...itemMotion.transition, delay: 0.3 }}
@@ -69,13 +76,9 @@ export const MockInvestment = () => {
         <motion.div
           {...itemMotion}
           transition={{ ...itemMotion.transition, delay: 0.6 }}
-          className='mt-[1.875rem] flex w-full items-center justify-center'
+          className='mt-[1rem] flex w-full items-center justify-center'
         >
-          <div className='bg-default h-[9rem] w-[19.375rem]'>
-            <div className='text-body-lg text-center font-semibold'>
-              차트 위치
-            </div>
-          </div>
+          <CompanyLineChart stockCode='005930' period={selectedPeriod} />
         </motion.div>
       </div>
     </div>

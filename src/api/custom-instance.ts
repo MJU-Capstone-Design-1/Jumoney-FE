@@ -27,7 +27,7 @@ export const clearAccessToken = () => {
 
 // 1. 기본 설정 (서버 주소, 타임아웃 등)
 export const AXIOS_INSTANCE = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://jumoney.site',
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://api.jumoney.site',
   withCredentials: true,
 });
 
