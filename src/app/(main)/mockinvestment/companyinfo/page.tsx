@@ -7,14 +7,14 @@ import BottomButton from '@/components/bottomButton';
 import { BulbIcon } from '@/components/icons/bulbIcon';
 import { KeyIcon } from '@/components/icons/keyIcon';
 import { PencilIcon } from '@/components/icons/pencilIcon';
-import { CompanyInformationCard } from '@/features/mockinvestment/detail/companyInformationCard';
+import { CompanyInformationCard } from '@/features/mockinvestment/companyinfo/companyInformationCard';
 import {
   PeriodToggle,
   PeriodValue,
-} from '@/features/mockinvestment/detail/periodToggle';
-import { SwitchChartButton } from '@/features/mockinvestment/detail/switchChartButton';
-import CompanyLineChart from '@/features/mockinvestment/detail/companyLineChart';
-import CompanyCandleChart from '@/features/mockinvestment/detail/companyCandleChart';
+} from '@/features/mockinvestment/companyinfo/periodToggle';
+import { SwitchChartButton } from '@/features/mockinvestment/companyinfo/switchChartButton';
+import CompanyLineChart from '@/features/mockinvestment/companyinfo/companyLineChart';
+import CompanyCandleChart from '@/features/mockinvestment/companyinfo/companyCandleChart';
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },

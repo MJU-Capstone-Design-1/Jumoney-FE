@@ -1,9 +1,9 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import CompanyLineChart from '../mockinvestment/detail/companyLineChart';
+import CompanyLineChart from '../mockinvestment/companyinfo/companyLineChart';
 import { useState } from 'react';
-import { PeriodValue } from '../mockinvestment/detail/periodToggle';
+import { PeriodValue } from '../mockinvestment/companyinfo/periodToggle';
 
 const itemMotion = {
   initial: { opacity: 0, scale: 0.9 },
