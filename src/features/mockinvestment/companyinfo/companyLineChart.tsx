@@ -78,6 +78,10 @@ export default function CompanyLineChart({
         rightPriceScale: {
           visible: true,
           borderVisible: false,
+          scaleMargins: {
+            top: 0.1,
+            bottom: 0.2,
+          },
         },
         timeScale: {
           rightOffset: 0,
