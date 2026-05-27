@@ -14,6 +14,7 @@ import { TodayTermCard } from '@/features/home/todayTermCard';
 import { useState, useEffect } from 'react';
 import { motion, useMotionValue } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import { MASTERS_PORTFOLIO } from '@/constants/mastersPortfolio';
 
 export const HomePage = () => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -150,22 +151,16 @@ export const HomePage = () => {
                 dragConstraints={{ left: maxDrag, right: 0 }}
                 dragElastic={0.1}
               >
-                <MasterPortfolio
-                  name='워런 버핏'
-                  path='/portfolio/selected?master=0'
-                />
-                <MasterPortfolio
-                  name='피터 린치'
-                  path='/portfolio/selected?master=1'
-                />
-                <MasterPortfolio
-                  name='레이 달리오'
-                  path='/portfolio/selected?master=2'
-                />
-                <MasterPortfolio
-                  name='윌리엄 오닐'
-                  path='/portfolio/selected?master=3'
-                />
+                {MASTERS_PORTFOLIO.map((master) => (
+                  <MasterPortfolio
+                    key={master.id}
+                    name={master.name}
+                    path={`/portfolio/selected?master=${master.id}`}
+                    tags={master.tags}
+                    image={master.image}
+                    companies={master.companies}
+                  />
+                ))}
               </motion.div>
             </div>
             <div className='mb-[8.3125rem] flex items-center justify-center'>
