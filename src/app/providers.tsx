@@ -2,6 +2,22 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React, { useState } from 'react';
+import { AuthGuard } from '@/components/authGuard';
+
+import { BottomTabBar } from '@/components/bottomTabBar';
+
+// 하단 탭바를 숨길 페이지 경로 목록
+const EXCLUDED_PATHS_FOR_BOTTOM_TAB = [
+  '/',
+  '/recommend',
+  '/intro',
+  '/oauth/kakao/callback',
+  '/terms/*',
+  '/portfolio/masterselect',
+  '/portfolio/selected/detail',
+  '/recommend/*',
+  '/mockinvestment/intro',
+];
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -17,6 +33,11 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthGuard>
+        {children}
+        <BottomTabBar excludePaths={EXCLUDED_PATHS_FOR_BOTTOM_TAB} />
+      </AuthGuard>
+    </QueryClientProvider>
   );
 }

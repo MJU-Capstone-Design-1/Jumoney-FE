@@ -1,7 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { BottomTabBarArea } from './icons/bottomTabBarArea';
 import { BottomTabBarInvestmentIcon } from './icons/bottomTabBarInvestmentIcon';
 import { BottomTabBarPortfolioIcon } from './icons/bottomTabBarPortfolioIcon';
@@ -9,9 +8,34 @@ import { BottomTabBarTermsIcon } from './icons/bottomTabBarTermsIcon';
 import { BottomTabBarRecommendIcon } from './icons/bottomTabBarRecommendIcon';
 import { BottomTabBarHomeIcon } from './icons/BottomTabBarHomeIcon';
 
-export const BottomTabBar = () => {
+interface BottomTabBarProps {
+  excludePaths?: string[];
+}
+
+export const BottomTabBar = ({ excludePaths = [] }: BottomTabBarProps) => {
   const router = useRouter();
-  const [selectedTab, setSelectedTab] = useState<string | null>(null);
+  const pathname = usePathname();
+
+  // URL 경로를 기반으로 활성화된 탭 계산
+  let selectedTab: string | null = null;
+  if (pathname.startsWith('/home')) selectedTab = 'home';
+  else if (pathname.startsWith('/terms')) selectedTab = 'terms';
+  else if (pathname.startsWith('/portfolio')) selectedTab = 'portfolio';
+  else if (pathname.startsWith('/recommend')) selectedTab = 'recommend';
+  else if (pathname.startsWith('/mockinvestment'))
+    selectedTab = 'mockinvestment';
+
+  const isExcluded = excludePaths.some((path) => {
+    if (path.endsWith('/*')) {
+      const basePath = path.slice(0, -2); // e.g., '/terms/*' -> '/terms'
+      return pathname.startsWith(basePath + '/');
+    }
+    return pathname === path;
+  });
+
+  if (isExcluded) {
+    return null;
+  }
 
   return (
     <div className='pointer-events-none fixed bottom-0 left-1/2 z-50 h-[9rem] w-full max-w-[23.4375rem] -translate-x-1/2'>
@@ -21,8 +45,7 @@ export const BottomTabBar = () => {
           <button
             type='button'
             onClick={() => {
-              setSelectedTab('home');
-              // router.push('/'); // TODO: 경로 추가
+              router.push('/home');
             }}
             className='pointer-events-auto relative flex h-6 w-6 items-center justify-center focus:outline-none'
           >
@@ -41,7 +64,6 @@ export const BottomTabBar = () => {
             <button
               type='button'
               onClick={() => {
-                setSelectedTab('terms');
                 router.push('/terms');
               }}
               className='pointer-events-auto relative flex h-6 w-6 items-center justify-center focus:outline-none'
@@ -57,7 +79,6 @@ export const BottomTabBar = () => {
             <button
               type='button'
               onClick={() => {
-                setSelectedTab('portfolio');
                 router.push('/portfolio/selected');
               }}
               className='pointer-events-auto relative flex h-6 w-6 items-center justify-center focus:outline-none'
@@ -77,7 +98,6 @@ export const BottomTabBar = () => {
             <button
               type='button'
               onClick={() => {
-                setSelectedTab('recommend');
                 router.push('/recommend');
               }}
               className='pointer-events-auto relative flex h-6 w-6 items-center justify-center focus:outline-none'
@@ -95,7 +115,6 @@ export const BottomTabBar = () => {
             <button
               type='button'
               onClick={() => {
-                setSelectedTab('mockinvestment');
                 router.push('/mockinvestment');
               }}
               className='pointer-events-auto relative flex h-6 w-6 items-center justify-center focus:outline-none'
