@@ -196,7 +196,7 @@ const MockInvestmentIntroPage = () => {
                   initial='enter'
                   animate='center'
                   exit='exit'
-                  transition={{ duration: 0.5, ease: 'easeInOut' }}
+                  transition={{ duration: 0.3, ease: 'easeInOut' }}
                   className='flex h-[9.375rem] w-[9.375rem] items-center justify-center overflow-hidden'
                 >
                   <Image
@@ -229,7 +229,7 @@ const MockInvestmentIntroPage = () => {
                 initial='enter'
                 animate='center'
                 exit='exit'
-                transition={{ duration: 0.5, ease: 'easeInOut' }}
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
                 className='text-label-xl text-secondary2 font-extrabold'
               >
                 {FIELDS[currentIndex].name}
