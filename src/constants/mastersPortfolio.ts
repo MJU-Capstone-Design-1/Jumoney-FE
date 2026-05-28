@@ -17,7 +17,7 @@ export const MASTERS_PORTFOLIO = [
     name: '피터 린치',
     tags: ['성장주 투자', '생활 속 발견'],
     image: '/images/peterLynchImage.svg',
-    companies: ['월마트', null, '맥도날드', null, '에머슨 일렉트릭'],
+    companies: ['월마트', '페니메이', '맥도날드', '시어스', '에머슨 일렉트릭'],
   },
   {
     id: 'dalio',
