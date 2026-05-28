@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { MASTER_LOGO } from '@/constants/masterLogos';
+import { MASTER_IMAGES } from '@/constants/masterImages';
 
 const popUpMotion = {
   initial: { opacity: 0, scale: 0 },
@@ -18,21 +19,24 @@ const popUpMotion = {
 };
 
 interface MasterPortfolioProps {
+  id: string;
   name: string;
   path: string;
   tags: string[];
-  image: string;
   companies: (string | null)[];
 }
 
 export const MasterPortfolio = ({
+  id,
   name,
   path,
   tags,
-  image,
   companies,
 }: MasterPortfolioProps) => {
   const router = useRouter();
+  const masterData = MASTER_IMAGES.find((m) => m.id == id);
+  const bgColor = masterData?.bgColor || 'bg-secondary1';
+
   return (
     <motion.button
       {...popUpMotion}
@@ -40,7 +44,15 @@ export const MasterPortfolio = ({
       className='bg-secondary1 shadow-card-shadow flex h-[12.75rem] w-[14rem] flex-col rounded-[1.5rem] p-[1rem]'
     >
       <div className='flex items-center gap-[1rem]'>
-        <Image src={image} alt={name} width={64} height={64} />
+        {masterData?.image ? (
+          <div
+            className={`h-[64px] w-[64px] rounded-full ${bgColor} overflow-hidden`}
+          >
+            <Image src={masterData.image} alt={name} width={64} height={64} />
+          </div>
+        ) : (
+          <div className='bg-default h-[64px] w-[64px] rounded-full' />
+        )}
         <div className='text-label-md font-extrabold'>{name}</div>
       </div>
       <div className='flex items-center gap-[0.5rem] pt-[0.75rem]'>

@@ -167,10 +167,10 @@ export const HomePage = () => {
                 {MASTERS_PORTFOLIO.map((master) => (
                   <MasterPortfolio
                     key={master.id}
+                    id={master.id}
                     name={master.name}
                     path={`/portfolio/selected?master=${master.id}`}
                     tags={master.tags}
-                    image={master.image}
                     companies={master.companies}
                   />
                 ))}

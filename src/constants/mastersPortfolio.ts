@@ -1,6 +1,6 @@
 export const MASTERS_PORTFOLIO = [
   {
-    id: 0,
+    id: 'buffett',
     name: '워런 버핏',
     tags: ['가치 투자', '경제적 해자'],
     image: '/images/warrenBuffetImage.svg',
@@ -13,14 +13,14 @@ export const MASTERS_PORTFOLIO = [
     ],
   },
   {
-    id: 1,
+    id: 'lynch',
     name: '피터 린치',
     tags: ['성장주 투자', '생활 속 발견'],
     image: '/images/peterLynchImage.svg',
     companies: ['월마트', null, '맥도날드', null, '에머슨 일렉트릭'],
   },
   {
-    id: 2,
+    id: 'dalio',
     name: '레이 달리오',
     tags: ['거시 투자', '올웨더 포트폴리오'],
     image: '/images/rayDalioImage.svg',
@@ -33,7 +33,7 @@ export const MASTERS_PORTFOLIO = [
     ],
   },
   {
-    id: 3,
+    id: 'oneil',
     name: '윌리엄 오닐',
     tags: ['모멘텀 투자', 'CAN SLIM'],
     image: '/images/williamOneilImage.svg',
