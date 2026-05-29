@@ -41,7 +41,7 @@ export const PortfolioSelectedMasterPrinciples = ({
             <ul className='flex list-disc flex-col gap-[0.25rem] pl-[1rem]'>
               {principle.description}
               {principle.details && (
-                <div className='text-text-sub mt-[0.25rem] flex flex-col gap-[0.125rem] pl-[0.5rem] font-semibold'>
+                <div className='text-text-sub flex flex-col gap-[0.125rem] pl-[0.5rem] font-semibold'>
                   {principle.details.map((detail) => (
                     <li key={detail} className='list-none'>
                       • {detail}

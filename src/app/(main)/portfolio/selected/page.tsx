@@ -2,7 +2,7 @@
 
 import React, { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { MASTERS } from '@/features/portfolio/masterselect/portfolioSelectInformations';
+import { useGetMasterDetail } from '@/api/generated/endpoints/거장-정보/거장-정보';
 import { PortfolioSelectedMasterChangeButton } from '@/features/portfolio/selected/portfolioSelectedMasterChangeButton';
 import { PortfolioSelectedMasterHeader } from '@/features/portfolio/selected/portfolioSelectedMasterHeader';
 
@@ -11,17 +11,91 @@ import { PortfolioSelectedMasterPrinciples } from '@/features/portfolio/selected
 import { PortfolioSelectedMasterButtons } from '@/features/portfolio/selected/portfolioSelectedMasterButtons';
 import { BottomTabBar } from '@/components/bottomTabBar';
 
+const MASTER_STATIC_INFO: Record<string, { image: string; bgColor: string }> = {
+  WARREN_BUFFETT: {
+    image: '/images/warrenBuffetImage.svg',
+    bgColor: 'bg-main1',
+  },
+  PETER_LYNCH: { image: '/images/peterLynchImage.svg', bgColor: 'bg-main2' },
+  RAY_DALIO: { image: '/images/rayDalioImage.svg', bgColor: 'bg-main3' },
+  WILLIAM_ONEIL: {
+    image: '/images/williamOneilImage.svg',
+    bgColor: 'bg-main4',
+  },
+};
+
+interface ApiMasterDetailResponse {
+  success?: boolean;
+  code?: string;
+  message?: string;
+  data?: {
+    masterId?: number;
+    masterCode?: string;
+    masterName?: string;
+    tags?: string[];
+    quote?: string;
+    philosophy?: {
+      title?: string;
+      description?: string;
+    };
+    principles?: Array<{
+      title?: string;
+      description?: string;
+      details?: string[];
+    }>;
+  };
+}
+
+const codesByIndex = [
+  'WARREN_BUFFETT',
+  'PETER_LYNCH',
+  'RAY_DALIO',
+  'WILLIAM_ONEIL',
+];
+
 const PageContent = () => {
   const searchParams = useSearchParams();
-  const masterId = searchParams.get('master') || '0';
-  const selectedIndex = parseInt(masterId, 10) || 0;
-  const master = MASTERS[selectedIndex] || MASTERS[0];
+  const masterIdParam = searchParams.get('master') || '0';
+  const selectedIndex = parseInt(masterIdParam, 10) || 0;
+  const masterId = selectedIndex + 1;
+
+  const { data: detailData, isLoading } = useGetMasterDetail(masterId);
+
+  const response = detailData as ApiMasterDetailResponse | undefined;
+  const currentCode =
+    response?.data?.masterCode ||
+    codesByIndex[selectedIndex] ||
+    'WARREN_BUFFETT';
+  const staticInfo =
+    MASTER_STATIC_INFO[currentCode] || MASTER_STATIC_INFO.WARREN_BUFFETT;
+
+  if (isLoading) {
+    return (
+      <div className='relative min-h-screen overflow-hidden'>
+        {/* 거장별 테마 컬러 배경 */}
+        <div
+          className={`${staticInfo.bgColor} absolute h-[60rem] w-[60rem] translate-x-[-18.28125rem] translate-y-[-37.6875rem] rounded-[77.125rem]`}
+        />
+        <div className='text-secondary1 flex min-h-screen items-center justify-center font-bold'>
+          로딩 중...
+        </div>
+      </div>
+    );
+  }
+
+  const detail = response?.data;
+  const name = detail?.masterName || '';
+  const quote = detail?.quote || '';
+  const tags = detail?.tags || [];
+
+  const philosophy = detail?.philosophy || { title: '', description: '' };
+  const principles = detail?.principles || [];
 
   return (
-    <div className='relative min-h-screen'>
+    <div className='relative min-h-screen overflow-hidden'>
       {/* 거장별 테마 컬러 배경 */}
       <div
-        className={`${master.bgColor} absolute h-[60rem] w-[60rem] translate-x-[-18.28125rem] translate-y-[-37.6875rem] rounded-[77.125rem]`}
+        className={`${staticInfo.bgColor} absolute h-[60rem] w-[60rem] translate-x-[-18.28125rem] translate-y-[-37.6875rem] rounded-[77.125rem]`}
       />
 
       {/* 우측 상단 플로팅 변경 버튼 */}
@@ -31,10 +105,10 @@ const PageContent = () => {
 
       {/* 거장 프로필 영역 */}
       <PortfolioSelectedMasterHeader
-        name={master.name}
-        image={master.image}
-        quote={master.quote}
-        tags={master.tags}
+        name={name}
+        image={staticInfo.image}
+        quote={quote}
+        tags={tags}
       />
 
       {/* 정보 포트폴리오 버튼 영역 */}
@@ -42,13 +116,17 @@ const PageContent = () => {
 
       {/* 핵심 투자 철학 영역 */}
       <PortfolioSelectedMasterPhilosophy
-        title={master.investment_philosophy.title}
-        description={master.investment_philosophy.description}
+        title={philosophy.title || ''}
+        description={philosophy.description || ''}
       />
 
       {/* 투자 원칙 리스트 영역 */}
       <PortfolioSelectedMasterPrinciples
-        principles={master.investment_principles}
+        principles={principles.map((p) => ({
+          title: p.title || '',
+          description: p.description || '',
+          details: p.details || [],
+        }))}
       />
 
       <BottomTabBar />
