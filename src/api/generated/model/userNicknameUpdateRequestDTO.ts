@@ -7,7 +7,7 @@
  */
 
 /**
- * 닉네임 설정 요청
+ * 닉네임 수정 요청
  */
 export interface UserNicknameUpdateRequestDTO {
   /**

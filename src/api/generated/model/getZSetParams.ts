@@ -6,13 +6,25 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type RunHtsConditionBatchParams = {
+export type GetZSetParams = {
 /**
  * 운영 환경 전용 관리자 키
  */
 adminKey?: string;
 /**
- * 저장 기준일. 생략 시 오늘 날짜. 예시는 문서 생성일 기준 전날로 표시됩니다.
+ * 조회할 Redis ZSET key
  */
-baseDate?: string;
+key: string;
+/**
+ * 시작 index
+ */
+start?: number;
+/**
+ * 종료 index
+ */
+end?: number;
+/**
+ * true면 score가 큰 member부터 조회합니다.
+ */
+reverse?: boolean;
 };

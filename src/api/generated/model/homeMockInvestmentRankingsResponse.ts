@@ -5,11 +5,9 @@
  * 주머니의 백엔드 API 명세서입니다.
  * OpenAPI spec version: 1.0.0
  */
+import type { RankingSection } from './rankingSection';
 
-/**
- * 닉네임 수정 응답
- */
-export interface UserNicknameUpdateResponseDTO {
-  userId?: number;
-  serviceNickname?: string;
+export interface HomeMockInvestmentRankingsResponse {
+  overall?: RankingSection;
+  masters?: RankingSection[];
 }

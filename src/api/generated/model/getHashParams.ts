@@ -6,10 +6,17 @@
  * OpenAPI spec version: 1.0.0
  */
 
+export type GetHashParams = {
 /**
- * 닉네임 수정 응답
+ * 운영 환경 전용 관리자 키
  */
-export interface UserNicknameUpdateResponseDTO {
-  userId?: number;
-  serviceNickname?: string;
-}
+adminKey?: string;
+/**
+ * 조회할 Redis Hash key
+ */
+key: string;
+/**
+ * 조회할 Hash field
+ */
+field: string;
+};

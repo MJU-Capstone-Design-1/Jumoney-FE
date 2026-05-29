@@ -9,7 +9,7 @@ import type { GetChartCandleSyncStatusPeriod } from './getChartCandleSyncStatusP
 
 export type GetChartCandleSyncStatusParams = {
 /**
- * prod 프로필 전용 관리자 키
+ * 운영 환경 전용 관리자 키
  */
 adminKey?: string;
 /**

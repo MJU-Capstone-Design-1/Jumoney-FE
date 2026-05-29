@@ -7,9 +7,9 @@
  */
 
 /**
- * 닉네임 수정 응답
+ * 사용자 정보 조회 응답
  */
-export interface UserNicknameUpdateResponseDTO {
-  userId?: number;
-  serviceNickname?: string;
+export interface UserInfoResponseDTO {
+  nickname?: string;
+  selectedMasterId?: number;
 }

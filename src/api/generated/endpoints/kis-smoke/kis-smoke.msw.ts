@@ -23,7 +23,6 @@ import type {
   ApiResponseListKisHtsConditionResultOutput,
   ApiResponseListKisHtsConditionTitleOutput,
   ApiResponseMinuteCandleSyncResponse,
-  ApiResponseMinuteCandleSyncStatusResponse,
   ApiResponseMockInvestmentChartCandleSyncResponse,
   ApiResponseMockInvestmentChartCandleSyncStatusResponse,
   ApiResponseStockIndicatorBatchStatusResponse
@@ -54,13 +53,11 @@ export const getHtsConditionResultsResponseMock = (overrideResponse: Partial<Ext
 
 export const getGetChartCandleSyncStatusResponseMock = (overrideResponse: Partial<Extract<ApiResponseMockInvestmentChartCandleSyncStatusResponse, object>> = {}): ApiResponseMockInvestmentChartCandleSyncStatusResponse => ({success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), data: faker.helpers.arrayElement([{stockCode: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), stockName: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), targetDate: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 10), undefined]), periods: faker.helpers.arrayElement([Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({period: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), intervalType: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), expectedStartTime: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]), expectedEndTime: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]), expectedCandleCount: faker.helpers.arrayElement([faker.number.int(), undefined]), candleCount: faker.helpers.arrayElement([faker.number.int(), undefined]), firstCandleTime: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]), lastCandleTime: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]), hasAnyCandle: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), hasExpectedCandleCount: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), coversExpectedRange: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), complete: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined])}, undefined]), ...overrideResponse})
 
-export const getGetTodayMinuteCandleSyncStatusResponseMock = (overrideResponse: Partial<Extract<ApiResponseMinuteCandleSyncStatusResponse, object>> = {}): ApiResponseMinuteCandleSyncStatusResponse => ({success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), data: faker.helpers.arrayElement([{stockCode: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), stockName: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), date: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 10), undefined]), dbExpectedStartTime: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]), dbExpectedEndTime: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]), dbExpectedCandleCount: faker.helpers.arrayElement([faker.number.int(), undefined]), candleCount: faker.helpers.arrayElement([faker.number.int(), undefined]), firstCandleTime: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]), lastCandleTime: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]), hasAnyCandle: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), hasExpectedCandleCount: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), coversExpectedRange: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), realtimeCheckRequired: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), realtimeExpectedStartTime: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]), realtimeExpectedEndTime: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]), realtimeRedisChecked: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), realtimeRedisCheckMessage: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, undefined]), ...overrideResponse})
-
 export const getGetStockIndicatorBatchStatusResponseMock = (overrideResponse: Partial<Extract<ApiResponseStockIndicatorBatchStatusResponse, object>> = {}): ApiResponseStockIndicatorBatchStatusResponse => ({success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), data: faker.helpers.arrayElement([{baseDate: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 10), undefined]), baseTime: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), stockCount: faker.helpers.arrayElement([faker.number.int(), undefined]), indicatorCount: faker.helpers.arrayElement([faker.number.int(), undefined]), missingCount: faker.helpers.arrayElement([faker.number.int(), undefined]), invalidRequiredFieldCount: faker.helpers.arrayElement([faker.number.int(), undefined]), complete: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), missingStocks: faker.helpers.arrayElement([Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({stockId: faker.helpers.arrayElement([faker.number.int(), undefined]), stockCode: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), stockName: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined])}, undefined]), ...overrideResponse})
 
 
 export const getSyncChartCandlesMockHandler = (overrideResponse?: ApiResponseMockInvestmentChartCandleSyncResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<ApiResponseMockInvestmentChartCandleSyncResponse> | ApiResponseMockInvestmentChartCandleSyncResponse), options?: RequestHandlerOptions) => {
-  return http.post('*/api/local/kis/chart/sync', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+  return http.post('*/api/smoke/kis/chart/sync', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
 
 
     return HttpResponse.json(overrideResponse !== undefined
@@ -72,7 +69,7 @@ export const getSyncChartCandlesMockHandler = (overrideResponse?: ApiResponseMoc
 }
 
 export const getSyncChartCandlesInRangeMockHandler = (overrideResponse?: ApiResponseMockInvestmentChartCandleSyncResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<ApiResponseMockInvestmentChartCandleSyncResponse> | ApiResponseMockInvestmentChartCandleSyncResponse), options?: RequestHandlerOptions) => {
-  return http.post('*/api/local/kis/chart/sync/range', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+  return http.post('*/api/smoke/kis/chart/sync/range', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
 
 
     return HttpResponse.json(overrideResponse !== undefined
@@ -84,7 +81,7 @@ export const getSyncChartCandlesInRangeMockHandler = (overrideResponse?: ApiResp
 }
 
 export const getSyncTodayMinuteCandlesMockHandler = (overrideResponse?: ApiResponseMinuteCandleSyncResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<ApiResponseMinuteCandleSyncResponse> | ApiResponseMinuteCandleSyncResponse), options?: RequestHandlerOptions) => {
-  return http.post('*/api/local/kis/chart/minute/sync', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+  return http.post('*/api/smoke/kis/chart/minute/sync', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
 
 
     return HttpResponse.json(overrideResponse !== undefined
@@ -96,7 +93,7 @@ export const getSyncTodayMinuteCandlesMockHandler = (overrideResponse?: ApiRespo
 }
 
 export const getSyncMinuteCandlesByTradingDayMockHandler = (overrideResponse?: ApiResponseMinuteCandleSyncResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<ApiResponseMinuteCandleSyncResponse> | ApiResponseMinuteCandleSyncResponse), options?: RequestHandlerOptions) => {
-  return http.post('*/api/local/kis/chart/minute/sync/trading-day', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+  return http.post('*/api/smoke/kis/chart/minute/sync/trading-day', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
 
 
     return HttpResponse.json(overrideResponse !== undefined
@@ -108,7 +105,7 @@ export const getSyncMinuteCandlesByTradingDayMockHandler = (overrideResponse?: A
 }
 
 export const getRunStockIndicatorBatchMockHandler = (overrideResponse?: ApiResponseBatchJobRunResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<ApiResponseBatchJobRunResponse> | ApiResponseBatchJobRunResponse), options?: RequestHandlerOptions) => {
-  return http.post('*/api/local/kis/batch/stock-indicators', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+  return http.post('*/api/smoke/kis/batch/stock-indicators', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
 
 
     return HttpResponse.json(overrideResponse !== undefined
@@ -120,7 +117,7 @@ export const getRunStockIndicatorBatchMockHandler = (overrideResponse?: ApiRespo
 }
 
 export const getRunHtsConditionBatchMockHandler = (overrideResponse?: ApiResponseBatchJobRunResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<ApiResponseBatchJobRunResponse> | ApiResponseBatchJobRunResponse), options?: RequestHandlerOptions) => {
-  return http.post('*/api/local/kis/batch/hts-conditions', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+  return http.post('*/api/smoke/kis/batch/hts-conditions', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
 
 
     return HttpResponse.json(overrideResponse !== undefined
@@ -132,7 +129,7 @@ export const getRunHtsConditionBatchMockHandler = (overrideResponse?: ApiRespons
 }
 
 export const getSmokeMockHandler = (overrideResponse?: ApiResponseKisSmokeResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<ApiResponseKisSmokeResponse> | ApiResponseKisSmokeResponse), options?: RequestHandlerOptions) => {
-  return http.get('*/api/local/kis/smoke', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+  return http.get('*/api/smoke/kis/smoke', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
 
 
     return HttpResponse.json(overrideResponse !== undefined
@@ -144,7 +141,7 @@ export const getSmokeMockHandler = (overrideResponse?: ApiResponseKisSmokeRespon
 }
 
 export const getHtsConditionTitlesMockHandler = (overrideResponse?: ApiResponseListKisHtsConditionTitleOutput | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<ApiResponseListKisHtsConditionTitleOutput> | ApiResponseListKisHtsConditionTitleOutput), options?: RequestHandlerOptions) => {
-  return http.get('*/api/local/kis/hts/titles', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+  return http.get('*/api/smoke/kis/hts/titles', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
 
 
     return HttpResponse.json(overrideResponse !== undefined
@@ -156,7 +153,7 @@ export const getHtsConditionTitlesMockHandler = (overrideResponse?: ApiResponseL
 }
 
 export const getHtsConditionResultsMockHandler = (overrideResponse?: ApiResponseListKisHtsConditionResultOutput | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<ApiResponseListKisHtsConditionResultOutput> | ApiResponseListKisHtsConditionResultOutput), options?: RequestHandlerOptions) => {
-  return http.get('*/api/local/kis/hts/results', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+  return http.get('*/api/smoke/kis/hts/results', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
 
 
     return HttpResponse.json(overrideResponse !== undefined
@@ -168,7 +165,7 @@ export const getHtsConditionResultsMockHandler = (overrideResponse?: ApiResponse
 }
 
 export const getGetChartCandleSyncStatusMockHandler = (overrideResponse?: ApiResponseMockInvestmentChartCandleSyncStatusResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<ApiResponseMockInvestmentChartCandleSyncStatusResponse> | ApiResponseMockInvestmentChartCandleSyncStatusResponse), options?: RequestHandlerOptions) => {
-  return http.get('*/api/local/kis/chart/sync/status', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+  return http.get('*/api/smoke/kis/chart/sync/status', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
 
 
     return HttpResponse.json(overrideResponse !== undefined
@@ -179,20 +176,8 @@ export const getGetChartCandleSyncStatusMockHandler = (overrideResponse?: ApiRes
   }, options)
 }
 
-export const getGetTodayMinuteCandleSyncStatusMockHandler = (overrideResponse?: ApiResponseMinuteCandleSyncStatusResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<ApiResponseMinuteCandleSyncStatusResponse> | ApiResponseMinuteCandleSyncStatusResponse), options?: RequestHandlerOptions) => {
-  return http.get('*/api/local/kis/chart/minute/sync/status', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
-
-
-    return HttpResponse.json(overrideResponse !== undefined
-    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
-    : getGetTodayMinuteCandleSyncStatusResponseMock(),
-      { status: 200
-      })
-  }, options)
-}
-
 export const getGetStockIndicatorBatchStatusMockHandler = (overrideResponse?: ApiResponseStockIndicatorBatchStatusResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<ApiResponseStockIndicatorBatchStatusResponse> | ApiResponseStockIndicatorBatchStatusResponse), options?: RequestHandlerOptions) => {
-  return http.get('*/api/local/kis/batch/stock-indicators/status', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+  return http.get('*/api/smoke/kis/batch/stock-indicators/status', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
 
 
     return HttpResponse.json(overrideResponse !== undefined
@@ -213,6 +198,5 @@ export const getKisSmokeMock = () => [
   getHtsConditionTitlesMockHandler(),
   getHtsConditionResultsMockHandler(),
   getGetChartCandleSyncStatusMockHandler(),
-  getGetTodayMinuteCandleSyncStatusMockHandler(),
   getGetStockIndicatorBatchStatusMockHandler()
 ]

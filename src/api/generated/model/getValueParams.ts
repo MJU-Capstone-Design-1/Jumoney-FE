@@ -6,10 +6,13 @@
  * OpenAPI spec version: 1.0.0
  */
 
+export type GetValueParams = {
 /**
- * 닉네임 수정 응답
+ * 운영 환경 전용 관리자 키
  */
-export interface UserNicknameUpdateResponseDTO {
-  userId?: number;
-  serviceNickname?: string;
-}
+adminKey?: string;
+/**
+ * 조회할 Redis String key
+ */
+key: string;
+};

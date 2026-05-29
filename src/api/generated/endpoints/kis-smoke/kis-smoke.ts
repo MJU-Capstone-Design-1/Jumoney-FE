@@ -30,13 +30,11 @@ import type {
   ApiResponseListKisHtsConditionResultOutput,
   ApiResponseListKisHtsConditionTitleOutput,
   ApiResponseMinuteCandleSyncResponse,
-  ApiResponseMinuteCandleSyncStatusResponse,
   ApiResponseMockInvestmentChartCandleSyncResponse,
   ApiResponseMockInvestmentChartCandleSyncStatusResponse,
   ApiResponseStockIndicatorBatchStatusResponse,
   GetChartCandleSyncStatusParams,
   GetStockIndicatorBatchStatusParams,
-  GetTodayMinuteCandleSyncStatusParams,
   HtsConditionResultsParams,
   HtsConditionTitlesParams,
   RunHtsConditionBatchParams,
@@ -54,7 +52,7 @@ import { customInstance } from '../../../custom-instance';
 
 
 /**
- * 차트 period 기준으로 필요한 캔들을 동기화합니다. period 생략 시 ONE_DAY, ONE_WEEK, THREE_MONTHS, ONE_YEAR, FIVE_YEARS를 오늘 또는 직전 개장일 기준으로 모두 채웁니다. ONE_DAY/ONE_WEEK는 분봉 동기화와 30분봉 집계를 사용하고, THREE_MONTHS/ONE_YEAR는 DAY, FIVE_YEARS는 WEEK 기간봉을 사용합니다. stockCode를 생략하면 등록된 전체 종목을 대상으로 실행합니다. prod 프로필에서는 adminKey가 필요합니다.
+ * 차트 period 기준으로 필요한 캔들을 동기화합니다. period 생략 시 ONE_DAY, ONE_WEEK, THREE_MONTHS, ONE_YEAR, FIVE_YEARS를 오늘 또는 직전 개장일 기준으로 모두 채웁니다. ONE_DAY/ONE_WEEK는 분봉 동기화와 30분봉 집계를 사용하고, THREE_MONTHS/ONE_YEAR는 DAY, FIVE_YEARS는 WEEK 기간봉을 사용합니다. stockCode를 생략하면 등록된 전체 종목을 대상으로 실행합니다. 운영 환경에서는 adminKey가 필요합니다.
  * @summary 차트 기간 기준 수동 동기화
  */
 export const syncChartCandles = (
@@ -64,7 +62,7 @@ export const syncChartCandles = (
 
 
       return customInstance<ApiResponseMockInvestmentChartCandleSyncResponse>(
-      {url: `/api/local/kis/chart/sync`, method: 'POST',
+      {url: `/api/smoke/kis/chart/sync`, method: 'POST',
         params, signal
     },
       );
@@ -117,7 +115,7 @@ export const useSyncChartCandles = <TError = unknown,
       return useMutation(getSyncChartCandlesMutationOptions(options), queryClient);
     }
     /**
- * 지정한 기간만 차트 원천 캔들로 보정합니다. ONE_DAY/ONE_WEEK는 해당 기간의 영업일 분봉을 동기화하고 30분봉을 재집계합니다. THREE_MONTHS/ONE_YEAR는 DAY 기간봉, FIVE_YEARS는 WEEK 기간봉을 지정 기간만 upsert합니다. stockCode를 생략하면 등록된 전체 종목을 대상으로 실행합니다. prod 프로필에서는 adminKey가 필요합니다.
+ * 지정한 기간만 차트 원천 캔들로 보정합니다. ONE_DAY/ONE_WEEK는 해당 기간의 영업일 분봉을 동기화하고 30분봉을 재집계합니다. THREE_MONTHS/ONE_YEAR는 DAY 기간봉, FIVE_YEARS는 WEEK 기간봉을 지정 기간만 upsert합니다. stockCode를 생략하면 등록된 전체 종목을 대상으로 실행합니다. 운영 환경에서는 adminKey가 필요합니다.
  * @summary 차트 특정 기간 수동 동기화
  */
 export const syncChartCandlesInRange = (
@@ -127,7 +125,7 @@ export const syncChartCandlesInRange = (
 
 
       return customInstance<ApiResponseMockInvestmentChartCandleSyncResponse>(
-      {url: `/api/local/kis/chart/sync/range`, method: 'POST',
+      {url: `/api/smoke/kis/chart/sync/range`, method: 'POST',
         params, signal
     },
       );
@@ -180,7 +178,7 @@ export const useSyncChartCandlesInRange = <TError = unknown,
       return useMutation(getSyncChartCandlesInRangeMutationOptions(options), queryClient);
     }
     /**
- * KIS 주식당일분봉조회(FHKST03010200)를 30분 단위 입력 시각으로 여러 번 호출해 당일 1분봉을 stock_candles 테이블에 upsert합니다. stockCode를 생략하면 등록된 전체 종목을 대상으로 실행합니다. KIS 응답의 최근 분봉은 아직 확정되지 않았을 수 있어 요청 시각 기준 최근 2분은 저장하지 않습니다. prod 프로필에서는 adminKey가 필요합니다.
+ * KIS 주식당일분봉조회(FHKST03010200)를 30분 단위 입력 시각으로 여러 번 호출해 당일 1분봉을 stock_candles 테이블에 upsert합니다. stockCode를 생략하면 등록된 전체 종목을 대상으로 실행합니다. KIS 응답의 최근 분봉은 아직 확정되지 않았을 수 있어 요청 시각 기준 최근 2분은 저장하지 않습니다. 15:20~15:29 장마감 동시호가 구간은 15:19 종가 기준 volume=0 분봉으로 보강하고, 15:30은 별도 장마감 단일가 체결 봉으로 저장합니다. 운영 환경에서는 adminKey가 필요합니다.
  * @summary 당일 분봉 수동 동기화
  */
 export const syncTodayMinuteCandles = (
@@ -190,7 +188,7 @@ export const syncTodayMinuteCandles = (
 
 
       return customInstance<ApiResponseMinuteCandleSyncResponse>(
-      {url: `/api/local/kis/chart/minute/sync`, method: 'POST',
+      {url: `/api/smoke/kis/chart/minute/sync`, method: 'POST',
         params, signal
     },
       );
@@ -243,7 +241,7 @@ export const useSyncTodayMinuteCandles = <TError = unknown,
       return useMutation(getSyncTodayMinuteCandlesMutationOptions(options), queryClient);
     }
     /**
- * KIS 주식일별분봉조회(FHKST03010230)를 이용해 특정 영업일의 1분봉을 stock_candles 테이블에 upsert합니다. stockCode를 생략하면 등록된 전체 종목을 대상으로 실행합니다. 오늘 날짜를 넣으면 당일 분봉과 동일하게 최근 2분은 저장하지 않고, 과거 영업일을 넣으면 장 마감 15:30까지 전량 확정 분봉을 저장합니다. 휴장일이나 주말은 허용하지 않습니다. prod 프로필에서는 adminKey가 필요합니다.
+ * KIS 주식일별분봉조회(FHKST03010230)를 이용해 특정 영업일의 1분봉을 stock_candles 테이블에 upsert합니다. stockCode를 생략하면 등록된 전체 종목을 대상으로 실행합니다. 오늘 날짜를 넣으면 당일 분봉과 동일하게 최근 2분은 저장하지 않고, 과거 영업일을 넣으면 장 마감 15:30까지 전량 확정 분봉을 저장합니다. 과거 영업일 응답에 다른 날짜 raw가 섞여도 요청한 tradingDate 분봉만 저장하며, 15:20~15:29는 15:19 종가 기준 volume=0 분봉으로 보강합니다. 휴장일이나 주말은 허용하지 않습니다. 운영 환경에서는 adminKey가 필요합니다.
  * @summary 특정 영업일 분봉 수동 동기화
  */
 export const syncMinuteCandlesByTradingDay = (
@@ -253,7 +251,7 @@ export const syncMinuteCandlesByTradingDay = (
 
 
       return customInstance<ApiResponseMinuteCandleSyncResponse>(
-      {url: `/api/local/kis/chart/minute/sync/trading-day`, method: 'POST',
+      {url: `/api/smoke/kis/chart/minute/sync/trading-day`, method: 'POST',
         params, signal
     },
       );
@@ -306,7 +304,7 @@ export const useSyncMinuteCandlesByTradingDay = <TError = unknown,
       return useMutation(getSyncMinuteCandlesByTradingDayMutationOptions(options), queryClient);
     }
     /**
- * Stock 테이블 전체 종목을 순회하며 KIS 지표를 조회해 stock_indicators 테이블에 upsert합니다. prod 프로필에서는 adminKey가 필요합니다. 수동 실행은 요청한 baseDate를 그대로 사용하며, 정기 스케줄처럼 직전 개장일 기준 배치는 다음 장 시작 전에 실행해야 합니다. 단, 오늘 기준 실행은 KIS 투자자매매동향 일별 API 제한 때문에 15:40 이후에만 가능합니다. 정기 스케줄은 직전 평일 기준으로 실행됩니다.
+ * Stock 테이블 전체 종목을 순회하며 KIS 지표를 조회해 stock_indicators 테이블에 upsert합니다. 운영 환경에서는 adminKey가 필요합니다. 수동 실행은 요청한 baseDate를 그대로 사용하며, 정기 스케줄처럼 직전 개장일 기준 배치는 다음 장 시작 전에 실행해야 합니다. 단, 오늘 기준 실행은 KIS 투자자매매동향 일별 API 제한 때문에 15:40 이후에만 가능합니다. 정기 스케줄은 직전 평일 기준으로 실행됩니다.
  * @summary 종목 지표 배치 수동 실행
  */
 export const runStockIndicatorBatch = (
@@ -316,7 +314,7 @@ export const runStockIndicatorBatch = (
 
 
       return customInstance<ApiResponseBatchJobRunResponse>(
-      {url: `/api/local/kis/batch/stock-indicators`, method: 'POST',
+      {url: `/api/smoke/kis/batch/stock-indicators`, method: 'POST',
         params, signal
     },
       );
@@ -369,7 +367,7 @@ export const useRunStockIndicatorBatch = <TError = unknown,
       return useMutation(getRunStockIndicatorBatchMutationOptions(options), queryClient);
     }
     /**
- * 설정된 4개 HTS 조건검색 결과를 KIS에서 조회해 hts_stocks 테이블에 저장합니다. prod 프로필에서는 adminKey가 필요합니다. 수동 실행은 요청한 baseDate를 그대로 사용하며, 생략 시 오늘 날짜를 사용합니다. 정기 스케줄은 직전 평일 기준으로 실행됩니다.
+ * 설정된 4개 HTS 조건검색 결과를 KIS에서 조회해 hts_stocks 테이블에 저장합니다. 운영 환경에서는 adminKey가 필요합니다. 수동 실행은 요청한 baseDate를 그대로 사용하며, 생략 시 오늘 날짜를 사용합니다. 정기 스케줄은 직전 평일 기준으로 실행됩니다.
  * @summary HTS 조건검색 배치 수동 실행
  */
 export const runHtsConditionBatch = (
@@ -379,7 +377,7 @@ export const runHtsConditionBatch = (
 
 
       return customInstance<ApiResponseBatchJobRunResponse>(
-      {url: `/api/local/kis/batch/hts-conditions`, method: 'POST',
+      {url: `/api/smoke/kis/batch/hts-conditions`, method: 'POST',
         params, signal
     },
       );
@@ -432,7 +430,7 @@ export const useRunHtsConditionBatch = <TError = unknown,
       return useMutation(getRunHtsConditionBatchMutationOptions(options), queryClient);
     }
     /**
- * 입력 종목 코드로 현재까지 연동된 KIS REST API를 순차 호출하고 각 API의 성공 여부와 샘플 응답을 반환합니다. prod 프로필에서는 adminKey가 필요합니다.
+ * 입력 종목 코드로 현재까지 연동된 KIS REST API를 순차 호출하고 각 API의 성공 여부와 샘플 응답을 반환합니다. 운영 환경에서는 adminKey가 필요합니다.
  * @summary KIS API 호출 검증
  */
 export const smoke = (
@@ -442,7 +440,7 @@ export const smoke = (
 
 
       return customInstance<ApiResponseKisSmokeResponse>(
-      {url: `/api/local/kis/smoke`, method: 'GET',
+      {url: `/api/smoke/kis/smoke`, method: 'GET',
         params, signal
     },
       );
@@ -453,7 +451,7 @@ export const smoke = (
 
 export const getSmokeQueryKey = (params?: SmokeParams,) => {
     return [
-    `/api/local/kis/smoke`, ...(params ? [params] : [])
+    `/api/smoke/kis/smoke`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -526,7 +524,7 @@ export function useSmoke<TData = Awaited<ReturnType<typeof smoke>>, TError = unk
 
 
 /**
- * HTS에 서버저장된 조건명과 seq 목록을 조회합니다. prod 프로필에서는 adminKey가 필요합니다.
+ * HTS에 서버저장된 조건명과 seq 목록을 조회합니다. 운영 환경에서는 adminKey가 필요합니다.
  * @summary HTS 조건검색 목록조회 검증
  */
 export const htsConditionTitles = (
@@ -536,7 +534,7 @@ export const htsConditionTitles = (
 
 
       return customInstance<ApiResponseListKisHtsConditionTitleOutput>(
-      {url: `/api/local/kis/hts/titles`, method: 'GET',
+      {url: `/api/smoke/kis/hts/titles`, method: 'GET',
         params, signal
     },
       );
@@ -547,7 +545,7 @@ export const htsConditionTitles = (
 
 export const getHtsConditionTitlesQueryKey = (params?: HtsConditionTitlesParams,) => {
     return [
-    `/api/local/kis/hts/titles`, ...(params ? [params] : [])
+    `/api/smoke/kis/hts/titles`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -620,7 +618,7 @@ export function useHtsConditionTitles<TData = Awaited<ReturnType<typeof htsCondi
 
 
 /**
- * HTS 조건 seq로 종목검색 결과를 조회합니다. DB에는 저장하지 않습니다. prod 프로필에서는 adminKey가 필요합니다.
+ * HTS 조건 seq로 종목검색 결과를 조회합니다. DB에는 저장하지 않습니다. 운영 환경에서는 adminKey가 필요합니다.
  * @summary HTS 조건검색 결과조회 검증
  */
 export const htsConditionResults = (
@@ -630,7 +628,7 @@ export const htsConditionResults = (
 
 
       return customInstance<ApiResponseListKisHtsConditionResultOutput>(
-      {url: `/api/local/kis/hts/results`, method: 'GET',
+      {url: `/api/smoke/kis/hts/results`, method: 'GET',
         params, signal
     },
       );
@@ -641,7 +639,7 @@ export const htsConditionResults = (
 
 export const getHtsConditionResultsQueryKey = (params?: HtsConditionResultsParams,) => {
     return [
-    `/api/local/kis/hts/results`, ...(params ? [params] : [])
+    `/api/smoke/kis/hts/results`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -714,7 +712,7 @@ export function useHtsConditionResults<TData = Awaited<ReturnType<typeof htsCond
 
 
 /**
- * stock_candles 테이블에 저장된 특정 종목의 차트 period별 원천 캔들 범위와 건수를 확인합니다. period를 생략하면 ONE_DAY, ONE_WEEK, THREE_MONTHS, ONE_YEAR, FIVE_YEARS 상태를 모두 반환합니다. 부족하면 /api/local/kis/chart/sync로 보정합니다. prod 프로필에서는 adminKey가 필요합니다.
+ * stock_candles 테이블에 저장된 특정 종목의 차트 period별 원천 캔들 범위와 건수를 확인합니다. period를 생략하면 ONE_DAY, ONE_WEEK, THREE_MONTHS, ONE_YEAR, FIVE_YEARS 상태를 모두 반환합니다. 부족하면 /api/smoke/kis/chart/sync로 보정합니다. 운영 환경에서는 adminKey가 필요합니다.
  * @summary 차트 기간 기준 동기화 상태 확인
  */
 export const getChartCandleSyncStatus = (
@@ -724,7 +722,7 @@ export const getChartCandleSyncStatus = (
 
 
       return customInstance<ApiResponseMockInvestmentChartCandleSyncStatusResponse>(
-      {url: `/api/local/kis/chart/sync/status`, method: 'GET',
+      {url: `/api/smoke/kis/chart/sync/status`, method: 'GET',
         params, signal
     },
       );
@@ -735,7 +733,7 @@ export const getChartCandleSyncStatus = (
 
 export const getGetChartCandleSyncStatusQueryKey = (params?: GetChartCandleSyncStatusParams,) => {
     return [
-    `/api/local/kis/chart/sync/status`, ...(params ? [params] : [])
+    `/api/smoke/kis/chart/sync/status`, ...(params ? [params] : [])
     ] as const;
     }
 
@@ -808,101 +806,7 @@ export function useGetChartCandleSyncStatus<TData = Awaited<ReturnType<typeof ge
 
 
 /**
- * stock_candles 테이블에 저장된 특정 종목의 당일 1분봉 범위와 건수를 확인합니다. 동기화 직후 firstCandleTime, lastCandleTime, dbExpectedCandleCount, candleCount로 저장 여부를 검증할 수 있습니다. realtimeExpectedStartTime과 realtimeExpectedEndTime은 Redis 미확정 분봉으로 확인해야 하는 구간입니다. prod 프로필에서는 adminKey가 필요합니다.
- * @summary 당일 분봉 동기화 상태 확인
- */
-export const getTodayMinuteCandleSyncStatus = (
-    params: GetTodayMinuteCandleSyncStatusParams,
- signal?: AbortSignal
-) => {
-
-
-      return customInstance<ApiResponseMinuteCandleSyncStatusResponse>(
-      {url: `/api/local/kis/chart/minute/sync/status`, method: 'GET',
-        params, signal
-    },
-      );
-    }
-
-
-
-
-export const getGetTodayMinuteCandleSyncStatusQueryKey = (params?: GetTodayMinuteCandleSyncStatusParams,) => {
-    return [
-    `/api/local/kis/chart/minute/sync/status`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-
-export const getGetTodayMinuteCandleSyncStatusQueryOptions = <TData = Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>, TError = unknown>(params: GetTodayMinuteCandleSyncStatusParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>, TError, TData>>, }
-) => {
-
-const {query: queryOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getGetTodayMinuteCandleSyncStatusQueryKey(params);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>> = ({ signal }) => getTodayMinuteCandleSyncStatus(params, signal);
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetTodayMinuteCandleSyncStatusQueryResult = NonNullable<Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>>
-export type GetTodayMinuteCandleSyncStatusQueryError = unknown
-
-
-export function useGetTodayMinuteCandleSyncStatus<TData = Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>, TError = unknown>(
- params: GetTodayMinuteCandleSyncStatusParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>,
-          TError,
-          Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetTodayMinuteCandleSyncStatus<TData = Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>, TError = unknown>(
- params: GetTodayMinuteCandleSyncStatusParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>,
-          TError,
-          Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetTodayMinuteCandleSyncStatus<TData = Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>, TError = unknown>(
- params: GetTodayMinuteCandleSyncStatusParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary 당일 분봉 동기화 상태 확인
- */
-
-export function useGetTodayMinuteCandleSyncStatus<TData = Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>, TError = unknown>(
- params: GetTodayMinuteCandleSyncStatusParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTodayMinuteCandleSyncStatus>>, TError, TData>>, }
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getGetTodayMinuteCandleSyncStatusQueryOptions(params,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
-}
-
-
-
-
-
-
-/**
- * 기준일이 속한 기준월(baseTime=yyyyMM)의 stock_indicators 적재 건수, 누락 종목, 필수 컬럼 null 건수를 조회합니다. baseDate 생략 시 오늘 날짜 기준월을 사용합니다. prod 프로필에서는 adminKey가 필요합니다.
+ * 기준일이 속한 기준월(baseTime=yyyyMM)의 stock_indicators 적재 건수, 누락 종목, 필수 컬럼 null 건수를 조회합니다. baseDate 생략 시 오늘 날짜 기준월을 사용합니다. 운영 환경에서는 adminKey가 필요합니다.
  * @summary 종목 지표 배치 적재 상태 확인
  */
 export const getStockIndicatorBatchStatus = (
@@ -912,7 +816,7 @@ export const getStockIndicatorBatchStatus = (
 
 
       return customInstance<ApiResponseStockIndicatorBatchStatusResponse>(
-      {url: `/api/local/kis/batch/stock-indicators/status`, method: 'GET',
+      {url: `/api/smoke/kis/batch/stock-indicators/status`, method: 'GET',
         params, signal
     },
       );
@@ -923,7 +827,7 @@ export const getStockIndicatorBatchStatus = (
 
 export const getGetStockIndicatorBatchStatusQueryKey = (params?: GetStockIndicatorBatchStatusParams,) => {
     return [
-    `/api/local/kis/batch/stock-indicators/status`, ...(params ? [params] : [])
+    `/api/smoke/kis/batch/stock-indicators/status`, ...(params ? [params] : [])
     ] as const;
     }
 

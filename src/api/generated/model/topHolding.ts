@@ -6,10 +6,11 @@
  * OpenAPI spec version: 1.0.0
  */
 
-/**
- * 닉네임 수정 응답
- */
-export interface UserNicknameUpdateResponseDTO {
-  userId?: number;
-  serviceNickname?: string;
+export interface TopHolding {
+  stockId?: number;
+  stockCode?: string;
+  stockName?: string;
+  purchaseAmount?: number;
+  profitAmount?: number;
+  profitRate?: number;
 }

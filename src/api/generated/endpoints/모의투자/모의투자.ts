@@ -44,7 +44,7 @@ import { customInstance } from '../../../custom-instance';
 
 
 /**
- * 호출 시점의 현재가로 주식을 즉시 매도합니다. 장 중(9:00 ~ 15:30)에만 거래가 가능합니다.
+ * 호출 시점의 현재가로 주식을 즉시 매도합니다. 장 중(9:00 ~ 15:20)에만 거래가 가능합니다. 15:20~15:29는 한국 거래소의 장마감 동시호가 제도에 따라 매매가 불가하도록 처리했습니다.
  * @summary 시장가 매도
  */
 export const sell = (
@@ -108,7 +108,7 @@ export const useSell = <TError = unknown,
       return useMutation(getSellMutationOptions(options), queryClient);
     }
     /**
- * 호출 시점의 현재가로 주식을 즉시 매수합니다. 장 중(9:00 ~ 15:30)에만 거래가 가능합니다.
+ * 호출 시점의 현재가로 주식을 즉시 매수합니다. 장 중(9:00 ~ 15:20)에만 거래가 가능합니다. 15:20~15:29는 한국 거래소의 장마감 동시호가 제도에 따라 매매가 불가하도록 처리했습니다.
  * @summary 시장가 매수
  */
 export const buy = (
