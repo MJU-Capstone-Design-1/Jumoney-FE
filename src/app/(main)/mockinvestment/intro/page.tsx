@@ -10,18 +10,19 @@ import { FloatingLogoCircle } from '@/features/mockinvestment/intro/floatingLogo
 import LeftChevronIcon from '@/components/icons/leftChevronIcon';
 import RightChevronIcon from '@/components/icons/rightChevronIcon';
 import Image from 'next/image';
+import { useGetSectorLeader } from '@/api/generated/endpoints/모의투자/모의투자';
 
 const FIELDS = [
-  { id: 'fieldIT', name: 'IT/반도체' },
-  { id: 'fieldMobility', name: '자동차/운송' },
-  { id: 'fieldFinance', name: '금융' },
-  { id: 'fieldBio', name: '바이오/헬스케어' },
-  { id: 'fieldSteel', name: '철강/소재' },
-  { id: 'fieldEnergy', name: '에너지/화학' },
-  { id: 'fieldCommunication', name: '커뮤니케이션' },
-  { id: 'fieldStaples', name: '필수소비재' },
-  { id: 'fieldMechanic', name: '조선/기계' },
-  { id: 'fieldUtility', name: '건설/유틸리티' },
+  { id: 'fieldIT', name: 'IT/반도체', sectorId: 1 },
+  { id: 'fieldMobility', name: '자동차/운송', sectorId: 2 },
+  { id: 'fieldFinance', name: '금융', sectorId: 6 },
+  { id: 'fieldBio', name: '바이오/헬스케어', sectorId: 4 },
+  { id: 'fieldSteel', name: '철강/소재', sectorId: 9 },
+  { id: 'fieldEnergy', name: '에너지/화학', sectorId: 3 },
+  { id: 'fieldCommunication', name: '커뮤니케이션', sectorId: 7 },
+  { id: 'fieldStaples', name: '필수소비재', sectorId: 10 },
+  { id: 'fieldMechanic', name: '조선/기계', sectorId: 5 },
+  { id: 'fieldUtility', name: '건설/유틸리티', sectorId: 8 },
 ];
 
 const MockInvestmentIntroPage = () => {
@@ -74,6 +75,24 @@ const MockInvestmentIntroPage = () => {
     enter: (dir: number) => ({ x: dir > 0 ? 50 : -50, opacity: 0 }),
     center: { x: 0, opacity: 1 },
     exit: (dir: number) => ({ x: dir > 0 ? -50 : 50, opacity: 0 }),
+  };
+
+  const selectedSector = FIELDS[currentIndex];
+
+  const { data: leaderResponse, isLoading: isLeaderLoading } =
+    useGetSectorLeader(selectedSector.sectorId, {
+      query: {
+        enabled: step === 4,
+      },
+    });
+
+  const stockData = leaderResponse?.data;
+
+  const renderChangeRate = (rate: number | undefined) => {
+    if (rate === undefined) return '정보를 불러오는 중이에요.';
+    if (rate > 0) return `어제보다 +${rate}% 올랐어요.`;
+    if (rate < 0) return `어제보다 ${rate}% 내렸어요.`;
+    return `어제와 가격이 같아요.`;
   };
 
   return (
@@ -246,9 +265,19 @@ const MockInvestmentIntroPage = () => {
               transition={{ duration: 0.6, ease: 'easeOut' }}
               className='text-label-md mb-[1rem] leading-[120%] font-extrabold tracking-tight'
             >
-              OO(분야)에 관심이 있는 {userName}님,
+              {selectedSector.name}에 관심이 있는 {userName}님,
               <br />
-              OO(기업)에 투자해보는 것은 어떨까요?
+              {isLeaderLoading ? (
+                '추천 기업을 불러오는 중...'
+              ) : (stockData?.stockName ?? '추천 기업').length > 7 ? (
+                <>
+                  {stockData?.stockName ?? '추천 기업'}에 투자해보는 것은
+                  <br />
+                  어떨까요?
+                </>
+              ) : (
+                `${stockData?.stockName ?? '추천 기업'}에 투자해보는 것은 어떨까요?`
+              )}
             </motion.div>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -265,14 +294,27 @@ const MockInvestmentIntroPage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: 'easeOut' }}
               className='bg-primaryMuted mx-auto mb-[2.25rem] flex h-[10rem] w-[10rem] items-center rounded-full'
-            />
+            >
+              {!isLeaderLoading && stockData?.stockCode && (
+                <Image
+                  src={`/logos/${stockData.stockCode}.png`}
+                  alt={`${stockData.stockName} 로고`}
+                  width={160}
+                  height={160}
+                  className='rounded-full object-cover'
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+              )}
+            </motion.div>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: 'easeOut' }}
               className='text-label-xl mb-[0.5rem] font-extrabold'
             >
-              기업명기업명
+              {isLeaderLoading ? '로딩 중...' : stockData?.stockName}
             </motion.div>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -280,7 +322,9 @@ const MockInvestmentIntroPage = () => {
               transition={{ duration: 0.6, ease: 'easeOut' }}
               className='text-body-lg font-semibold'
             >
-              어제보다 +-OO.O% 올랐/내렸어요.
+              {isLeaderLoading
+                ? '등락률을 불러오는 중이에요.'
+                : renderChangeRate(stockData?.changeRate)}
             </motion.div>
           </>
         )}
