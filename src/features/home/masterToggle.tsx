@@ -50,16 +50,22 @@ const itemVariants: Variants = {
   },
 };
 
-export const MasterToggle = () => {
-  const [selectedMaster, setSelectedMaster] = useState<string>('all');
+interface MasterToggleProps {
+  selectedMaster: string;
+  onToggle: (id: string) => void;
+}
 
+export const MasterToggle = ({
+  selectedMaster,
+  onToggle,
+}: MasterToggleProps) => {
   return (
     <div className='flex w-full justify-center'>
       <ToggleGroup
         type='single'
         value={selectedMaster}
         onValueChange={(value) => {
-          if (value) setSelectedMaster(value);
+          if (value) onToggle(value);
         }}
         asChild
       >

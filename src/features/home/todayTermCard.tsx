@@ -37,7 +37,7 @@ export const TodayTermCard = () => {
             <div className='text-label-md font-extrabold'>
               {dailyTerm.title}
             </div>
-            <div className='text-label-sm font-extrabold'>
+            <div className='text-label-sm block w-[12.75rem] truncate font-extrabold'>
               {dailyTerm.subtitle}
             </div>
           </div>

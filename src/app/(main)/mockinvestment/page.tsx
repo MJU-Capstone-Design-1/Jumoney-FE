@@ -5,7 +5,7 @@ import { CompanyCard } from '@/features/mockinvestment/companyCard';
 import { CompanySearchInput } from '@/features/mockinvestment/companySearchInput';
 import { FieldButton, FieldType } from '@/features/mockinvestment/fieldButton';
 import MockInvestmentHeader from '@/features/mockinvestment/mockInvestmentHeader';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue } from 'framer-motion';
 
 const MockInvestmentPage = () => {
   const displayFields: FieldType[] = [
@@ -20,6 +20,12 @@ const MockInvestmentPage = () => {
     'mechanic',
     'utility',
   ];
+
+  const x = useMotionValue(0);
+  const buttonWidth = 48;
+  const gap = 16;
+  const totalWidth = displayFields.length * (buttonWidth + gap);
+  const maxDrag = -(totalWidth - 350);
 
   return (
     <div className='relative h-screen w-full overflow-hidden'>
@@ -40,22 +46,30 @@ const MockInvestmentPage = () => {
             <CompanySearchInput />
           </motion.div>
 
-          <div className='flex w-full gap-[1rem] overflow-x-auto pt-[1.5rem] whitespace-nowrap'>
-            {displayFields.map((field, index) => (
-              <motion.div
-                key={field}
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{
-                  type: 'spring',
-                  stiffness: 260,
-                  damping: 20,
-                  delay: 0.3 + index * 0.05,
-                }}
-              >
-                <FieldButton fieldType={field} />
-              </motion.div>
-            ))}
+          <div className='flex w-full gap-[1rem] overflow-hidden pt-[1.5rem] whitespace-nowrap'>
+            <motion.div
+              drag='x'
+              dragConstraints={{ left: maxDrag, right: 0 }}
+              dragElastic={0.1}
+              style={{ x }}
+              className='flex cursor-grab gap-[1rem] active:cursor-grabbing'
+            >
+              {displayFields.map((field, index) => (
+                <motion.div
+                  key={field}
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{
+                    type: 'spring',
+                    stiffness: 260,
+                    damping: 20,
+                    delay: 0.3 + index * 0.05,
+                  }}
+                >
+                  <FieldButton fieldType={field} />
+                </motion.div>
+              ))}
+            </motion.div>
           </div>
 
           <div className='flex w-full flex-col items-center justify-center gap-[0.75rem] pt-[1.25rem] pb-[0.875rem]'>

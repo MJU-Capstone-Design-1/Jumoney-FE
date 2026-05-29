@@ -93,7 +93,7 @@ const MockInvestmentIntroPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: 'easeOut' }}
-              className='text-label-xl mb-[3rem] pt-[0.5rem] leading-[120%] font-extrabold'
+              className='text-label-xl mb-[3rem] leading-[120%] font-extrabold'
             >
               {userName}님<br />
               환영합니다!
@@ -196,7 +196,7 @@ const MockInvestmentIntroPage = () => {
                   initial='enter'
                   animate='center'
                   exit='exit'
-                  transition={{ duration: 0.5, ease: 'easeInOut' }}
+                  transition={{ duration: 0.3, ease: 'easeInOut' }}
                   className='flex h-[9.375rem] w-[9.375rem] items-center justify-center overflow-hidden'
                 >
                   <Image
@@ -229,7 +229,7 @@ const MockInvestmentIntroPage = () => {
                 initial='enter'
                 animate='center'
                 exit='exit'
-                transition={{ duration: 0.5, ease: 'easeInOut' }}
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
                 className='text-label-xl text-secondary2 font-extrabold'
               >
                 {FIELDS[currentIndex].name}
@@ -286,16 +286,8 @@ const MockInvestmentIntroPage = () => {
         )}
       </div>
 
-      <div className='mt-auto flex flex-col items-center'>
-        <motion.div
-          key={`indicator-${step}`}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: 'easeOut', delay: 0.2 }}
-          className='mb-[9.625rem]'
-        >
-          <StepIndicator step={step} />
-        </motion.div>
+      <div className='mt-auto mb-[9.625rem] flex flex-col items-center'>
+        <StepIndicator step={step} />
         <BottomButton label={getButtonLabel()} onClick={handleNext} />
       </div>
     </div>

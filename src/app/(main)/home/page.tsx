@@ -14,10 +14,13 @@ import { TodayTermCard } from '@/features/home/todayTermCard';
 import { useState, useEffect } from 'react';
 import { motion, useMotionValue } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import { MASTERS_PORTFOLIO } from '@/constants/mastersPortfolio';
 
 export const HomePage = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [selectedRankId, setSelectedRankId] = useState('3');
+  const [selectedMaster, setSelectedMaster] = useState('all');
   const router = useRouter();
 
   const x = useMotionValue(0);
@@ -89,12 +92,27 @@ export const HomePage = () => {
           >
             모의 투자 랭킹
           </motion.div>
-          <RankProfile />
+          <RankProfile
+            key={`${selectedMaster}-${selectedRankId}`}
+            selectedId={selectedRankId}
+            masterFilter={selectedMaster}
+          />
           <div className='flex w-full justify-center pt-[1.5rem]'>
-            <MasterToggle />
+            <MasterToggle
+              selectedMaster={selectedMaster}
+              onToggle={(masterId) => {
+                setSelectedMaster(masterId);
+                setSelectedRankId('3');
+              }}
+            />
           </div>
           <div className='flex w-full justify-center pt-[1.5rem]'>
-            <RankingChart />
+            <RankingChart
+              key={selectedMaster}
+              selectedId={selectedRankId}
+              onSelect={setSelectedRankId}
+              masterFilter={selectedMaster}
+            />
           </div>
         </section>
 
@@ -146,22 +164,16 @@ export const HomePage = () => {
                 dragConstraints={{ left: maxDrag, right: 0 }}
                 dragElastic={0.1}
               >
-                <MasterPortfolio
-                  name='워런 버핏'
-                  path='/portfolio/selected?master=0'
-                />
-                <MasterPortfolio
-                  name='피터 린치'
-                  path='/portfolio/selected?master=1'
-                />
-                <MasterPortfolio
-                  name='레이 달리오'
-                  path='/portfolio/selected?master=2'
-                />
-                <MasterPortfolio
-                  name='윌리엄 오닐'
-                  path='/portfolio/selected?master=3'
-                />
+                {MASTERS_PORTFOLIO.map((master) => (
+                  <MasterPortfolio
+                    key={master.id}
+                    id={master.id}
+                    name={master.name}
+                    path={`/portfolio/selected?master=${master.id}`}
+                    tags={master.tags}
+                    companies={master.companies}
+                  />
+                ))}
               </motion.div>
             </div>
             <div className='mb-[8.3125rem] flex items-center justify-center'>

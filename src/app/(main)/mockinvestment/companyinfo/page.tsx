@@ -76,19 +76,7 @@ const DetailPage = () => {
           어제보다 +-OO.O% 올랐/내렸어요
         </div>
 
-        <div className='flex h-auto w-full items-center justify-between pt-[1.5rem]'>
-          <motion.button
-            type='button'
-            onClick={handleAllClick}
-            whileTap={{ scale: 0.9 }}
-            className={`flex w-[4.2875rem] cursor-pointer items-center justify-center rounded-[6.25rem] py-[0.5rem] text-center transition-colors duration-200 outline-none ${
-              isAllSelected
-                ? 'bg-secondary2 border-secondary2 border text-white'
-                : 'text-secondary2 border-secondary2 border bg-transparent'
-            }`}
-          >
-            <span className='text-body-md font-semibold'>전체</span>
-          </motion.button>
+        <div className='flex h-auto w-full items-center justify-end pt-[1.5rem]'>
           <SwitchChartButton isChart={isChart} setIsChart={setIsChart} />
         </div>
 
