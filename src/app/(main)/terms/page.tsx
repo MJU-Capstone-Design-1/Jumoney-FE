@@ -14,8 +14,6 @@ const Page = () => {
 
         <TermsIntroScrapSection />
       </div>
-
-      <BottomTabBar />
     </div>
   );
 };

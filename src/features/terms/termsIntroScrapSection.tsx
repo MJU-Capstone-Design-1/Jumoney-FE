@@ -21,7 +21,7 @@ export const TermsIntroScrapSection = () => {
         <p className='text-label-md font-extrabold'>스크랩한 용어</p>
         <CommonButton
           href='/terms/scrap'
-          icon={<RightArrowIcon />}
+          icon={<RightArrowIcon color='secondary1' />}
           iconPosition='right'
         >
           전체보기
