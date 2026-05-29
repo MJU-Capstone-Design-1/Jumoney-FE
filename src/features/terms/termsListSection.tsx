@@ -3,16 +3,28 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { TermsListCard } from './termsListCard';
+import { useGetTermsByCategory } from '@/api/generated/endpoints/주식-용어/주식-용어';
 
 interface TermsListSectionProps {
   title: string;
   termsSectionId: string;
 }
 
+const SECTION_TO_CATEGORY_ID: Record<string, number> = {
+  basic: 1,
+  diagnosis: 2,
+  chart: 3,
+  trading: 4,
+};
+
 export const TermsListSection = ({
   title,
   termsSectionId,
 }: TermsListSectionProps) => {
+  const categoryId = SECTION_TO_CATEGORY_ID[termsSectionId] || 1;
+  const { data, isLoading } = useGetTermsByCategory(categoryId);
+  const termsList = data?.data?.terms || [];
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 250 }}
@@ -27,96 +39,25 @@ export const TermsListSection = ({
         {title}
       </h1>
       <div className='flex flex-1 flex-col gap-[1rem] overflow-y-auto'>
-        <TermsListCard
-          name='용어이름용어이름용어이름'
-          termsSectionId={termsSectionId}
-          termsId='1'
-        />
-        <TermsListCard
-          name='용어이름용어이름용어이름'
-          termsSectionId={termsSectionId}
-          termsId='2'
-        />
-        <TermsListCard
-          name='용어이름용어이름용어이름'
-          termsSectionId={termsSectionId}
-          termsId='3'
-        />
-        <TermsListCard
-          name='용어이름용어이름용어이름'
-          termsSectionId={termsSectionId}
-          termsId='4'
-        />
-        <TermsListCard
-          name='용어이름용어이름용어이름'
-          termsSectionId={termsSectionId}
-          termsId='5'
-        />
-        <TermsListCard
-          name='용어이름용어이름용어이름'
-          termsSectionId={termsSectionId}
-          termsId='6'
-        />
-        <TermsListCard
-          name='용어이름용어이름용어이름'
-          termsSectionId={termsSectionId}
-          termsId='7'
-        />
-        <TermsListCard
-          name='용어이름용어이름용어이름'
-          termsSectionId={termsSectionId}
-          termsId='8'
-        />
-        <TermsListCard
-          name='용어이름용어이름용어이름'
-          termsSectionId={termsSectionId}
-          termsId='9'
-        />
-        <TermsListCard
-          name='용어이름용어이름용어이름'
-          termsSectionId={termsSectionId}
-          termsId='10'
-        />
-        <TermsListCard
-          name='용어이름용어이름용어이름'
-          termsSectionId={termsSectionId}
-          termsId='11'
-        />
-        <TermsListCard
-          name='용어이름용어이름용어이름'
-          termsSectionId={termsSectionId}
-          termsId='12'
-        />
-        <TermsListCard
-          name='용어이름용어이름용어이름'
-          termsSectionId={termsSectionId}
-          termsId='13'
-        />
-        <TermsListCard
-          name='용어이름용어이름용어이름'
-          termsSectionId={termsSectionId}
-          termsId='14'
-        />
-        <TermsListCard
-          name='용어이름용어이름용어이름'
-          termsSectionId={termsSectionId}
-          termsId='15'
-        />
-        <TermsListCard
-          name='용어이름용어이름용어이름'
-          termsSectionId={termsSectionId}
-          termsId='16'
-        />
-        <TermsListCard
-          name='용어이름용어이름용어이름'
-          termsSectionId={termsSectionId}
-          termsId='17'
-        />
-        <TermsListCard
-          name='용어이름용어이름용어이름'
-          termsSectionId={termsSectionId}
-          termsId='18'
-        />
+        {isLoading ? (
+          <div className='text-body-lg flex flex-1 items-center justify-center py-[4rem] font-bold text-gray-400'>
+            로딩 중...
+          </div>
+        ) : termsList.length === 0 ? (
+          <div className='text-body-lg flex flex-1 items-center justify-center py-[4rem] font-bold text-gray-400'>
+            등록된 용어가 없습니다.
+          </div>
+        ) : (
+          termsList.map((term) => (
+            <TermsListCard
+              key={term.termId}
+              name={term.termName || ''}
+              termsSectionId={termsSectionId}
+              termsId={String(term.termId)}
+              isScrapped={term.isScrapped}
+            />
+          ))
+        )}
       </div>
     </motion.div>
   );
