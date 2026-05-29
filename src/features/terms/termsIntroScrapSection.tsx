@@ -4,8 +4,12 @@ import { CommonButton } from '@/components/commonButton';
 import { RightArrowIcon } from '@/components/icons/rightArrowIcon';
 import { TermsIntroScrapCard } from './termsIntroScrapCard';
 import { motion } from 'framer-motion';
+import { useGetScraps } from '@/api/generated/endpoints/주식-용어/주식-용어';
 
 export const TermsIntroScrapSection = () => {
+  const { data, isLoading } = useGetScraps();
+  const scraps = data?.data || [];
+
   return (
     <div className='flex flex-col gap-[1rem]'>
       <motion.div
@@ -40,8 +44,24 @@ export const TermsIntroScrapSection = () => {
         }}
         className='grid grid-cols-2 gap-[1rem]'
       >
-        <TermsIntroScrapCard />
-        <TermsIntroScrapCard />
+        {isLoading ? (
+          <div className='text-label-sm col-span-2 py-4 text-center font-extrabold text-gray-400'>
+            로딩 중...
+          </div>
+        ) : scraps.length === 0 ? (
+          <div className='text-label-sm col-span-2 py-4 text-center font-extrabold text-gray-400'>
+            스크랩한 용어가 없습니다.
+          </div>
+        ) : (
+          scraps.map((scrap) => (
+            <TermsIntroScrapCard
+              key={scrap.termId}
+              termId={scrap.termId || 0}
+              termName={scrap.termName || ''}
+              categoryName={scrap.categoryName}
+            />
+          ))
+        )}
       </motion.div>
     </div>
   );

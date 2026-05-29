@@ -6,7 +6,7 @@ import React from 'react';
 
 const Page = () => {
   return (
-    <div className='flex flex-col'>
+    <div className='flex flex-col pb-[10rem]'>
       <TermsIntroHeader />
 
       <div className='flex flex-col gap-[2rem] px-[1rem] pt-[2.5rem]'>
