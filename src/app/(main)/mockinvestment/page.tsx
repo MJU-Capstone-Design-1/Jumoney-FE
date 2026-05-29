@@ -249,11 +249,11 @@ const MockInvestmentPage = () => {
 
             <div className='flex w-full flex-col gap-[0.75rem]'>
               {isSearchLoading ? (
-                <div className='text-text-sub py-4 text-center text-sm font-semibold'>
+                <div className='text-text-sub text-body-md py-4 text-center font-bold'>
                   검색 중입니다...
                 </div>
               ) : searchKeyword && searchedStocks.length === 0 ? (
-                <div className='text-text-sub py-4 text-center text-sm font-semibold'>
+                <div className='text-text-sub text-body-md py-4 text-center font-bold'>
                   검색 결과가 없습니다.
                 </div>
               ) : searchKeyword && searchedStocks.length > 0 ? (
@@ -283,11 +283,11 @@ const MockInvestmentPage = () => {
               ) : selectedSector ? (
                 <>
                   {isSectorLoading ? (
-                    <div className='text-text-sub py-4 text-center text-sm font-semibold'>
+                    <div className='text-text-sub text-body-md py-4 text-center font-bold'>
                       데이터를 불러오는 중입니다...
                     </div>
                   ) : sectorStocks.length === 0 ? (
-                    <div className='text-text-sub py-4 text-center text-sm font-semibold'>
+                    <div className='text-text-sub text-body-md py-4 text-center font-bold'>
                       해당 섹터에 종목이 없습니다.
                     </div>
                   ) : (

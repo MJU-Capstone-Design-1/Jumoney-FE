@@ -29,8 +29,8 @@ export const CompanyCard = ({
   const router = useRouter();
 
   const handleClick = () => {
-    if (stockId) {
-      router.push(`/mockinvestment/companyinfo/${stockId}`);
+    if (stockCode) {
+      router.push(`/mockinvestment/companyinfo/${stockCode}`);
     } else {
       router.push('/mockinvestment/companyinfo');
     }
