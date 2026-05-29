@@ -6,6 +6,7 @@ import BackButtonField from '@/components/backButtonField';
 import { MyCompanyToggle } from './myCompanyToggle';
 import { CompanyCard } from './companyCard';
 import { MockInvestmentAccountResponse } from '@/api/generated/model';
+import { useGetPortfolios } from '@/api/generated/endpoints/모의투자/모의투자';
 
 interface MockInvestmentHeaderProps {
   isExpanded?: boolean;
@@ -20,6 +21,10 @@ const MockInvestmentHeader = ({
 }: MockInvestmentHeaderProps) => {
   const [localIsExpanded, setLocalIsExpanded] = useState(false);
   const isExpanded = controlledIsExpanded ?? localIsExpanded;
+
+  const { data: portfolioResponse, isLoading: isPortfolioLoading } =
+    useGetPortfolios();
+  const portfolios = portfolioResponse?.data?.portfolios || [];
 
   const handlePressedChange = (pressed: boolean) => {
     if (onExpandedChange) {
@@ -121,10 +126,27 @@ const MockInvestmentHeader = ({
             exit={{ height: 0, opacity: 0 }}
             className='flex w-full flex-col items-center justify-center gap-[0.75rem] overflow-hidden pb-[0.5rem]'
           >
-            <CompanyCard showBadge={false} />
-            <CompanyCard showBadge={false} />
-            <CompanyCard showBadge={false} />
-            <CompanyCard showBadge={false} />
+            {isPortfolioLoading ? (
+              <div className='text-body-lg py-2 font-bold opacity-70'>
+                보유 종목을 불러오는 중입니다...
+              </div>
+            ) : portfolios.length === 0 ? (
+              <div className='text-body-lg py-2 font-bold opacity-70'>
+                보유한 기업이 없습니다.
+              </div>
+            ) : (
+              portfolios.map((portfolio) => (
+                <CompanyCard
+                  key={portfolio.stockId}
+                  showBadge={false}
+                  stockId={portfolio.stockId}
+                  stockCode={portfolio.stockCode}
+                  stockName={portfolio.stockName}
+                  currentPrice={portfolio.currentPrice}
+                  changeRate={portfolio.changeRate}
+                />
+              ))
+            )}
           </motion.div>
         )}
       </AnimatePresence>
