@@ -54,7 +54,11 @@ export default async function TermsListPage({ params }: PageProps) {
       }}
     >
       <div className='flex-shrink-0 px-[1rem] pt-[1rem]'>
-        <BackButtonField color='secondary1' label='주식 용어 학습' />
+        <BackButtonField
+          color='secondary1'
+          label='주식 용어 학습'
+          href='/terms'
+        />
       </div>
       <TermsListSection title={config.title} termsSectionId={termsSectionId} />
     </div>

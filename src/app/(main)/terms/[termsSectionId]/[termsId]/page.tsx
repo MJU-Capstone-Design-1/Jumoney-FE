@@ -115,6 +115,7 @@ const Page = ({ params }: PageProps) => {
           <BackButtonField
             color='secondary2'
             label={term.categoryName || config.title}
+            href={`/terms/${termsSectionId}`}
           />
           <div className='right-0 px-[0.375rem]'>
             <TermsScrapButton
