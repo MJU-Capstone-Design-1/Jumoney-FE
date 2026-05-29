@@ -2,6 +2,7 @@
 
 import {
   getInitializeAccountMutationOptions,
+  useGetSectorStocks,
   useSearchStocks,
 } from '@/api/generated/endpoints/모의투자/모의투자';
 import {
@@ -11,12 +12,29 @@ import {
 import { BottomTabBar } from '@/components/bottomTabBar';
 import { CompanyCard } from '@/features/mockinvestment/companyCard';
 import { CompanySearchInput } from '@/features/mockinvestment/companySearchInput';
-import { FieldButton, FieldType } from '@/features/mockinvestment/fieldButton';
+import {
+  FIELD_CONFIGS,
+  FieldButton,
+  FieldType,
+} from '@/features/mockinvestment/fieldButton';
 import MockInvestmentHeader from '@/features/mockinvestment/mockInvestmentHeader';
 import { SearchSortToggle } from '@/features/mockinvestment/SearchSortToggle';
 import { keepPreviousData, useMutation } from '@tanstack/react-query';
 import { motion, useMotionValue } from 'framer-motion';
 import { useEffect, useState } from 'react';
+
+const SECTOR_ID_MAP: Record<FieldType, number> = {
+  it: 1,
+  mobility: 2,
+  energy: 3,
+  bio: 4,
+  mechanic: 5,
+  finance: 6,
+  communication: 7,
+  steel: 8,
+  utility: 9,
+  staples: 10,
+};
 
 const DEFAULT_STOCKS = [
   {
@@ -88,6 +106,8 @@ const MockInvestmentPage = () => {
   const [inputValue, setInputValue] = useState('');
   const [searchKeyword, setSearchKeyword] = useState('');
 
+  const [selectedSector, setSelectedSector] = useState<FieldType | null>(null);
+
   const [sortOption, setSortOption] = useState<SearchStocksSort>(
     'NAME_ASC' as SearchStocksSort,
   );
@@ -109,13 +129,24 @@ const MockInvestmentPage = () => {
     },
   );
 
+  const { data: sectorResponse, isLoading: isSectorLoading } =
+    useGetSectorStocks(selectedSector ? SECTOR_ID_MAP[selectedSector] : 0, {
+      query: {
+        enabled: searchKeyword.trim().length === 0 && selectedSector !== null,
+        placeholderData: keepPreviousData,
+      },
+    });
+
   const searchedStocks = searchResponse?.data?.stocks || [];
+  const sectorStocks = sectorResponse?.data?.stocks || [];
+  const sectorName = sectorResponse?.data?.sectorName || '';
 
   const handleSearch = () => {
     if (inputValue.trim() === '') {
       return;
     }
     setSearchKeyword(inputValue);
+    setSelectedSector(null);
   };
 
   useEffect(() => {
@@ -183,8 +214,27 @@ const MockInvestmentPage = () => {
                     damping: 20,
                     delay: 0.3 + index * 0.05,
                   }}
+                  className={`transition-opacity duration-300 ${
+                    selectedSector === null || selectedSector === field
+                      ? 'opacity-100'
+                      : 'opacity-40'
+                  }`}
                 >
-                  <FieldButton fieldType={field} />
+                  <FieldButton
+                    fieldType={field}
+                    className={`transition-opacity duration-300 ${
+                      selectedSector === null || selectedSector === field
+                        ? 'opacity-100'
+                        : 'opacity-40'
+                    }`}
+                    onClick={() => {
+                      setSelectedSector((prev) =>
+                        prev === field ? null : field,
+                      );
+                      setInputValue('');
+                      setSearchKeyword('');
+                    }}
+                  />
                 </motion.div>
               ))}
             </motion.div>
@@ -230,6 +280,42 @@ const MockInvestmentPage = () => {
                     />
                   </motion.div>
                 ))
+              ) : selectedSector ? (
+                <>
+                  {isSectorLoading ? (
+                    <div className='text-text-sub py-4 text-center text-sm font-semibold'>
+                      데이터를 불러오는 중입니다...
+                    </div>
+                  ) : sectorStocks.length === 0 ? (
+                    <div className='text-text-sub py-4 text-center text-sm font-semibold'>
+                      해당 섹터에 종목이 없습니다.
+                    </div>
+                  ) : (
+                    sectorStocks.map((stock, index) => (
+                      <motion.div
+                        key={`${selectedSector}-${stock.stockId}`}
+                        className='w-full'
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{
+                          type: 'spring',
+                          stiffness: 260,
+                          damping: 20,
+                          delay: 0.1 * index,
+                        }}
+                      >
+                        <CompanyCard
+                          stockId={stock.stockId}
+                          stockCode={stock.stockCode}
+                          stockName={stock.stockName}
+                          currentPrice={stock.currentPrice}
+                          changeRate={stock.changeRate}
+                          tags={stock.tags}
+                        />
+                      </motion.div>
+                    ))
+                  )}
+                </>
               ) : (
                 <>
                   {DEFAULT_STOCKS.map((stock, index) => (
@@ -242,7 +328,7 @@ const MockInvestmentPage = () => {
                         type: 'spring',
                         stiffness: 260,
                         damping: 20,
-                        delay: 0.8 + index * 0.1, // 기존 딜레이 패턴 유지
+                        delay: 0.8 + index * 0.1,
                       }}
                     >
                       <CompanyCard
