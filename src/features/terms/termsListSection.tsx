@@ -55,6 +55,7 @@ export const TermsListSection = ({
               termsSectionId={termsSectionId}
               termsId={String(term.termId)}
               isScrapped={term.isScrapped}
+              isLearned={term.isLearned}
             />
           ))
         )}

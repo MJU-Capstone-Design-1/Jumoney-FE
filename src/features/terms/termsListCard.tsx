@@ -6,14 +6,27 @@ interface TermsListCardProps {
   termsSectionId: string;
   termsId: string;
   isScrapped?: boolean;
+  isLearned?: boolean;
 }
+
+const SECTION_TEXT_COLORS: Record<string, string> = {
+  basic: 'text-main1',
+  diagnosis: 'text-main2',
+  chart: 'text-main3',
+  trading: 'text-main4',
+};
 
 export const TermsListCard = ({
   name,
   termsSectionId,
   termsId,
   isScrapped = false,
+  isLearned = false,
 }: TermsListCardProps) => {
+  const textColorClass = isLearned
+    ? SECTION_TEXT_COLORS[termsSectionId] || 'text-main1'
+    : 'text-secondary2';
+
   return (
     <Link
       href={`/terms/${termsSectionId}/${termsId}`}
@@ -26,7 +39,11 @@ export const TermsListCard = ({
             initialScrapped={isScrapped}
           />
         </div>
-        <p className='text-body-lg text-center font-extrabold'>{name}</p>
+        <p
+          className={`text-body-lg text-center font-extrabold ${textColorClass}`}
+        >
+          {name}
+        </p>
       </div>
     </Link>
   );
