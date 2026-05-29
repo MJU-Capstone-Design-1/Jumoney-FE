@@ -21,7 +21,7 @@ export const TermsIntroScrapCard = ({
 }: TermsIntroScrapCardProps) => {
   const sectionId = CATEGORY_NAME_TO_SECTION_ID[categoryName] || 'basic';
   const displayName =
-    termName.length >= 5 ? `${termName.slice(0, 4)}...` : termName;
+    termName.length >= 4 ? `${termName.slice(0, 3)}...` : termName;
 
   return (
     <Link href={`/terms/${sectionId}/${termId}`} className='w-full'>
