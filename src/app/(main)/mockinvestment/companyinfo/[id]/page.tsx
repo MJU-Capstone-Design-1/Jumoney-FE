@@ -15,8 +15,14 @@ import {
 import { SwitchChartButton } from '@/features/mockinvestment/companyinfo/switchChartButton';
 import CompanyLineChart from '@/features/mockinvestment/companyinfo/companyLineChart';
 import CompanyCandleChart from '@/features/mockinvestment/companyinfo/companyCandleChart';
-import { useGetStockDetail } from '@/api/generated/endpoints/모의투자/모의투자';
+import {
+  useBuy,
+  useGetPortfolios,
+  useGetStockDetail,
+  useSell,
+} from '@/api/generated/endpoints/모의투자/모의투자';
 import { useParams } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 
 const getSubjectParticle = (word: string) => {
   if (!word) return '이';
@@ -56,10 +62,18 @@ const DetailPage = () => {
   const [isChart, setIsChart] = useState(false);
 
   const params = useParams();
-
   const stockCode = typeof params.id === 'string' ? params.id : '005930';
+  const queryClient = useQueryClient();
 
   const { data: detailResponse, isLoading } = useGetStockDetail(stockCode);
+
+  const { data: portfolioResponse } = useGetPortfolios();
+  const portfolios = portfolioResponse?.data?.portfolios || [];
+
+  const isOwned = portfolios.some((p) => p.stockCode === stockCode);
+
+  const buyMutation = useBuy();
+  const sellMutation = useSell();
 
   const stockData = detailResponse?.data;
   const stockName = stockData?.stockName || '기업명 불러오는 중...';
@@ -103,6 +117,38 @@ const DetailPage = () => {
       setSelectedPeriod(undefined);
       return true;
     });
+  };
+
+  const handleOrderClick = () => {
+    const quantity = 1;
+
+    if (isOwned) {
+      sellMutation.mutate(
+        { data: { stockCode, quantity } },
+        {
+          onSuccess: () => {
+            alert('시장가 매도 주문이 체결되었습니다.');
+            queryClient.invalidateQueries({
+              queryKey: ['/api/mock-investments/portfolios'],
+            });
+          },
+          onError: () => alert('매도 주문에 실패했습니다.'),
+        },
+      );
+    } else {
+      buyMutation.mutate(
+        { data: { stockCode, quantity } },
+        {
+          onSuccess: () => {
+            alert('시장가 매수 주문이 체결되었습니다.');
+            queryClient.invalidateQueries({
+              queryKey: ['/api/mock-investments/portfolios'],
+            });
+          },
+          onError: () => alert('매수 주문에 실패했습니다.'),
+        },
+      );
+    }
   };
 
   return (
@@ -214,7 +260,10 @@ const DetailPage = () => {
         )}
       </div>
 
-      <BottomButton label='선택하기' />
+      <BottomButton
+        label={isOwned ? '매도하기' : '매수하기'}
+        onClick={handleOrderClick}
+      />
     </motion.div>
   );
 };
