@@ -12,7 +12,11 @@ export const TermsIntroHeader = () => {
         className='absolute top-0 left-0'
       />
       <div className='relative flex flex-col gap-[2rem] p-[1rem]'>
-        <BackButtonField color='secondary1' label='주식 용어 학습' />
+        <BackButtonField
+          color='secondary1'
+          label='주식 용어 학습'
+          href='/home'
+        />
         <h1 className='text-label-lg text-secondary1 text-center leading-[120%] font-extrabold'>
           원하시는 학습 카테고리를
           <br />
