@@ -18,6 +18,17 @@ import CompanyCandleChart from '@/features/mockinvestment/companyinfo/companyCan
 import { useGetStockDetail } from '@/api/generated/endpoints/모의투자/모의투자';
 import { useParams } from 'next/navigation';
 
+const getSubjectParticle = (word: string) => {
+  if (!word) return '이';
+
+  const lastChar = word.charCodeAt(word.length - 1);
+  if (lastChar >= 0xac00 && lastChar <= 0xd7a3) {
+    const hasJongseong = (lastChar - 0xac00) % 28 > 0;
+    return hasJongseong ? '이' : '가';
+  }
+  return '이';
+};
+
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
@@ -137,9 +148,9 @@ const DetailPage = () => {
 
       <motion.div variants={itemVariants} className='pt-[1rem]'>
         {isChart ? (
-          <CompanyCandleChart stockCode='005930' period={selectedPeriod} />
+          <CompanyCandleChart stockCode={stockCode} period={selectedPeriod} />
         ) : (
-          <CompanyLineChart stockCode='005930' period={selectedPeriod} />
+          <CompanyLineChart stockCode={stockCode} period={selectedPeriod} />
         )}
       </motion.div>
 
@@ -147,7 +158,11 @@ const DetailPage = () => {
         variants={itemVariants}
         className='text-text-main text-label-sm pt-[1.5rem] text-center leading-[120%] font-bold'
       >
-        <span>{stockName}이 어떤 회사냐면요</span> ...
+        <span>
+          {stockName}
+          {getSubjectParticle(stockName)} 어떤 회사냐면요
+        </span>{' '}
+        ...
       </motion.div>
 
       <div className='flex flex-col gap-[0.75rem] pt-[1.75rem] pb-[7.75rem]'>
