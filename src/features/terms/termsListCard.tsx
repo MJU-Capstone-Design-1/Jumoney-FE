@@ -7,6 +7,7 @@ interface TermsListCardProps {
   termsId: string;
   isScrapped?: boolean;
   isLearned?: boolean;
+  onToggleScrap?: (scrapped: boolean) => void;
 }
 
 const SECTION_TEXT_COLORS: Record<string, string> = {
@@ -22,6 +23,7 @@ export const TermsListCard = ({
   termsId,
   isScrapped = false,
   isLearned = false,
+  onToggleScrap,
 }: TermsListCardProps) => {
   const textColorClass = isLearned
     ? SECTION_TEXT_COLORS[termsSectionId] || 'text-main1'
@@ -37,6 +39,7 @@ export const TermsListCard = ({
           <TermsScrapButton
             termId={Number(termsId)}
             initialScrapped={isScrapped}
+            onToggle={onToggleScrap}
           />
         </div>
         <p

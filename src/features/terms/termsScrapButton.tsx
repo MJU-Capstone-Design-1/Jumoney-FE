@@ -8,11 +8,13 @@ import { useToggleScrap } from '@/api/generated/endpoints/주식-용어/주식-�
 interface TermsScrapButtonProps {
   termId?: number;
   initialScrapped?: boolean;
+  onToggle?: (scrapped: boolean) => void;
 }
 
 export const TermsScrapButton = ({
   termId,
   initialScrapped = false,
+  onToggle,
 }: TermsScrapButtonProps) => {
   const [prevInitialScrapped, setPrevInitialScrapped] =
     useState(initialScrapped);
@@ -29,15 +31,24 @@ export const TermsScrapButton = ({
     e.stopPropagation();
     e.preventDefault();
 
-    setIsScrapped((prev) => !prev);
+    const nextState = !isScrapped;
+    // Toggle local state immediately for snappy UX
+    setIsScrapped(nextState);
+
+    if (onToggle) {
+      onToggle(nextState);
+    }
 
     if (termId !== undefined) {
       try {
         await toggleScrapMutation.mutateAsync({ termId });
       } catch (error) {
         console.error('Failed to toggle scrap:', error);
-
+        // Revert state on failure
         setIsScrapped((prev) => !prev);
+        if (onToggle) {
+          onToggle(!nextState);
+        }
       }
     }
   };
