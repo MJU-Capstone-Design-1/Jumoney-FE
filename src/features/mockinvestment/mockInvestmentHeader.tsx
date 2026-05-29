@@ -5,15 +5,18 @@ import { motion, AnimatePresence } from 'framer-motion';
 import BackButtonField from '@/components/backButtonField';
 import { MyCompanyToggle } from './myCompanyToggle';
 import { CompanyCard } from './companyCard';
+import { MockInvestmentAccountResponse } from '@/api/generated/model';
 
 interface MockInvestmentHeaderProps {
   isExpanded?: boolean;
   onExpandedChange?: (expanded: boolean) => void;
+  accountData?: MockInvestmentAccountResponse | null;
 }
 
 const MockInvestmentHeader = ({
   isExpanded: controlledIsExpanded,
   onExpandedChange,
+  accountData,
 }: MockInvestmentHeaderProps) => {
   const [localIsExpanded, setLocalIsExpanded] = useState(false);
   const isExpanded = controlledIsExpanded ?? localIsExpanded;
@@ -25,6 +28,25 @@ const MockInvestmentHeader = ({
       setLocalIsExpanded(pressed);
     }
   };
+
+  const totalPurchaseAmount = accountData?.totalPurchaseAmount ?? 0;
+  const totalAsset = accountData?.totalAsset ?? 0;
+  const totalProfitRate = accountData?.totalProfitRate ?? 0;
+
+  const formattedTotalPurchaseAmount = totalPurchaseAmount.toLocaleString();
+  const formattedTotalAsset = totalAsset.toLocaleString();
+
+  const isPositive = totalProfitRate > 0;
+  const isNegative = totalProfitRate < 0;
+  const formattedProfitRate = isPositive
+    ? `+${totalProfitRate.toFixed(1)}%`
+    : `${totalProfitRate.toFixed(1)}%`;
+
+  const profitRateColorClass = isPositive
+    ? 'text-text-up'
+    : isNegative
+      ? 'text-text-down'
+      : '';
 
   return (
     <motion.div
@@ -42,7 +64,9 @@ const MockInvestmentHeader = ({
           transition={{ delay: 0.2 }}
         >
           <div className='text-label-md font-extrabold'>내 투자</div>
-          <div className='text-label-xl font-extrabold'>₩ nn,nnn,nnn</div>
+          <div className='text-label-xl font-extrabold'>
+            ₩ {formattedTotalPurchaseAmount}
+          </div>
         </motion.div>
       </div>
 
@@ -54,9 +78,11 @@ const MockInvestmentHeader = ({
           className='flex flex-col items-center justify-center'
         >
           <div className='text-label-sm font-extrabold'>총 자산</div>
-          <div className='text-label-md font-extrabold'>₩ nn,nnn,nnn</div>
+          <div className='text-label-md font-extrabold'>
+            ₩ {formattedTotalAsset}
+          </div>
         </motion.div>
-        <div className='bg-secondary1 mr-[2.625rem] ml-[1.5rem] h-[3.75rem] w-[1px]' />
+        <div className='bg-secondary1 mr-[3rem] ml-[1.75rem] h-[3.75rem] w-[1px]' />
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -64,8 +90,10 @@ const MockInvestmentHeader = ({
           className='flex flex-col items-center justify-center'
         >
           <div className='text-label-sm font-extrabold'>수익률</div>
-          <div className='text-label-md text-text-up font-extrabold'>
-            +nn.n%
+          <div
+            className={`text-label-md ${profitRateColorClass} font-extrabold`}
+          >
+            {formattedProfitRate}
           </div>
         </motion.div>
       </div>

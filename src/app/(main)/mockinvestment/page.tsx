@@ -1,11 +1,15 @@
 'use client';
 
+import { getInitializeAccountMutationOptions } from '@/api/generated/endpoints/모의투자/모의투자';
+import { MockInvestmentAccountResponse } from '@/api/generated/model';
 import { BottomTabBar } from '@/components/bottomTabBar';
 import { CompanyCard } from '@/features/mockinvestment/companyCard';
 import { CompanySearchInput } from '@/features/mockinvestment/companySearchInput';
 import { FieldButton, FieldType } from '@/features/mockinvestment/fieldButton';
 import MockInvestmentHeader from '@/features/mockinvestment/mockInvestmentHeader';
+import { useMutation } from '@tanstack/react-query';
 import { motion, useMotionValue } from 'framer-motion';
+import { useEffect, useState } from 'react';
 
 const MockInvestmentPage = () => {
   const displayFields: FieldType[] = [
@@ -27,6 +31,37 @@ const MockInvestmentPage = () => {
   const totalWidth = displayFields.length * (buttonWidth + gap);
   const maxDrag = -(totalWidth - 350);
 
+  const [account, setAccount] = useState<MockInvestmentAccountResponse | null>(
+    null,
+  );
+
+  const initializeAccountMutation = useMutation(
+    getInitializeAccountMutationOptions(),
+  );
+
+  useEffect(() => {
+    initializeAccountMutation.mutate(undefined, {
+      onSuccess: (res) => {
+        const accountData = res.data;
+
+        if (accountData === undefined || accountData === null) {
+          return;
+        }
+
+        setAccount(accountData);
+
+        if (accountData.created) {
+          console.log(`계좌 생성 완료. 초기 자본금: ${accountData.seedMoney}`);
+        } else {
+          console.log(`기존 계좌 로드. 총 자산: ${accountData.totalAsset}`);
+        }
+      },
+      onError: (error) => {
+        console.error('모의투자 계좌 초기화에 실패했습니다.', error);
+      },
+    });
+  }, []);
+
   return (
     <div className='relative h-screen w-full overflow-hidden'>
       <motion.div
@@ -35,7 +70,7 @@ const MockInvestmentPage = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <MockInvestmentHeader />
+        <MockInvestmentHeader accountData={account} />
 
         <div className='flex flex-col px-[1rem] py-[1.5rem]'>
           <motion.div
