@@ -296,6 +296,11 @@
     display: none; /* Chrome, Safari and Opera */
   }
 
+  input[type='search']::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
   .recharts-wrapper *:focus,
   .recharts-bar-rectangle:focus,
   .recharts-cell:focus {
