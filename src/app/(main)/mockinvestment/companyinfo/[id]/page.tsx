@@ -158,7 +158,7 @@ const DetailPage = () => {
       initial='hidden'
       animate='visible'
     >
-      <BackButtonField color='secondary2' label='기업명' />
+      <BackButtonField color='secondary2' label={stockName} />
 
       <motion.div
         variants={itemVariants}
