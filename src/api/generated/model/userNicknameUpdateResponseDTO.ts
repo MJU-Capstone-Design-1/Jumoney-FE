@@ -7,7 +7,7 @@
  */
 
 /**
- * 닉네임 설정 응답
+ * 닉네임 수정 응답
  */
 export interface UserNicknameUpdateResponseDTO {
   userId?: number;

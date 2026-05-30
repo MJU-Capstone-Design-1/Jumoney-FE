@@ -7,9 +7,15 @@ interface BackButtonFieldProps {
   color?: 'secondary1' | 'secondary2';
   label?: string;
   onClick?: () => void;
+  href?: string;
 }
 
-const BackButtonField = ({ color, label, onClick }: BackButtonFieldProps) => {
+const BackButtonField = ({
+  color,
+  label,
+  onClick,
+  href,
+}: BackButtonFieldProps) => {
   const router = useRouter();
 
   const colorMap = {
@@ -20,7 +26,9 @@ const BackButtonField = ({ color, label, onClick }: BackButtonFieldProps) => {
   const textColorClass = (color && colorMap[color]) || 'text-secondary2';
 
   const handleBack = () => {
-    if (onClick) {
+    if (href) {
+      router.push(href);
+    } else if (onClick) {
       onClick();
     } else {
       router.back();

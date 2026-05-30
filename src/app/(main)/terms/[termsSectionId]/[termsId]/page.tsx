@@ -1,22 +1,131 @@
 'use client';
 
+import React from 'react';
+import { useRouter } from 'next/navigation';
 import BackButtonField from '@/components/backButtonField';
 import BottomButton from '@/components/bottomButton';
 import { TermsScrapButton } from '@/features/terms/termsScrapButton';
 import { motion } from 'framer-motion';
-import React from 'react';
+import {
+  useGetTermDetail,
+  useGetTermsByCategory,
+} from '@/api/generated/endpoints/주식-용어/주식-용어';
 
-const page = () => {
+interface PageProps {
+  params: Promise<{
+    termsSectionId: string;
+    termsId: string;
+  }>;
+}
+
+const SECTION_TO_CATEGORY_ID: Record<string, number> = {
+  basic: 1,
+  diagnosis: 2,
+  chart: 3,
+  trading: 4,
+};
+
+const CATEGORY_CONFIGS: Record<
+  string,
+  { title: string; textColor: string; bgColor: string }
+> = {
+  basic: {
+    title: '기초 개념',
+    textColor: 'text-main1',
+    bgColor: 'bg-main1',
+  },
+  diagnosis: {
+    title: '기업 진단',
+    textColor: 'text-main2',
+    bgColor: 'bg-main2',
+  },
+  chart: {
+    title: '차트 분석',
+    textColor: 'text-main3',
+    bgColor: 'bg-main3',
+  },
+  trading: {
+    title: '거래 실무',
+    textColor: 'text-main4',
+    bgColor: 'bg-main4',
+  },
+};
+
+const Page = ({ params }: PageProps) => {
+  const { termsSectionId, termsId } = React.use(params);
+  const router = useRouter();
+
+  const { data, isLoading } = useGetTermDetail(Number(termsId));
+  const term = data?.data;
+
+  const categoryId = SECTION_TO_CATEGORY_ID[termsSectionId] || 1;
+  const { data: listData } = useGetTermsByCategory(categoryId);
+  const termsList = listData?.data?.terms || [];
+
+  const config = CATEGORY_CONFIGS[termsSectionId] || CATEGORY_CONFIGS.basic;
+
+  if (isLoading) {
+    return (
+      <div className='bg-background flex h-[100vh] w-[100vw] items-center justify-center'>
+        <p className='text-body-lg animate-pulse font-extrabold text-gray-400'>
+          학습 자료를 불러오는 중...
+        </p>
+      </div>
+    );
+  }
+
+  if (!term) {
+    return (
+      <div className='bg-background flex h-[100vh] w-[100vw] flex-col items-center justify-center gap-4 p-[2rem]'>
+        <p className='text-body-lg font-extrabold text-gray-400'>
+          학습 자료를 찾을 수 없습니다.
+        </p>
+        <BottomButton
+          bgColor={config.bgColor}
+          label='목록으로 돌아가기'
+          onClick={() => router.push(`/terms/${termsSectionId}`)}
+        />
+      </div>
+    );
+  }
+
+  const currentIndex = termsList.findIndex((t) => t.termId === term.termId);
+  const nextTerm =
+    currentIndex !== -1 && currentIndex < termsList.length - 1
+      ? termsList[currentIndex + 1]
+      : null;
+
+  const handleNext = () => {
+    if (nextTerm) {
+      router.push(`/terms/${termsSectionId}/${nextTerm.termId}`);
+    } else {
+      router.push(`/terms/${termsSectionId}`);
+    }
+  };
+
+  const description = term.description || '';
+  const lines = description.split('\n');
+  const shortDesc = lines[0] || '';
+  const detailedDesc = lines.slice(1).join('\n') || description;
+
   return (
     <div>
       <div className='flex flex-col gap-[2rem] p-[1rem]'>
         <div className='flex items-center justify-between'>
-          <BackButtonField color='secondary2' label='기초 개념' />
+          <BackButtonField
+            color='secondary2'
+            label={term.categoryName || config.title}
+            href={`/terms/${termsSectionId}`}
+          />
           <div className='right-0 px-[0.375rem]'>
-            <TermsScrapButton />
+            <TermsScrapButton
+              termId={term.termId}
+              initialScrapped={term.isScrapped}
+            />
           </div>
         </div>
 
+        {/* 용어 이미지 자리 */}
         <div className='bg-default mx-auto h-[18.75rem] w-[18.75rem]' />
       </div>
 
@@ -25,18 +134,18 @@ const page = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1, ease: 'easeOut' }}
-          className='text-heading-md text-main2 leading-[120%] font-extrabold'
+          className={`text-heading-md ${config.textColor} leading-[120%] font-extrabold`}
         >
-          매수
+          {term.termName}
         </motion.h1>
-        <div className='flex flex-col gap-[0.5rem] text-center'>
+        <div className='flex flex-col gap-[0.5rem] px-[20rem] text-center'>
           <motion.p
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.5, ease: 'easeOut' }}
-            className='text-label-md leading-[120%] font-extrabold'
+            className='text-label-md text-text-main leading-[120%] font-extrabold'
           >
-            주식을 사는 행위
+            {shortDesc}
           </motion.p>
           <motion.p
             initial={{ opacity: 0, y: 30 }}
@@ -44,17 +153,23 @@ const page = () => {
             transition={{ duration: 0.5, delay: 0.8, ease: 'easeOut' }}
             className='text-body-lg text-text-main leading-[120%] font-semibold'
           >
-            매수란 주식을 사는 것을 말해요.
-            <br />
-            회사의 주식을 판매하는 사람을 매도자라고 하는데, <br />
-            매도자에게 주식을 구매하는 행위에요.
+            {detailedDesc.split('\n').map((line, idx) => (
+              <React.Fragment key={idx}>
+                {line}
+                {idx !== detailedDesc.split('\n').length - 1 && <br />}
+              </React.Fragment>
+            ))}
           </motion.p>
         </div>
       </div>
 
-      <BottomButton bgColor='bg-main2 ' label='다음으로' />
+      <BottomButton
+        bgColor={config.bgColor}
+        label={nextTerm ? '다음으로' : '학습 완료'}
+        onClick={handleNext}
+      />
     </div>
   );
 };
 
-export default page;
+export default Page;

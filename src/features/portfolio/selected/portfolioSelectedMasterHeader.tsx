@@ -10,6 +10,7 @@ interface MasterHeaderProps {
   image: string;
   quote: React.ReactNode;
   tags: string[];
+  backHref?: string;
 }
 
 export const PortfolioSelectedMasterHeader = ({
@@ -17,11 +18,16 @@ export const PortfolioSelectedMasterHeader = ({
   image,
   quote,
   tags,
+  backHref,
 }: MasterHeaderProps) => {
   return (
     <div className='relative px-[1rem] pt-[1rem]'>
       <div className='flex justify-between'>
-        <BackButtonField color='secondary1' label='거장 포트폴리오' />
+        <BackButtonField
+          color='secondary1'
+          label='거장 포트폴리오'
+          href={backHref}
+        />
       </div>
       <Image
         src={image}
