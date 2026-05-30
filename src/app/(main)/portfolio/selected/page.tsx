@@ -3,6 +3,7 @@
 import React, { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useGetMasterDetail } from '@/api/generated/endpoints/거장-정보/거장-정보';
+import { useGetUserInfo } from '@/api/generated/endpoints/사용자/사용자';
 import { PortfolioSelectedMasterChangeButton } from '@/features/portfolio/selected/portfolioSelectedMasterChangeButton';
 import { PortfolioSelectedMasterHeader } from '@/features/portfolio/selected/portfolioSelectedMasterHeader';
 
@@ -46,6 +47,12 @@ interface ApiMasterDetailResponse {
   };
 }
 
+interface LocalUserInfoResponse {
+  data?: {
+    selectedMasterId?: number;
+  };
+}
+
 const codesByIndex = [
   'WARREN_BUFFETT',
   'PETER_LYNCH',
@@ -55,11 +62,33 @@ const codesByIndex = [
 
 const PageContent = () => {
   const searchParams = useSearchParams();
-  const masterIdParam = searchParams.get('master') || '0';
-  const selectedIndex = parseInt(masterIdParam, 10) || 0;
+  const masterIdParam = searchParams.get('master');
+
+  const { data: userInfoData, isLoading: isUserInfoLoading } = useGetUserInfo();
+  const apiSelectedMasterId = (
+    userInfoData as LocalUserInfoResponse | undefined
+  )?.data?.selectedMasterId;
+
+  let selectedIndex = 0;
+  if (masterIdParam !== null) {
+    selectedIndex = parseInt(masterIdParam, 10) || 0;
+  } else if (
+    apiSelectedMasterId !== undefined &&
+    apiSelectedMasterId !== null &&
+    apiSelectedMasterId !== 0
+  ) {
+    selectedIndex = apiSelectedMasterId - 1;
+  } else if (typeof window !== 'undefined') {
+    const localIndexStr = localStorage.getItem('selectedMasterIndex');
+    selectedIndex =
+      localIndexStr !== null ? parseInt(localIndexStr, 10) || 0 : 0;
+  }
+
   const masterId = selectedIndex + 1;
 
-  const { data: detailData, isLoading } = useGetMasterDetail(masterId);
+  const { data: detailData, isLoading: isDetailLoading } =
+    useGetMasterDetail(masterId);
+  const isLoading = isUserInfoLoading || isDetailLoading;
 
   const response = detailData as ApiMasterDetailResponse | undefined;
   const currentCode =

@@ -9,12 +9,32 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { PortfolioSelectInvestmentPhilosophy } from '@/features/portfolio/masterselect/portfolioSelectInvestmentPhilosophy';
 import { useRouter } from 'next/navigation';
 import BottomButton from '@/components/bottomButton';
+import { useSelectMaster } from '@/api/generated/endpoints/거장-정보/거장-정보';
 
 const Page = () => {
   const router = useRouter();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isPhilosophyOpen, setIsPhilosophyOpen] = useState(false);
   const selectedMaster = MASTERS[selectedIndex];
+
+  const { mutate: selectMaster } = useSelectMaster();
+
+  const handleSelect = () => {
+    selectMaster(
+      { masterId: selectedIndex + 1 },
+      {
+        onSuccess: () => {
+          localStorage.setItem('selectedMasterIndex', String(selectedIndex));
+          router.push(`/portfolio/selected?master=${selectedIndex}`);
+        },
+        onError: (err) => {
+          console.error('Select master error:', err);
+          localStorage.setItem('selectedMasterIndex', String(selectedIndex));
+          router.push(`/portfolio/selected?master=${selectedIndex}`);
+        },
+      },
+    );
+  };
 
   return (
     <div className='flex flex-col p-[1rem]'>
@@ -78,12 +98,7 @@ const Page = () => {
         </AnimatePresence>
       </div>
 
-      <BottomButton
-        label='선택하기'
-        onClick={() =>
-          router.push(`/portfolio/selected?master=${selectedIndex}`)
-        }
-      />
+      <BottomButton label='선택하기' onClick={handleSelect} />
     </div>
   );
 };
