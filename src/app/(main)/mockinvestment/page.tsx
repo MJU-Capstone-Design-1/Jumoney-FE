@@ -31,8 +31,8 @@ const SECTOR_ID_MAP: Record<FieldType, number> = {
   mechanic: 5,
   finance: 6,
   communication: 7,
-  steel: 8,
-  utility: 9,
+  utility: 8,
+  steel: 9,
   staples: 10,
 };
 
