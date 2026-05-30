@@ -92,7 +92,7 @@ const PageContent = () => {
   const principles = detail?.principles || [];
 
   return (
-    <div className='relative min-h-screen overflow-hidden'>
+    <div className='relative min-h-screen overflow-hidden pb-[10rem]'>
       {/* 거장별 테마 컬러 배경 */}
       <div
         className={`${staticInfo.bgColor} absolute h-[60rem] w-[60rem] translate-x-[-18.28125rem] translate-y-[-37.6875rem] rounded-[77.125rem]`}
