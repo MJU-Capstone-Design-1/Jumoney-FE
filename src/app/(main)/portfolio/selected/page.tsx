@@ -138,6 +138,7 @@ const PageContent = () => {
         image={staticInfo.image}
         quote={quote}
         tags={tags}
+        backHref='/home'
       />
 
       {/* 정보 포트폴리오 버튼 영역 */}
