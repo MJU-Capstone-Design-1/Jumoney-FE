@@ -60,6 +60,7 @@ const DetailPage = () => {
     '1d',
   );
   const [isChart, setIsChart] = useState(false);
+  const [isIndicatorModalOpen, setIsIndicatorModalOpen] = useState(false);
 
   const params = useParams();
   const stockCode = typeof params.id === 'string' ? params.id : '005930';
@@ -177,7 +178,14 @@ const DetailPage = () => {
           어제보다 {changeRateText}
         </div>
 
-        <div className='flex h-auto w-full items-center justify-end pt-[1.5rem]'>
+        <div className='flex h-auto w-full items-center justify-between pt-[1.5rem]'>
+          <button
+            type='button'
+            onClick={() => setIsIndicatorModalOpen(true)}
+            className='bg-sub4 flex h-[2.25rem] items-center justify-center rounded-full px-[1.5rem]'
+          >
+            <span className='text-body-md font-semibold'>지표 확인하기</span>
+          </button>
           <SwitchChartButton isChart={isChart} setIsChart={setIsChart} />
         </div>
 
