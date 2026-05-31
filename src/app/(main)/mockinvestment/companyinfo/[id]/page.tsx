@@ -167,9 +167,10 @@ const DetailPage = () => {
           variants={itemVariants}
           className='flex flex-col items-center justify-center pt-[1.75rem]'
         >
-          <div className='text-secondary2 text-label-xl text-center leading-[120%] font-semibold'>
-            <span className='font-extrabold'>{stockName}</span>
-            의 현재 가격은
+          <div className='text-secondary2 text-label-xl text-center leading-[120%] font-semibold break-keep'>
+            <span className='font-extrabold'>{stockName}</span>의
+            {stockName.length >= 7 ? <br /> : ' '}
+            현재 가격은
             <br />
             {formattedPrice}원 이에요
           </div>
