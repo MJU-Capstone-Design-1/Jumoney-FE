@@ -278,19 +278,19 @@ const TestAccountPage = () => {
                                   <div className='text-secondary2 text-body-xl truncate font-extrabold'>
                                     {holding.stockName}
                                   </div>
-                                  <div className='text-text-main text-body-md mt-[0.1875rem] font-bold'>
+                                  <div className='text-text-main text-body-md mt-[0.145rem] font-bold'>
                                     ·{holding.quantity}주
                                   </div>
                                   <div className='text-main2 bg-default text-body-sm mb-[0.125rem] ml-[0.5rem] flex h-[1.625rem] items-center justify-center rounded-[6.25rem] px-[0.75rem] font-bold whitespace-nowrap'>
                                     #{holding.sectorName}
                                   </div>
                                 </div>
-                                <div className='flex gap-[0.5rem]'>
-                                  <div className='text-body-sm text-text-main font-semibold'>
+                                <div className='flex flex-wrap gap-x-[0.5rem]'>
+                                  <div className='text-body-sm text-text-main font-semibold whitespace-nowrap'>
                                     현재가: ₩{' '}
-                                    {formatMoney(holding.currentPrice)}{' '}
+                                    {formatMoney(holding.currentPrice)}
                                   </div>
-                                  <div className='text-body-sm text-text-main font-semibold'>
+                                  <div className='text-body-sm text-text-main font-semibold whitespace-nowrap'>
                                     평균 매수가: ₩{' '}
                                     {formatMoney(holding.averagePurchasePrice)}
                                   </div>
