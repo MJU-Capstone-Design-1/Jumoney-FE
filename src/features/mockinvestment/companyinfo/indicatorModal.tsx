@@ -4,15 +4,54 @@ import Image from 'next/image';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect } from 'react';
+import { useGetStockDetail } from '@/api/generated/endpoints/모의투자/모의투자';
 
 interface IndicatorModalProps {
   isOpen: boolean;
   onClose: () => void;
+  stockCode: string;
 }
+
+const formatCurrency = (value?: number) => {
+  if (value === undefined || value === null) return '-';
+  if (value === 0) return '0원';
+
+  const isNegative = value < 0;
+  const absValue = Math.abs(value);
+
+  let result = '';
+  const trillion = Math.floor(absValue / 1000000000000);
+  const hundredMillion = Math.floor((absValue % 1000000000000) / 100000000);
+  const tenThousand = Math.floor((absValue % 100000000) / 10000);
+  const remainder = absValue % 10000;
+
+  if (trillion > 0) result += `${trillion.toLocaleString()}조 `;
+  if (hundredMillion > 0) result += `${hundredMillion.toLocaleString()}억 `;
+  if (tenThousand > 0) result += `${tenThousand.toLocaleString()}만 `;
+  if (remainder > 0) result += `${remainder.toLocaleString()}`;
+
+  return (isNegative ? '-' : '') + result.trim() + '원';
+};
+
+const formatCurrencyFromHundredMillion = (value?: number) => {
+  if (value === undefined || value === null) return '-';
+  return formatCurrency(value * 100000000);
+};
+
+const formatPercent = (value?: number) =>
+  value !== undefined && value !== null
+    ? `${value.toLocaleString('ko-KR', { maximumFractionDigits: 10 })}%`
+    : '-';
+
+const formatNumber = (value?: number) =>
+  value !== undefined && value !== null
+    ? value.toLocaleString('ko-KR', { maximumFractionDigits: 10 })
+    : '-';
 
 export default function IndicatorModal({
   isOpen,
   onClose,
+  stockCode,
 }: IndicatorModalProps) {
   useEffect(() => {
     if (isOpen) {
@@ -24,6 +63,15 @@ export default function IndicatorModal({
       document.body.style.overflow = '';
     };
   }, [isOpen]);
+
+  const { data: response } = useGetStockDetail(stockCode, {
+    query: {
+      enabled: isOpen && Boolean(stockCode),
+    },
+  });
+
+  const stockData = response?.data;
+  const { price, investmentMetrics, financialMetrics } = stockData || {};
 
   if (typeof document === 'undefined') return null;
 
@@ -64,7 +112,44 @@ export default function IndicatorModal({
                   <div className='flex items-center gap-[0.5rem]'>
                     <div className='bg-secondary2 h-[0.5rem] w-[0.5rem] flex-shrink-0 rounded-full' />
                     <span className='text-body-lg text-secondary2 font-bold'>
-                      시가총액: 1,853조 2,703억원
+                      시가총액:{' '}
+                      {formatCurrencyFromHundredMillion(price?.marketCap)}
+                    </span>
+                  </div>
+                  <div className='flex flex-col gap-[0.25rem]'>
+                    <div className='flex items-center gap-[0.5rem]'>
+                      <div className='bg-secondary2 h-[0.5rem] w-[0.5rem] flex-shrink-0 rounded-full' />
+                      <span className='text-body-lg text-secondary2 font-bold'>
+                        거래대금:{' '}
+                        {formatCurrency(price?.accumulatedTradeAmount)}
+                      </span>
+                    </div>
+                    <p className='text-body-md text-secondary2 ml-[1rem] leading-[120%] font-semibold whitespace-pre-line'>
+                      거래대금은 특정 시간 동안 발생한
+                      <br />
+                      모든 주식 거래의 합계 금액을 의미해요.
+                      <br />
+                      거래량이 증가하면 해당 종목에 대한 관심이 높아져
+                      <br />
+                      거래가 활발해졌다고 볼 수 있어요.
+                    </p>
+                  </div>
+                  <div className='flex items-center gap-[0.5rem]'>
+                    <div className='bg-secondary2 h-[0.5rem] w-[0.5rem] flex-shrink-0 rounded-full' />
+                    <span className='text-body-lg text-secondary2 font-bold'>
+                      PBR: {formatNumber(investmentMetrics?.pbr)}
+                    </span>
+                  </div>
+                  <div className='flex items-center gap-[0.5rem]'>
+                    <div className='bg-secondary2 h-[0.5rem] w-[0.5rem] flex-shrink-0 rounded-full' />
+                    <span className='text-body-lg text-secondary2 font-bold'>
+                      PER: {formatNumber(investmentMetrics?.per)}
+                    </span>
+                  </div>
+                  <div className='flex items-center gap-[0.5rem]'>
+                    <div className='bg-secondary2 h-[0.5rem] w-[0.5rem] flex-shrink-0 rounded-full' />
+                    <span className='text-body-lg text-secondary2 font-bold'>
+                      ROE: {formatNumber(investmentMetrics?.roe)}
                     </span>
                   </div>
 
@@ -72,7 +157,8 @@ export default function IndicatorModal({
                     <div className='flex items-center gap-[0.5rem]'>
                       <div className='bg-secondary2 h-[0.5rem] w-[0.5rem] flex-shrink-0 rounded-full' />
                       <span className='text-body-lg text-secondary2 font-bold'>
-                        배당수익률: 0.5284%
+                        배당수익률:{' '}
+                        {formatPercent(investmentMetrics?.dividendYield)}
                       </span>
                     </div>
                     <p className='text-body-md text-secondary2 ml-[1rem] leading-[120%] font-semibold whitespace-pre-line'>
@@ -98,7 +184,8 @@ export default function IndicatorModal({
                     <div className='flex items-center gap-[0.5rem]'>
                       <div className='bg-secondary2 h-[0.5rem] w-[0.5rem] flex-shrink-0 rounded-full' />
                       <span className='text-body-lg text-secondary2 font-bold'>
-                        배당성향: 23.9525%
+                        배당성향:{' '}
+                        {formatPercent(investmentMetrics?.payoutRatio)}
                       </span>
                     </div>
                     <p className='text-body-md text-secondary2 ml-[1rem] leading-[120%] font-semibold whitespace-pre-line'>
@@ -119,7 +206,8 @@ export default function IndicatorModal({
                     <div className='flex items-center gap-[0.5rem]'>
                       <div className='bg-secondary2 h-[0.5rem] w-[0.5rem] flex-shrink-0 rounded-full' />
                       <span className='text-body-lg text-secondary2 font-bold'>
-                        체결강도: 125.92
+                        체결강도:{' '}
+                        {formatNumber(investmentMetrics?.executionStrength)}
                       </span>
                     </div>
                     <p className='text-body-md text-secondary2 ml-[1rem] leading-[120%] font-semibold whitespace-pre-line'>
@@ -144,7 +232,8 @@ export default function IndicatorModal({
                     <div className='flex items-center gap-[0.5rem]'>
                       <div className='bg-secondary2 h-[0.5rem] w-[0.5rem] flex-shrink-0 rounded-full' />
                       <span className='text-body-lg text-secondary2 font-bold'>
-                        기관 순매수: 22,999,299주
+                        기관 순매수:{' '}
+                        {formatNumber(investmentMetrics?.instNetBuy20Days)}주
                       </span>
                     </div>
                     <p className='text-body-md text-secondary2 ml-[1rem] leading-[120%] font-semibold whitespace-pre-line'>
@@ -164,20 +253,26 @@ export default function IndicatorModal({
                   <div className='flex items-center gap-[0.5rem]'>
                     <div className='bg-secondary2 h-[0.5rem] w-[0.5rem] flex-shrink-0 rounded-full' />
                     <span className='text-body-lg text-secondary2 font-bold'>
-                      매출: 133조 8,734억원
+                      매출:{' '}
+                      {formatCurrencyFromHundredMillion(
+                        financialMetrics?.sales,
+                      )}
                     </span>
                   </div>
                   <div className='flex items-center gap-[0.5rem]'>
                     <div className='bg-secondary2 h-[0.5rem] w-[0.5rem] flex-shrink-0 rounded-full' />
                     <span className='text-body-lg text-secondary2 font-bold'>
-                      영업이익: 57조 2,328억원
+                      영업이익:{' '}
+                      {formatCurrencyFromHundredMillion(
+                        financialMetrics?.operatingProfit,
+                      )}
                     </span>
                   </div>
                   <div className='flex flex-col gap-[0.25rem]'>
                     <div className='flex items-center gap-[0.5rem]'>
                       <div className='bg-secondary2 h-[0.5rem] w-[0.5rem] flex-shrink-0 rounded-full' />
                       <span className='text-body-lg text-secondary2 font-bold'>
-                        부채비율: 30.15%
+                        부채비율: {formatPercent(financialMetrics?.debtRatio)}
                       </span>
                     </div>
                     <p className='text-body-md text-secondary2 ml-[1rem] leading-[120%] font-semibold whitespace-pre-line'>

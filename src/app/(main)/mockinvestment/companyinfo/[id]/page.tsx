@@ -279,6 +279,7 @@ const DetailPage = () => {
       <IndicatorModal
         isOpen={isIndicatorModalOpen}
         onClose={() => setIsIndicatorModalOpen(false)}
+        stockCode={stockCode}
       />
     </>
   );
