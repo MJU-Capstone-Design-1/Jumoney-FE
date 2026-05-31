@@ -3,13 +3,19 @@
 import { motion } from 'framer-motion';
 import CheckIcon from '@/components/icons/checkIcon';
 
-export default function FloatingButton({ onClick }: { onClick?: () => void }) {
+export default function FloatingButton({
+  onClick,
+  delay = 0.5,
+}: {
+  onClick?: () => void;
+  delay?: number;
+}) {
   return (
     <motion.button
       onClick={onClick}
       initial={{ opacity: 0, scale: 0 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ type: 'spring', stiffness: 260, damping: 15, delay: 0.5 }}
+      transition={{ type: 'spring', stiffness: 260, damping: 15, delay }}
       style={{
         left: '50%',
         marginLeft: 'calc(187.5px - 3.5rem - 1.5rem)',
