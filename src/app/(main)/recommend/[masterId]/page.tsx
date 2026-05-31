@@ -24,6 +24,7 @@ import type {
   MasterChoiceRequest,
   MasterChoiceRequestSectorTypesItem,
 } from '@/api/generated/model';
+import { useRouter } from 'next/navigation';
 
 type MasterRecommendationSectorTypes = NonNullable<
   MasterChoiceRequest['sectorTypes']
@@ -53,6 +54,8 @@ export default function MasterRecommendPage({
 }) {
   const resolvedParams = React.use(params);
   const currentKey = resolvedParams.masterId;
+
+  const router = useRouter();
 
   const masterIdMapping: Record<string, number> = {
     buffett: 1,
@@ -199,7 +202,9 @@ export default function MasterRecommendPage({
 
   return (
     <div className='bg-background relative flex min-h-screen w-full flex-col overflow-x-hidden'>
-      <FloatingButton />
+      <FloatingButton
+        onClick={() => router.push(`/recommend/${currentKey}/testaccount`)}
+      />
 
       {/* Background Curved Shape */}
       <motion.div
