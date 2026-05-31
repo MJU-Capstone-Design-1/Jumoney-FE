@@ -98,15 +98,18 @@ const TestAccountPage = () => {
         {TABS.map((tab, index) => {
           const isActive = activeTab === index;
           return (
-            <button
-              key={tab}
+            <motion.button
+              key={`tab-${index}`}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1, duration: 0.3 }}
               onClick={() => setActiveTab(index)}
               className={`text-body-md shadow-card-shadow flex h-[3.625rem] flex-1 items-center justify-center rounded-[1.125rem] font-extrabold transition-colors ${
                 isActive ? 'bg-background' : 'bg-primaryMuted'
               }`}
             >
               <span className='mt-[-1rem]'>{tab}</span>
-            </button>
+            </motion.button>
           );
         })}
       </div>
@@ -126,14 +129,24 @@ const TestAccountPage = () => {
           </div>
         ) : (
           <div className='flex-1 overflow-y-auto'>
-            <p
+            <motion.p
+              key={`desc-${activeTab}`}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.4 }}
               className='text-body-md text-text-main text-center leading-[120%] font-semibold'
               dangerouslySetInnerHTML={{
                 __html: operationDescription.replace(/\n/g, '<br />'),
               }}
             />
 
-            <div className='mt-[2rem] text-center'>
+            <motion.div
+              key={`tags-${activeTab}`}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.4 }}
+              className='mt-[2rem] text-center'
+            >
               <div className='text-label-xl mt-[1.25rem] mb-[1.25rem] font-extrabold'>
                 {ACCOUNT_NAMES[activeTab]}
               </div>
@@ -157,9 +170,15 @@ const TestAccountPage = () => {
                   ),
                 )}
               </div>
-            </div>
+            </motion.div>
 
-            <div className='mt-[1.75rem] flex flex-col px-[0.5rem]'>
+            <motion.div
+              key={`summary-${activeTab}`}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.4 }}
+              className='mt-[1.75rem] flex flex-col px-[0.5rem]'
+            >
               <div className='bg-primary my-[1rem] h-[0.375rem] w-full rounded-full' />
               <div className='text-label-sm flex flex-col gap-1 font-bold'>
                 <div className='flex justify-between'>
@@ -196,7 +215,7 @@ const TestAccountPage = () => {
                     key={`asset-${activeTab}`}
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.1 }}
+                    transition={{ delay: 0.5 }}
                     className='flex flex-col items-center justify-center'
                   >
                     <div className='text-label-sm font-extrabold'>총 자산</div>
@@ -209,7 +228,7 @@ const TestAccountPage = () => {
                     key={`rate-${activeTab}`}
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.2 }}
+                    transition={{ delay: 0.6 }}
                     className='flex flex-col items-center justify-center'
                   >
                     <div className='text-label-sm font-extrabold'>
@@ -224,83 +243,91 @@ const TestAccountPage = () => {
                 </div>
 
                 <div className='flex flex-col gap-[1rem] pb-[2rem]'>
-                  {account.holdings?.map((holding: HoldingType) => {
-                    const holdingProfitInfo = formatProfit(
-                      holding.profitAmount,
-                    );
-                    const holdingRateInfo = formatRate(holding.profitRate);
+                  {account.holdings?.map(
+                    (holding: HoldingType, index: number) => {
+                      const holdingProfitInfo = formatProfit(
+                        holding.profitAmount,
+                      );
+                      const holdingRateInfo = formatRate(holding.profitRate);
 
-                    return (
-                      <div
-                        key={holding.stockId}
-                        className='bg-secondary1 shadow-card-shadow flex w-full flex-col gap-[1rem] rounded-[2rem] px-[1.5rem] py-[1rem] text-left'
-                      >
-                        <div className='flex w-full items-start justify-between'>
-                          <div className='flex min-w-0 items-center gap-[0.5rem]'>
-                            <div className='bg-background flex h-[3rem] w-[3rem] flex-shrink-0 items-center justify-center overflow-hidden rounded-full'>
-                              <Image
-                                src={`/logos/${holding.stockCode}.png`}
-                                alt={`${holding.stockName} 로고`}
-                                width={48}
-                                height={48}
-                                unoptimized={true}
-                                className='object-cover'
-                              />
-                            </div>
-                            <div className='flex flex-col gap-[0.375rem]'>
-                              <div className='flex gap-[0.25rem]'>
-                                <div className='text-secondary2 text-body-xl truncate font-extrabold'>
-                                  {holding.stockName}
-                                </div>
-                                <div className='text-text-main text-body-md mt-[0.1875rem] font-bold'>
-                                  ·{holding.quantity}주
-                                </div>
-                                <div className='text-main2 bg-default text-body-sm mb-[0.125rem] ml-[0.5rem] flex h-[1.625rem] items-center justify-center rounded-[6.25rem] px-[0.75rem] font-bold whitespace-nowrap'>
-                                  #{holding.sectorName}
-                                </div>
+                      return (
+                        <motion.div
+                          key={`holding-${activeTab}-${holding.stockId}`}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{
+                            delay: 0.6 + index * 0.1,
+                            duration: 0.4,
+                          }}
+                          className='bg-secondary1 shadow-card-shadow flex w-full flex-col gap-[1rem] rounded-[2rem] px-[1.5rem] py-[1rem] text-left'
+                        >
+                          <div className='flex w-full items-start justify-between'>
+                            <div className='flex min-w-0 items-center gap-[0.5rem]'>
+                              <div className='bg-background flex h-[3rem] w-[3rem] flex-shrink-0 items-center justify-center overflow-hidden rounded-full'>
+                                <Image
+                                  src={`/logos/${holding.stockCode}.png`}
+                                  alt={`${holding.stockName} 로고`}
+                                  width={48}
+                                  height={48}
+                                  unoptimized={true}
+                                  className='object-cover'
+                                />
                               </div>
-                              <div className='flex gap-[0.5rem]'>
-                                <div className='text-body-sm text-text-main font-semibold'>
-                                  현재가: ₩{' '}
-                                  {formatMoney(holding.currentPrice)}{' '}
+                              <div className='flex flex-col gap-[0.375rem]'>
+                                <div className='flex gap-[0.25rem]'>
+                                  <div className='text-secondary2 text-body-xl truncate font-extrabold'>
+                                    {holding.stockName}
+                                  </div>
+                                  <div className='text-text-main text-body-md mt-[0.1875rem] font-bold'>
+                                    ·{holding.quantity}주
+                                  </div>
+                                  <div className='text-main2 bg-default text-body-sm mb-[0.125rem] ml-[0.5rem] flex h-[1.625rem] items-center justify-center rounded-[6.25rem] px-[0.75rem] font-bold whitespace-nowrap'>
+                                    #{holding.sectorName}
+                                  </div>
                                 </div>
-                                <div className='text-body-sm text-text-main font-semibold'>
-                                  평균 매수가: ₩{' '}
-                                  {formatMoney(holding.averagePurchasePrice)}
+                                <div className='flex gap-[0.5rem]'>
+                                  <div className='text-body-sm text-text-main font-semibold'>
+                                    현재가: ₩{' '}
+                                    {formatMoney(holding.currentPrice)}{' '}
+                                  </div>
+                                  <div className='text-body-sm text-text-main font-semibold'>
+                                    평균 매수가: ₩{' '}
+                                    {formatMoney(holding.averagePurchasePrice)}
+                                  </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        </div>
 
-                        <div className='flex items-center gap-[0.5rem]'>
-                          <div className='text-body-md flex items-center gap-[0.25rem] font-extrabold'>
-                            <span className='text-secondary2'>
-                              ₩ {formatMoney(holding.evaluationAmount)}
-                            </span>
-                            <span className={holdingRateInfo.color}>
-                              ({holdingRateInfo.text}{' '}
-                              {holdingRateInfo.sign === '+'
-                                ? '▲'
-                                : holdingRateInfo.sign === '-'
-                                  ? '▼'
-                                  : ''}
-                              )
-                            </span>
+                          <div className='flex items-center gap-[0.5rem]'>
+                            <div className='text-body-md flex items-center gap-[0.25rem] font-extrabold'>
+                              <span className='text-secondary2'>
+                                ₩ {formatMoney(holding.evaluationAmount)}
+                              </span>
+                              <span className={holdingRateInfo.color}>
+                                ({holdingRateInfo.text}{' '}
+                                {holdingRateInfo.sign === '+'
+                                  ? '▲'
+                                  : holdingRateInfo.sign === '-'
+                                    ? '▼'
+                                    : ''}
+                                )
+                              </span>
+                            </div>
+                            <div className='bg-secondary2 flex h-[0.75rem] w-[0.0625rem]' />
+                            <p
+                              className={`text-body-md font-semibold ${holdingProfitInfo.color}`}
+                            >
+                              {holdingProfitInfo.text}
+                            </p>
                           </div>
-                          <div className='bg-secondary2 flex h-[0.75rem] w-[0.0625rem]' />
-                          <p
-                            className={`text-body-md font-semibold ${holdingProfitInfo.color}`}
-                          >
-                            {holdingProfitInfo.text}
-                          </p>
-                        </div>
-                      </div>
-                    );
-                  })}
+                        </motion.div>
+                      );
+                    },
+                  )}
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         )}
       </div>
