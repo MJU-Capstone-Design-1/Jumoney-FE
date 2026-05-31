@@ -9,8 +9,12 @@ import {
   labelMappings,
   recommendationTagLabels,
 } from '@/constants/labelMappings';
+import FloatingButton from '@/features/recommend/selection/floatingButton';
+import { useRouter } from 'next/navigation';
 
 const Page = () => {
+  const router = useRouter();
+
   const typingText = '분석 완료! 당신의 투자 타입은 · · ·';
 
   const { purpose, getRiskLabel, period, recommendationData } =
@@ -26,6 +30,10 @@ const Page = () => {
 
   return (
     <div>
+      <FloatingButton
+        delay={4}
+        onClick={() => router.push('/recommend/testaccount')}
+      />
       <div className='bg-primary gap-full text-secondary1 flex h-auto flex-col gap-[1rem] rounded-[2.5rem] p-[1.5rem]'>
         <p className='text-body-sm font-semibold'>
           {typingText.split('').map((char, index) => (
