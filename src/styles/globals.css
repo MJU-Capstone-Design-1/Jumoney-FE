@@ -215,7 +215,7 @@
   --color-field-mobility: var(--field-mobility);
   --color-field-finance: var(--field-finance);
   --color-field-bio: var(--field-bio);
-  --color-field-steal: var(--field-steal);
+  --color-field-steel: var(--field-steel);
   --color-field-energy: var(--field-energy);
   --color-field-communication: var(--field-communication);
   --color-field-staples: var(--field-staples);
@@ -258,7 +258,7 @@
   --field-mobility: #5fc6b4;
   --field-finance: #8ccf7e;
   --field-bio: #ff9db2;
-  --field-steal: #c96b5c;
+  --field-steel: #c96b5c;
   --field-energy: #fe814b;
   --field-communication: #a18fff;
   --field-staples: #ffce5c;
@@ -294,6 +294,11 @@
 
   *::-webkit-scrollbar {
     display: none; /* Chrome, Safari and Opera */
+  }
+
+  input[type='search']::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
   }
 
   .recharts-wrapper *:focus,

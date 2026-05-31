@@ -76,7 +76,7 @@ const config = {
           mobility: 'var(--field-mobility)',
           finance: 'var(--field-finance)',
           bio: 'var(--field-bio)',
-          steal: 'var(--field-steal)',
+          steel: 'var(--field-steel)',
           energy: 'var(--field-energy)',
           communication: 'var(--field-communication)',
           staples: 'var(--field-staples)',

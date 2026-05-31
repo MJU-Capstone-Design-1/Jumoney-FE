@@ -3,7 +3,7 @@ import { ITIcon } from '@/components/icons/itIcon';
 import { MobilityIcon } from '@/components/icons/mobilityIcon';
 import { FinanceIcon } from '@/components/icons/financeIcon';
 import { BioIcon } from '@/components/icons/bioIcon';
-import { StealIcon } from '@/components/icons/stealIcon';
+import { SteelIcon } from '@/components/icons/steelIcon';
 import { EnergyIcon } from '@/components/icons/energyIcon';
 import { CommunicationIcon } from '@/components/icons/communicationIcon';
 import { StaplesIcon } from '@/components/icons/staplesIcon';
@@ -15,7 +15,7 @@ export type FieldType =
   | 'mobility'
   | 'finance'
   | 'bio'
-  | 'steal'
+  | 'steel'
   | 'energy'
   | 'communication'
   | 'staples'
@@ -53,9 +53,9 @@ export const FIELD_CONFIGS: Record<FieldType, FieldConfig> = {
     label: '바이오/헬스케어',
     iconOffset: 'translate-y-[0.5px]',
   },
-  steal: {
-    bgColor: 'bg-field-steal',
-    icon: <StealIcon />,
+  steel: {
+    bgColor: 'bg-field-steel',
+    icon: <SteelIcon />,
     label: '철강/소재',
   },
   energy: {
