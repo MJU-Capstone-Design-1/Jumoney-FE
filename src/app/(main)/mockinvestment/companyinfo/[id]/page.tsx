@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { motion, Variants } from 'framer-motion';
 import BackButtonField from '@/components/backButtonField';
-import BottomButton from '@/components/bottomButton';
 import { BulbIcon } from '@/components/icons/bulbIcon';
 import { KeyIcon } from '@/components/icons/keyIcon';
 import { PencilIcon } from '@/components/icons/pencilIcon';
@@ -17,6 +16,7 @@ import CompanyLineChart from '@/features/mockinvestment/companyinfo/companyLineC
 import CompanyCandleChart from '@/features/mockinvestment/companyinfo/companyCandleChart';
 import {
   useBuy,
+  useGetDashboard,
   useGetPortfolios,
   useGetStockDetail,
   useSell,
@@ -25,6 +25,7 @@ import { useParams } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import IndicatorModal from '@/features/mockinvestment/companyinfo/indicatorModal';
 import { useStockStream } from '@/hooks/useStockStream';
+import QuantityButton from '@/features/mockinvestment/companyinfo/quantityButton';
 
 const getSubjectParticle = (word: string) => {
   if (!word) return '이';
@@ -63,6 +64,7 @@ const DetailPage = () => {
   );
   const [isChart, setIsChart] = useState(false);
   const [isIndicatorModalOpen, setIsIndicatorModalOpen] = useState(false);
+  const [quantity, setQuantity] = useState(1);
 
   const params = useParams();
   const stockCode = typeof params.id === 'string' ? params.id : '005930';
@@ -71,9 +73,14 @@ const DetailPage = () => {
   const { data: detailResponse, isLoading } = useGetStockDetail(stockCode);
 
   const { data: portfolioResponse } = useGetPortfolios();
-  const portfolios = portfolioResponse?.data?.portfolios || [];
 
-  const isOwned = portfolios.some((p) => p.stockCode === stockCode);
+  const { data: dashboardResponse } = useGetDashboard();
+  const availableCash = dashboardResponse?.data?.cashBalance || 0;
+
+  const portfolios = portfolioResponse?.data?.portfolios || [];
+  const ownedStock = portfolios.find((p) => p.stockCode === stockCode);
+  const isOwned = !!ownedStock;
+  const ownedQuantity = ownedStock?.quantity || 0;
 
   const buyMutation = useBuy();
   const sellMutation = useSell();
@@ -89,6 +96,11 @@ const DetailPage = () => {
     initialPrice,
     initialChangeRate,
   );
+
+  const maxBuyQuantity =
+    currentPrice > 0 ? Math.floor(availableCash / currentPrice) : 0;
+  const maxLimit = Math.max(maxBuyQuantity, ownedQuantity);
+  const isMaxReached = quantity >= maxLimit;
 
   const formattedPrice = currentPrice.toLocaleString();
   const isPositive = changeRate > 0;
@@ -120,44 +132,58 @@ const DetailPage = () => {
     );
   };
 
-  const handleAllClick = () => {
-    setIsAllSelected((prev) => {
-      if (prev) return prev;
-      setSelectedPeriod(undefined);
-      return true;
-    });
+  const handleIncrease = () => {
+    setQuantity((prev) => (prev < maxLimit ? prev + 1 : prev));
   };
 
-  const handleOrderClick = () => {
-    const quantity = 1;
+  const handleDecrease = () => {
+    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+  };
 
-    if (isOwned) {
-      sellMutation.mutate(
-        { data: { stockCode, quantity } },
-        {
-          onSuccess: () => {
-            alert('시장가 매도 주문이 체결되었습니다.');
-            queryClient.invalidateQueries({
-              queryKey: ['/api/mock-investments/portfolios'],
-            });
-          },
-          onError: () => alert('매도 주문에 실패했습니다.'),
-        },
-      );
-    } else {
-      buyMutation.mutate(
-        { data: { stockCode, quantity } },
-        {
-          onSuccess: () => {
-            alert('시장가 매수 주문이 체결되었습니다.');
-            queryClient.invalidateQueries({
-              queryKey: ['/api/mock-investments/portfolios'],
-            });
-          },
-          onError: () => alert('매수 주문에 실패했습니다.'),
-        },
-      );
+  const handleSellClick = () => {
+    if (quantity > ownedQuantity) {
+      alert(`보유 주식 수(${ownedQuantity}주)를 초과하여 매도할 수 없습니다.`);
+      return;
     }
+    sellMutation.mutate(
+      { data: { stockCode, quantity } },
+      {
+        onSuccess: () => {
+          alert('시장가 매도 주문이 체결되었습니다.');
+          queryClient.invalidateQueries({
+            queryKey: ['/api/mock-investments/portfolios'],
+          });
+          queryClient.invalidateQueries({
+            queryKey: ['/api/mock-investments/dashboards'],
+          });
+        },
+        onError: () => alert('매도 주문에 실패했습니다.'),
+      },
+    );
+  };
+
+  const handleBuyClick = () => {
+    if (quantity > maxBuyQuantity) {
+      alert(
+        `가용 자산(${availableCash.toLocaleString()}원)이 부족합니다. (최대 ${maxBuyQuantity}주 매수 가능)`,
+      );
+      return;
+    }
+    buyMutation.mutate(
+      { data: { stockCode, quantity } },
+      {
+        onSuccess: () => {
+          alert('시장가 매수 주문이 체결되었습니다.');
+          queryClient.invalidateQueries({
+            queryKey: ['/api/mock-investments/portfolios'],
+          });
+          queryClient.invalidateQueries({
+            queryKey: ['/api/mock-investments/dashboards'],
+          });
+        },
+        onError: () => alert('매수 주문에 실패했습니다.'),
+      },
+    );
   };
 
   return (
@@ -288,19 +314,17 @@ const DetailPage = () => {
 
         {!isIndicatorModalOpen && (
           <div className='fixed bottom-[2.125rem] left-1/2 z-50 flex w-full max-w-[23.4375rem] -translate-x-1/2 flex-col items-center gap-[0.625rem]'>
-            <button
-              type='button'
-              className='flex h-[4rem] w-[21.4375rem] items-center justify-center gap-[2rem] rounded-[1000px] bg-[#EAE3DE] px-[2rem] py-[1rem]'
-            >
-              <span className='text-secondary2 text-body-xl font-extrabold'>
-                1주
-              </span>
-            </button>
+            <QuantityButton
+              quantity={quantity}
+              onIncrease={handleIncrease}
+              onDecrease={handleDecrease}
+              isMaxReached={isMaxReached}
+            />
 
             <div className='flex w-full items-center justify-between gap-4 px-4'>
               <button
                 type='button'
-                onClick={handleOrderClick}
+                onClick={handleSellClick}
                 disabled={!isOwned}
                 className={`flex h-[4rem] w-full items-center justify-center rounded-[1000px] transition-colors ${
                   !isOwned
@@ -315,7 +339,7 @@ const DetailPage = () => {
 
               <button
                 type='button'
-                onClick={handleOrderClick}
+                onClick={handleBuyClick}
                 className='bg-secondary2 flex h-[4rem] w-full items-center justify-center rounded-[1000px] transition-colors hover:opacity-90'
               >
                 <span className='text-secondary1 text-body-xl font-extrabold'>
