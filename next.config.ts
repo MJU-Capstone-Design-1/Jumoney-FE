@@ -9,6 +9,10 @@ const nextConfig: NextConfig = {
         source: '/api/news/today',
         destination: 'https://jumoney-node.shop/api/news/today',
       },
+      {
+        source: '/api/stream/:path*',
+        destination: 'https://jumoney-node.shop/api/stream/:path*',
+      },
     ];
   },
 };
