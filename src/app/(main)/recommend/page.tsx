@@ -9,7 +9,7 @@ const Page = () => {
   const [toggleValue, setToggleValue] = useState<'left' | 'right'>('left');
 
   return (
-    <div className='w-full px-[1rem] pt-[1rem]'>
+    <div className='w-full px-[1rem] pt-[1rem] pb-[10rem]'>
       <RecommendHeader value={toggleValue} onValueChange={setToggleValue} />
 
       {toggleValue === 'left' ? (

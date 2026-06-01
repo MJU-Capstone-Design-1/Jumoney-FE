@@ -15,7 +15,7 @@ const SurveySecondPage = () => {
   const router = useRouter();
   const [value, setValue] = useState<number>(0);
   return (
-    <div className='flex w-full flex-col px-4 pt-4'>
+    <div className='flex w-full flex-col px-4 pt-4 pb-[10rem]'>
       <BackButtonField
         color='secondary2'
         label='오늘의 호주머니'
