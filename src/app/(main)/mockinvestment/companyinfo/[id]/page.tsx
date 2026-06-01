@@ -23,6 +23,7 @@ import {
 } from '@/api/generated/endpoints/모의투자/모의투자';
 import { useParams } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
+import IndicatorModal from '@/features/mockinvestment/companyinfo/indicatorModal';
 
 const getSubjectParticle = (word: string) => {
   if (!word) return '이';
@@ -60,6 +61,7 @@ const DetailPage = () => {
     '1d',
   );
   const [isChart, setIsChart] = useState(false);
+  const [isIndicatorModalOpen, setIsIndicatorModalOpen] = useState(false);
 
   const params = useParams();
   const stockCode = typeof params.id === 'string' ? params.id : '005930';
@@ -152,119 +154,135 @@ const DetailPage = () => {
   };
 
   return (
-    <motion.div
-      className='flex w-full flex-col px-4 pt-4'
-      variants={containerVariants}
-      initial='hidden'
-      animate='visible'
-    >
-      <BackButtonField color='secondary2' label={stockName} />
-
+    <>
       <motion.div
-        variants={itemVariants}
-        className='flex flex-col items-center justify-center pt-[1.75rem]'
+        className='flex w-full flex-col px-4 pt-4'
+        variants={containerVariants}
+        initial='hidden'
+        animate='visible'
       >
-        <div className='text-secondary2 text-label-xl text-center leading-[120%] font-semibold'>
-          <span className='font-extrabold'>{stockName}</span>
-          의 현재 가격은
-          <br />
-          {formattedPrice}원 이에요
-        </div>
+        <BackButtonField color='secondary2' label={stockName} />
 
-        <div
-          className={`text-body-xl pt-[0.5rem] text-center font-semibold ${changeRateColor}`}
+        <motion.div
+          variants={itemVariants}
+          className='flex flex-col items-center justify-center pt-[1.75rem]'
         >
-          어제보다 {changeRateText}
-        </div>
-
-        <div className='flex h-auto w-full items-center justify-end pt-[1.5rem]'>
-          <SwitchChartButton isChart={isChart} setIsChart={setIsChart} />
-        </div>
-
-        <div className='pt-[0.5rem]'>
-          <PeriodToggle
-            value={selectedPeriod}
-            onValueChange={(val: PeriodValue) => {
-              setSelectedPeriod(val);
-              setIsAllSelected(false);
-            }}
-          />
-        </div>
-      </motion.div>
-
-      <motion.div variants={itemVariants} className='pt-[1rem]'>
-        {isChart ? (
-          <CompanyCandleChart stockCode={stockCode} period={selectedPeriod} />
-        ) : (
-          <CompanyLineChart stockCode={stockCode} period={selectedPeriod} />
-        )}
-      </motion.div>
-
-      <motion.div
-        variants={itemVariants}
-        className='text-text-main text-label-sm pt-[1.5rem] text-center leading-[120%] font-bold'
-      >
-        <span>
-          {stockName}
-          {getSubjectParticle(stockName)} 어떤 회사냐면요
-        </span>{' '}
-        ...
-      </motion.div>
-
-      <div className='flex flex-col gap-[0.75rem] pt-[1.75rem] pb-[7.75rem]'>
-        {isLoading ? (
-          <div className='text-body-md text-text-sub py-10 text-center font-bold'>
-            기업 정보를 불러오는 중입니다...
+          <div className='text-secondary2 text-label-xl text-center leading-[120%] font-semibold break-keep'>
+            <span className='font-extrabold'>{stockName}</span>의
+            {stockName.length >= 7 ? <br /> : ' '}
+            현재 가격은
+            <br />
+            {formattedPrice}원 이에요
           </div>
-        ) : (
-          <>
-            {descriptions[0] && (
-              <motion.div
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.1 }}
-              >
-                <CompanyInformationCard
-                  icon={<BulbIcon />}
-                  text={formatDescription(descriptions[0])}
-                />
-              </motion.div>
-            )}
 
-            {descriptions[1] && (
-              <motion.div
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-              >
-                <CompanyInformationCard
-                  icon={<PencilIcon />}
-                  text={formatDescription(descriptions[1])}
-                />
-              </motion.div>
-            )}
+          <div
+            className={`text-body-xl pt-[0.5rem] text-center font-semibold ${changeRateColor}`}
+          >
+            어제보다 {changeRateText}
+          </div>
 
-            {descriptions[2] && (
-              <motion.div
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-              >
-                <CompanyInformationCard
-                  icon={<KeyIcon />}
-                  text={formatDescription(descriptions[2])}
-                />
-              </motion.div>
-            )}
-          </>
-        )}
-      </div>
+          <div className='flex h-auto w-full items-center justify-between pt-[1.5rem]'>
+            <button
+              type='button'
+              onClick={() => setIsIndicatorModalOpen(true)}
+              className='bg-sub4 flex h-[2.25rem] items-center justify-center rounded-full px-[1.5rem]'
+            >
+              <span className='text-body-md font-semibold'>지표 확인하기</span>
+            </button>
+            <SwitchChartButton isChart={isChart} setIsChart={setIsChart} />
+          </div>
 
-      <BottomButton
-        label={isOwned ? '매도하기' : '매수하기'}
-        onClick={handleOrderClick}
+          <div className='pt-[0.5rem]'>
+            <PeriodToggle
+              value={selectedPeriod}
+              onValueChange={(val: PeriodValue) => {
+                setSelectedPeriod(val);
+                setIsAllSelected(false);
+              }}
+            />
+          </div>
+        </motion.div>
+
+        <motion.div variants={itemVariants} className='pt-[1rem]'>
+          {isChart ? (
+            <CompanyCandleChart stockCode={stockCode} period={selectedPeriod} />
+          ) : (
+            <CompanyLineChart stockCode={stockCode} period={selectedPeriod} />
+          )}
+        </motion.div>
+
+        <motion.div
+          variants={itemVariants}
+          className='text-text-main text-label-sm pt-[1.5rem] text-center leading-[120%] font-bold'
+        >
+          <span>
+            {stockName}
+            {getSubjectParticle(stockName)} 어떤 회사냐면요
+          </span>{' '}
+          ...
+        </motion.div>
+
+        <div className='flex flex-col gap-[0.75rem] pt-[1.75rem] pb-[7.75rem]'>
+          {isLoading ? (
+            <div className='text-body-md text-text-sub py-10 text-center font-bold'>
+              기업 정보를 불러오는 중입니다...
+            </div>
+          ) : (
+            <>
+              {descriptions[0] && (
+                <motion.div
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                >
+                  <CompanyInformationCard
+                    icon={<BulbIcon />}
+                    text={formatDescription(descriptions[0])}
+                  />
+                </motion.div>
+              )}
+
+              {descriptions[1] && (
+                <motion.div
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                >
+                  <CompanyInformationCard
+                    icon={<PencilIcon />}
+                    text={formatDescription(descriptions[1])}
+                  />
+                </motion.div>
+              )}
+
+              {descriptions[2] && (
+                <motion.div
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                >
+                  <CompanyInformationCard
+                    icon={<KeyIcon />}
+                    text={formatDescription(descriptions[2])}
+                  />
+                </motion.div>
+              )}
+            </>
+          )}
+        </div>
+
+        <BottomButton
+          label={isOwned ? '매도하기' : '매수하기'}
+          onClick={handleOrderClick}
+        />
+      </motion.div>
+
+      <IndicatorModal
+        isOpen={isIndicatorModalOpen}
+        onClose={() => setIsIndicatorModalOpen(false)}
+        stockCode={stockCode}
       />
-    </motion.div>
+    </>
   );
 };
 
