@@ -122,10 +122,32 @@ export const RiskSlider = ({ value, onChange }: RiskSliderProps) => {
     onChange(normalizedValue);
   };
 
+  const handleTrackClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const clickY = e.clientY - rect.top;
+    const percentage = 100 - (clickY / rect.height) * 100;
+
+    let normalizedValue = 0;
+    if (percentage < 16.5) normalizedValue = 0;
+    else if (percentage < 49.5) normalizedValue = 33;
+    else if (percentage < 82.5) normalizedValue = 66;
+    else normalizedValue = 100;
+
+    const snappedY = -(normalizedValue / 100) * trackHeightPx;
+    animate(dragY, snappedY, {
+      type: 'spring',
+      stiffness: 400,
+      damping: 40,
+    });
+    onChange(normalizedValue);
+  };
+
   return (
     <div
       ref={containerRef}
-      className='bg-default relative flex h-[21rem] w-[1rem] flex-col items-center justify-end rounded-full'
+      className='bg-default relative flex h-[21rem] w-[1rem] cursor-pointer flex-col items-center justify-end rounded-full'
+      onClick={handleTrackClick}
     >
       {/* Active Bar using shadcn Progress */}
       <div className='pointer-events-none absolute inset-0 flex items-center justify-center'>
