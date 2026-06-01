@@ -129,7 +129,8 @@ export const RiskSelector = ({ value, onChange }: RiskSelectorProps) => {
                       damping: 20,
                     }
               }
-              className='flex h-[3rem] origin-left flex-col justify-center'
+              className='flex h-[3rem] origin-left cursor-pointer flex-col justify-center'
+              onClick={() => onChange(level.val)}
             >
               <div className='flex items-center gap-[0.25rem]'>
                 <span className='text-body-xl font-extrabold'>
@@ -187,7 +188,8 @@ export const RiskSelector = ({ value, onChange }: RiskSelectorProps) => {
                       damping: 20,
                     }
               }
-              className='flex h-[3rem] origin-right items-center justify-center'
+              className='flex h-[3rem] origin-right cursor-pointer items-center justify-center'
+              onClick={() => onChange(level.val)}
             >
               <level.Icon className='transition-all duration-300' />
             </motion.div>

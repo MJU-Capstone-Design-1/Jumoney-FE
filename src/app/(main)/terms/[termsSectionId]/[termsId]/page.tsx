@@ -271,7 +271,7 @@ const Page = ({ params }: PageProps) => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.8, ease: 'easeOut' }}
-            className='text-body-lg text-text-main leading-[120%] font-semibold'
+            className='text-body-lg text-text-main w-[18rem] self-center leading-[120%] font-semibold'
           >
             {detailedDesc.split('\n').map((line, idx) => (
               <React.Fragment key={idx}>

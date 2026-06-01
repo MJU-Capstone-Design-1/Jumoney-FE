@@ -11,6 +11,7 @@ import {
 } from '@/constants/labelMappings';
 import FloatingButton from '@/features/recommend/selection/floatingButton';
 import { useRouter } from 'next/navigation';
+import BottomButton from '@/components/bottomButton';
 
 const Page = () => {
   const router = useRouter();
@@ -65,7 +66,7 @@ const Page = () => {
         </motion.p>
       </div>
 
-      <div className='flex flex-col gap-[1rem] p-[1.5rem]'>
+      <div className='flex flex-col gap-[1rem] px-[1.5rem] pt-[1.5rem] pb-[10rem]'>
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -145,6 +146,10 @@ const Page = () => {
           )}
         </div>
       </div>
+      <BottomButton
+        label='거장의 선택 알아보기'
+        onClick={() => router.push('/recommend?tab=right')}
+      />
     </div>
   );
 };

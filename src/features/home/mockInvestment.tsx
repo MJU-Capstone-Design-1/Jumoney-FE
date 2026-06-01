@@ -56,7 +56,7 @@ export const MockInvestment = () => {
           기업명
         </motion.div>
 
-        <div className='flex justify-center gap-[10.875rem]'>
+        <div className='flex justify-center gap-[9rem]'>
           <motion.div
             {...itemMotion}
             transition={{ ...itemMotion.transition, delay: 0.4 }}

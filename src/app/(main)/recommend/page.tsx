@@ -3,21 +3,37 @@
 import RecommendHeader from '@/features/recommend/recommendHeader';
 import RecommendSelectionIntro from '@/features/recommend/recommendSelectionIntro';
 import RecommendSurveyIntro from '@/features/recommend/recommendSurveyIntro';
-import React, { useState } from 'react';
+import React, { Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 
-const Page = () => {
-  const [toggleValue, setToggleValue] = useState<'left' | 'right'>('left');
+const RecommendPageContent = () => {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const currentTab = (searchParams.get('tab') as 'left' | 'right') || 'left';
+
+  const handleToggle = (value: 'left' | 'right') => {
+    router.replace(`/recommend?tab=${value}`);
+  };
 
   return (
-    <div className='w-full px-[1rem] pt-[1rem]'>
-      <RecommendHeader value={toggleValue} onValueChange={setToggleValue} />
+    <div className='w-full px-[1rem] pt-[1rem] pb-[10rem]'>
+      <RecommendHeader value={currentTab} onValueChange={handleToggle} />
 
-      {toggleValue === 'left' ? (
+      {currentTab === 'left' ? (
         <RecommendSurveyIntro />
       ) : (
         <RecommendSelectionIntro />
       )}
     </div>
+  );
+};
+
+const Page = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <RecommendPageContent />
+    </Suspense>
   );
 };
 
