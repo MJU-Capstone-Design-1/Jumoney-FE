@@ -34,7 +34,7 @@ const Page = () => {
         delay={4}
         onClick={() => router.push('/recommend/testaccount')}
       />
-      <div className='bg-primary gap-full text-secondary1 flex h-auto flex-col gap-[1rem] rounded-[2.5rem] px-[1.5rem] pt-[1.5rem] pb-[10rem]'>
+      <div className='bg-primary gap-full text-secondary1 flex h-auto flex-col gap-[1rem] rounded-[2.5rem] p-[1.5rem]'>
         <p className='text-body-sm font-semibold'>
           {typingText.split('').map((char, index) => (
             <motion.span
@@ -65,7 +65,7 @@ const Page = () => {
         </motion.p>
       </div>
 
-      <div className='flex flex-col gap-[1rem] p-[1.5rem]'>
+      <div className='flex flex-col gap-[1rem] px-[1.5rem] pt-[1.5rem] pb-[10rem]'>
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
