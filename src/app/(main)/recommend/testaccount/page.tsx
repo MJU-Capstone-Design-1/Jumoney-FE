@@ -223,7 +223,7 @@ const TestAccountPage = () => {
                       ₩ {formatMoney(account.totalAsset)}
                     </div>
                   </motion.div>
-                  <div className='bg-secondary2 mr-[2.625rem] ml-[1.5rem] h-[3.75rem] w-[1px]' />
+                  <div className='bg-secondary2 mr-[1.5rem] ml-[1.5rem] h-[3.75rem] w-[1px]' />
                   <motion.div
                     key={`rate-${activeTab}`}
                     initial={{ opacity: 0, scale: 0.9 }}
