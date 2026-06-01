@@ -8,6 +8,7 @@ import { KeyIcon } from '@/components/icons/keyIcon';
 import { PencilIcon } from '@/components/icons/pencilIcon';
 import { CompanyInformationCard } from '@/features/mockinvestment/companyinfo/companyInformationCard';
 import {
+  PERIODS,
   PeriodToggle,
   PeriodValue,
 } from '@/features/mockinvestment/companyinfo/periodToggle';
@@ -162,6 +163,10 @@ const DetailPage = () => {
     );
   };
 
+  const currentSubLabel = PERIODS.find(
+    (p) => p.value === selectedPeriod,
+  )?.subLabel;
+
   const handleBuyClick = () => {
     if (quantity > maxBuyQuantity) {
       alert(
@@ -228,14 +233,16 @@ const DetailPage = () => {
               <SwitchChartButton isChart={isChart} setIsChart={setIsChart} />
             </div>
 
-            <div className='flex w-full items-center justify-center'>
+            <div className='flex w-full flex-col items-center justify-center gap-[0.5rem]'>
               <PeriodToggle
                 value={selectedPeriod}
                 onValueChange={(val: PeriodValue) => {
                   setSelectedPeriod(val);
-                  setIsAllSelected(false);
                 }}
               />
+              <div className='text-body-sm text-text-main text-center font-semibold'>
+                {currentSubLabel}
+              </div>
             </div>
           </div>
         </motion.div>
@@ -331,9 +338,7 @@ const DetailPage = () => {
                 onClick={handleSellClick}
                 disabled={!isOwned}
                 className={`flex h-[4rem] w-full items-center justify-center rounded-[1000px] transition-colors ${
-                  !isOwned
-                    ? 'bg-default cursor-not-allowed'
-                    : 'bg-secondary2 hover:opacity-90'
+                  !isOwned ? 'bg-default cursor-not-allowed' : 'bg-secondary2'
                 }`}
               >
                 <span className='text-secondary1 text-body-xl font-extrabold'>
@@ -344,7 +349,7 @@ const DetailPage = () => {
               <button
                 type='button'
                 onClick={handleBuyClick}
-                className='bg-secondary2 flex h-[4rem] w-full items-center justify-center rounded-[1000px] transition-colors hover:opacity-90'
+                className='bg-secondary2 flex h-[4rem] w-full items-center justify-center rounded-[1000px] transition-colors'
               >
                 <span className='text-secondary1 text-body-xl font-extrabold'>
                   매수하기
