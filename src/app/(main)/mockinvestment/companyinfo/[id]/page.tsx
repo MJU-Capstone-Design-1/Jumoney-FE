@@ -214,25 +214,29 @@ const DetailPage = () => {
             어제보다 {changeRateText}
           </div>
 
-          <div className='flex h-auto w-full items-center justify-between pt-[1.5rem]'>
-            <button
-              type='button'
-              onClick={() => setIsIndicatorModalOpen(true)}
-              className='bg-sub4 flex h-[2.25rem] items-center justify-center rounded-full px-[1.5rem]'
-            >
-              <span className='text-body-md font-semibold'>지표 확인하기</span>
-            </button>
-            <SwitchChartButton isChart={isChart} setIsChart={setIsChart} />
-          </div>
+          <div className='flex w-full flex-col items-center gap-[0.5rem] pt-[1.5rem]'>
+            <div className='flex w-[21.4375rem] items-center justify-between'>
+              <button
+                type='button'
+                onClick={() => setIsIndicatorModalOpen(true)}
+                className='bg-sub4 flex h-[2.25rem] items-center justify-center rounded-full px-[1.5rem]'
+              >
+                <span className='text-body-md font-semibold'>
+                  지표 확인하기
+                </span>
+              </button>
+              <SwitchChartButton isChart={isChart} setIsChart={setIsChart} />
+            </div>
 
-          <div className='pt-[0.5rem]'>
-            <PeriodToggle
-              value={selectedPeriod}
-              onValueChange={(val: PeriodValue) => {
-                setSelectedPeriod(val);
-                setIsAllSelected(false);
-              }}
-            />
+            <div className='flex w-full items-center justify-center'>
+              <PeriodToggle
+                value={selectedPeriod}
+                onValueChange={(val: PeriodValue) => {
+                  setSelectedPeriod(val);
+                  setIsAllSelected(false);
+                }}
+              />
+            </div>
           </div>
         </motion.div>
 
