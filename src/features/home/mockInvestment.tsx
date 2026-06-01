@@ -22,8 +22,8 @@ export const MockInvestment = () => {
   );
 
   return (
-    <div className='flex w-full flex-col'>
-      <div className='flex w-full'>
+    <div className='flex w-full flex-col px-[0.5rem]'>
+      <div className='flex w-full justify-center'>
         <motion.div
           {...itemMotion}
           transition={{ ...itemMotion.transition, delay: 0.1 }}
@@ -51,12 +51,12 @@ export const MockInvestment = () => {
         <motion.div
           {...itemMotion}
           transition={{ ...itemMotion.transition, delay: 0.3 }}
-          className='text-label-sm font-extrabold'
+          className='text-label-sm flex justify-center font-extrabold'
         >
           기업명
         </motion.div>
 
-        <div className='flex items-start justify-between'>
+        <div className='flex justify-center gap-[10.875rem]'>
           <motion.div
             {...itemMotion}
             transition={{ ...itemMotion.transition, delay: 0.4 }}
@@ -76,7 +76,7 @@ export const MockInvestment = () => {
         <motion.div
           {...itemMotion}
           transition={{ ...itemMotion.transition, delay: 0.6 }}
-          className='mt-[1rem] flex w-full items-center justify-center'
+          className='mt-[1rem] flex items-center justify-center'
         >
           <CompanyLineChart stockCode='005930' period={selectedPeriod} />
         </motion.div>
