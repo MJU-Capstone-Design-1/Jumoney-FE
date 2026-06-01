@@ -9,7 +9,7 @@ export const TermsIntroHeader = () => {
         alt='Terms Intro Header'
         width={375}
         height={196}
-        className='absolute top-0 left-0'
+        className='absolute top-0 left-0 w-full'
       />
       <div className='relative flex flex-col gap-[2rem] p-[1rem]'>
         <BackButtonField
