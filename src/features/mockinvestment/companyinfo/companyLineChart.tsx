@@ -104,7 +104,17 @@ export default function CompanyLineChart({
             return `${mm}.${dd}`;
           },
         },
-
+        handleScroll: {
+          mouseWheel: true,
+          pressedMouseMove: true,
+          horzTouchDrag: false,
+          vertTouchDrag: false,
+        },
+        handleScale: {
+          pinch: true,
+          mouseWheel: true,
+          axisPressedMouseMove: true,
+        },
         grid: {
           vertLines: { visible: false },
           horzLines: { visible: false },
