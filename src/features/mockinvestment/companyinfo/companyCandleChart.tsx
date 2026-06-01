@@ -40,6 +40,11 @@ export default function CompanyCandleChart({
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
+  const periodRef = useRef(period);
+
+  useEffect(() => {
+    periodRef.current = period;
+  }, [period]);
 
   const barSpacingRef = useRef(0);
 
@@ -52,26 +57,15 @@ export default function CompanyCandleChart({
   const formatCrosshairTime = (time: UTCTimestamp) => {
     const d = new Date(time * 1000);
 
-    const yyyy = d.getFullYear();
-    const mm = String(d.getMonth() + 1).padStart(2, '0');
-    const dd = String(d.getDate()).padStart(2, '0');
-    const hh = String(d.getHours()).padStart(2, '0');
-    const min = String(d.getMinutes()).padStart(2, '0');
+    const yyyy = d.getUTCFullYear();
+    const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
+    const dd = String(d.getUTCDate()).padStart(2, '0');
+    const hh = String(d.getUTCHours()).padStart(2, '0');
+    const min = String(d.getUTCMinutes()).padStart(2, '0');
 
-    if (period === '1d') {
-      return `${yyyy}.${mm}.${dd} ${hh}:${min}`;
+    if (periodRef.current === '1d' || periodRef.current === '1w') {
+      return `${mm}.${dd} ${hh}:${min}`;
     }
-
-    if (period === '1w') {
-      const showTime = barSpacingRef.current > 10;
-
-      if (showTime) {
-        return `${yyyy}.${mm}.${dd} ${hh}:${min}`;
-      }
-
-      return `${yyyy}.${mm}.${dd}`;
-    }
-
     return `${yyyy}.${mm}.${dd}`;
   };
 
@@ -100,6 +94,21 @@ export default function CompanyCandleChart({
           barSpacing: 0,
           fixLeftEdge: true,
           fixRightEdge: true,
+          timeVisible: true,
+          secondsVisible: false,
+          tickMarkFormatter: (time: UTCTimestamp, tickMarkType: number) => {
+            const d = new Date(time * 1000);
+
+            const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
+            const dd = String(d.getUTCDate()).padStart(2, '0');
+            const hh = String(d.getUTCHours()).padStart(2, '0');
+            const min = String(d.getUTCMinutes()).padStart(2, '0');
+
+            if (tickMarkType === 3) {
+              return `${hh}:${min}`;
+            }
+            return `${mm}.${dd}`;
+          },
         },
         grid: {
           vertLines: { visible: false },
@@ -180,13 +189,19 @@ export default function CompanyCandleChart({
           c.lowPrice != null &&
           c.closePrice != null,
       )
-      .map((candle) => ({
-        time: (new Date(candle.candleTime).getTime() / 1000) as UTCTimestamp,
-        open: candle.openPrice,
-        high: candle.highPrice,
-        low: candle.lowPrice,
-        close: candle.closePrice,
-      }));
+      .map((candle) => {
+        const date = new Date(candle.candleTime);
+        const timeWithOffset =
+          date.getTime() - date.getTimezoneOffset() * 60000;
+
+        return {
+          time: (timeWithOffset / 1000) as UTCTimestamp,
+          open: candle.openPrice,
+          high: candle.highPrice,
+          low: candle.lowPrice,
+          close: candle.closePrice,
+        };
+      });
 
     seriesRef.current.setData(formattedData);
 
