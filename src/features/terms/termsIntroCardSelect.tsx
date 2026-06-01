@@ -49,14 +49,14 @@ export const TermsIntroCardSelect = () => {
         stiffness: 200,
         damping: 20,
       }}
-      className='grid w-full grid-cols-2 gap-4'
+      className='grid h-auto w-full grid-cols-2 gap-4'
     >
       {TERMS.map((term) => (
         <Link
           key={term.id}
           href={`/terms/${term.id}`}
           className={cn(
-            'text-body-xl relative flex h-[10.25rem] w-full items-end justify-start overflow-visible rounded-[2rem] p-[1rem] text-end font-bold font-extrabold',
+            'text-body-xl relative flex aspect-square w-full items-end justify-start overflow-visible rounded-[2rem] p-[1rem] text-end font-extrabold',
             term.activeBg,
             term.activeShadow,
           )}
@@ -67,7 +67,7 @@ export const TermsIntroCardSelect = () => {
             alt={term.name}
             width={164}
             height={164}
-            className='pointer-events-none absolute bottom-[1rem] left-1/2 z-0 -translate-x-1/2'
+            className='pointer-events-none absolute bottom-[1rem] left-1/2 z-0 h-auto -translate-x-1/2'
             priority
           />
         </Link>

@@ -31,7 +31,7 @@ export const TodayTermCard = () => {
         priority
         className='h-auto w-full'
       />
-      <div className='absolute inset-0 flex flex-col pt-[1.25rem]'>
+      <div className='absolute inset-0 flex flex-col py-[1.25rem]'>
         <div className='text-secondary1 flex items-start justify-between px-[1.5rem]'>
           <div className='flex flex-col gap-[0.75rem]'>
             <div className='text-label-md font-extrabold'>
@@ -44,7 +44,7 @@ export const TodayTermCard = () => {
           <div className='bg-default h-[5rem] w-[5rem] flex-shrink-0 items-center justify-center rounded-full' />
         </div>
 
-        <div className='text-secondary1 text-body-md mt-[0.75rem] ml-[1.5rem] line-clamp-4 h-[4.125rem] w-[18.5rem] overflow-hidden leading-[120%] font-semibold'>
+        <div className='text-secondary1 text-body-md line-clamp-4 overflow-hidden px-[1.5rem] pt-[0.75rem] leading-[120%] font-semibold'>
           {dailyTerm.description}
         </div>
       </div>

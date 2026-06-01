@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import BackButtonField from '@/components/backButtonField';
 import RecommendResultCard from '@/components/recommendResultCard';
@@ -235,10 +236,21 @@ export default function MasterRecommendPage({
           <motion.div
             whileTap={{ scale: 0.95 }}
             className={cn(
-              'bg-secondary1 h-[8rem] w-[8rem] rounded-full',
+              'bg-secondary1 relative flex h-[8rem] w-[8rem] items-center justify-center overflow-hidden rounded-full',
               masterThemeInfo.shadow,
             )}
-          />
+          >
+            {masterThemeInfo.image && (
+              <Image
+                src={masterThemeInfo.image}
+                alt={masterThemeInfo.name}
+                width={164}
+                height={164}
+                className='pointer-events-none absolute bottom-0 left-1/2 z-10 h-auto w-full -translate-x-1/2'
+                priority
+              />
+            )}
+          </motion.div>
           <h1 className='text-label-lg text-secondary2 mt-[0.75rem] font-extrabold'>
             {masterData?.masterName || masterThemeInfo.name}
           </h1>

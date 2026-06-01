@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { KakaoLoginButton } from '@/components/kakaoLoginButton';
 import { StartButton } from '@/components/startButton';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -27,10 +28,8 @@ export default function LoginPage() {
 
   return (
     <div className='flex flex-col gap-[2.75rem] px-[1.5rem]'>
-      <div className='flex flex-col items-center gap-[4.125rem] pt-[5.5rem]'>
-        <div className='bg-primary flex h-[12.5rem] w-[12.5rem] items-center justify-center'>
-          로고 OR 이미지
-        </div>
+      <div className='flex flex-col items-center gap-[2.125rem] pt-[5.5rem]'>
+        <Image src='/mainLogo.svg' alt='mainLogo' width={280} height={45} />
 
         <div className='flex flex-col gap-[2.5rem]'>
           <motion.p

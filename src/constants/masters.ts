@@ -4,6 +4,7 @@ export const MASTERS_DATA = {
     name: '워런 버핏',
     theme: 'bg-main1',
     shadow: 'shadow-select-orange',
+    image: '/images/warrenBuffetImage.svg',
     slogan: '워런 버핏은 꾸준히 수익을 내는 우량주를 좋아합니다.',
     description:
       '가치 투자의 거장 워런 버핏이\n도서와 인터뷰 등을 통해 언급한 핵심 투자 지표예요.\n원하시는 조건을 선택하시면, 워런 버핏이\n현재 한국 시장에서 어떤 종목에 투자할지 찾아 드릴게요.',
@@ -20,6 +21,7 @@ export const MASTERS_DATA = {
     name: '피터 린치',
     theme: 'bg-main2',
     shadow: 'shadow-select-brown',
+    image: '/images/peterLynchImage.svg',
     slogan: '피터 린치는 일상 속에서 성장주를 발굴합니다.',
     description:
       '성장주 투자의 거장 피터 린치가\n도서와 인터뷰 등을 통해 언급한 핵심 투자 지표예요.\n원하시는 조건을 선택하시면, 피터 린치가\n현재 한국 시장에서 어떤 종목에 투자할지 찾아 드릴게요.',
@@ -36,6 +38,7 @@ export const MASTERS_DATA = {
     name: '레이 달리오',
     theme: 'bg-main3',
     shadow: 'shadow-select-yellow',
+    image: '/images/rayDalioImage.svg',
     slogan: '분산 투자와 리스크 관리를 중요하게 생각합니다.',
     description:
       '거시 투자의 거장 레이 달리오의\n투자 원칙을 재해석하여 지표를 구성했어요.\n원하시는 조건을 선택하시면, 레이 달리오가\n현재 한국 시장에서 어떤 종목에 투자할지 찾아 드릴게요.',
@@ -52,6 +55,7 @@ export const MASTERS_DATA = {
     name: '윌리엄 오닐',
     theme: 'bg-main4',
     shadow: 'shadow-select-gray',
+    image: '/images/williamOneilImage.svg',
     slogan: '윌리엄 오닐은 강한 성장세와 추세를 가진 주식에 투자합니다.',
     description:
       '모멘텀 투자의 거장 윌리엄 오닐의\n‘CAN SLIM’ 전략으로 투자 지표를 구성했어요.\n원하시는 조건을 선택하시면, 윌리엄 오닐이\n현재 한국 시장에서 어떤 종목에 투자할지 찾아 드릴게요.',
