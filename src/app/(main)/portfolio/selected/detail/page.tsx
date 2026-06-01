@@ -9,12 +9,62 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { MasterSectorChart } from '@/features/portfolio/detail/masterSectorChart';
 import { MasterCompanyChart } from '@/features/portfolio/detail/masterCompanyChart';
+import { useGetMasterPortfolioDescription } from '@/api/generated/endpoints/거장-정보/거장-정보';
+import { MASTER_STOCK_LOGOS, getLogoSize } from '@/constants/portfolioLogos';
+import { useSearchParams } from 'next/navigation';
+
+interface PortfolioStock {
+  stockName: string;
+  sector: string;
+  weight: number;
+}
+
+interface MasterPortfolioDescriptionResponse {
+  data: {
+    masterId: number;
+    masterCode: string;
+    masterName: string;
+    basePeriod: string;
+    representativeCase: {
+      stockName: string;
+      sector: string;
+      investmentPeriod: string;
+      investmentResult: string;
+      title: string;
+      description: string;
+    };
+    stocks: PortfolioStock[];
+  };
+}
 
 const Page = () => {
   const [toggleValue, setToggleValue] = useState<'left' | 'right'>('left');
   const [isPrimaryMode, setIsPrimaryMode] = useState(false);
   const [wheelRotation, setWheelRotation] = useState(0);
   const [dragOffset, setDragOffset] = useState(0);
+
+  const searchParams = useSearchParams();
+  const masterId = Number(searchParams.get('masterId')) || 1;
+
+  const { data: descriptionResponse } =
+    useGetMasterPortfolioDescription(masterId);
+  const descriptionData = (
+    descriptionResponse as unknown as MasterPortfolioDescriptionResponse
+  )?.data;
+
+  const representativeCase = descriptionData?.representativeCase;
+  const stocks = descriptionData?.stocks || [];
+
+  // 휠 위치에 따른 인덱스 계산 (-150도 ~ 120도, 30도 간격 = 10개)
+  // 가장 가까운 인덱스로 매핑 (0 ~ stocks.length - 1)
+  const snappedWheelRotation =
+    Math.round((wheelRotation + dragOffset) / 30) * 30;
+  const rawIndex = Math.round((snappedWheelRotation + 150) / 30);
+  const selectedStockIndex = Math.min(
+    Math.max(0, rawIndex),
+    Math.max(0, stocks.length - 1),
+  );
+  const selectedStock = stocks[selectedStockIndex];
 
   useEffect(() => {
     Promise.resolve().then(() => {
@@ -53,44 +103,43 @@ const Page = () => {
             toggleValue === 'left' ? (
               <div className='flex flex-col items-center gap-[1.5rem] pt-[1rem]'>
                 <p className='text-heading-sm leading-[120%] font-extrabold'>
-                  코카콜라
+                  {representativeCase?.stockName || '종목명'}
                 </p>
-                <div className='bg-secondary1 flex h-[10rem] w-[10rem] items-center justify-center text-center'>
-                  기업 로고
+                <div className='bg-secondary1 flex h-[10rem] w-[10rem] items-center justify-center rounded-[2rem] text-center'>
+                  {representativeCase?.stockName &&
+                  MASTER_STOCK_LOGOS[representativeCase.stockName] ? (
+                    <Image
+                      src={MASTER_STOCK_LOGOS[representativeCase.stockName]}
+                      alt={representativeCase.stockName}
+                      width={120}
+                      height={120}
+                      className='h-[7.5rem] w-[7.5rem] object-contain'
+                    />
+                  ) : (
+                    <span className='text-body-md font-bold'></span>
+                  )}
                 </div>
 
-                <Image
-                  src='/images/portfolioSuccessStoryBubble.svg'
-                  alt='투자 성공 사례 말풍선'
-                  width={302}
-                  height={166}
-                  className='absolute inset-0 mx-auto shrink-0 pt-[24.625rem]'
-                />
-
-                <p className='text-body-xl relative z-10 mt-[2.125rem] text-center leading-[120%] font-semibold'>
-                  1987년 블랙 먼데이 대폭락 이후 <br />
-                  시장에 공포가 가득했던 시기였으나 <br /> 버핏은 강력한 브랜드
-                  파워와
-                  <br />
-                  변하지 않는 소비 패턴에 주목하여 <br />
-                  과감하게 집중 투자를 단행했어요
+                <p className='text-body-xl relative z-10 text-center leading-[120%] font-semibold'>
+                  {representativeCase?.description ||
+                    '대표 투자 사례 설명이 없습니다.'}
                 </p>
 
-                <div className='flex flex-col gap-[0.5rem] pt-[2.25rem]'>
+                <div className='flex flex-col gap-[0.5rem]'>
                   <div className='flex gap-[0.5rem]'>
-                    <div className='border-secondary2 body-md rounded-[6.25rem] border px-[1rem] py-[0.75rem] leading-[120%] font-semibold'>
-                      1988년
+                    <div className='border-secondary2 text-body-md rounded-[6.25rem] border px-[1rem] py-[0.75rem] leading-[120%] font-semibold'>
+                      {representativeCase?.investmentPeriod || '기간'}
                     </div>
-                    <div className='body-md bg-main3 rounded-[6.25rem] px-[1rem] py-[0.75rem] leading-[120%] font-semibold'>
-                      보유 10년 만에 약 10배 상승
+                    <div className='text-body-md bg-main3 rounded-[6.25rem] px-[1rem] py-[0.75rem] leading-[120%] font-semibold'>
+                      {representativeCase?.investmentResult || '결과'}
                     </div>
                   </div>
                   <div className='flex gap-[0.5rem]'>
-                    <div className='body-md bg-main1 rounded-[6.25rem] px-[1rem] py-[0.75rem] leading-[120%] font-semibold'>
-                      가치 투자 및 장기 보유의 정석
+                    <div className='text-body-md bg-main1 rounded-[6.25rem] px-[1rem] py-[0.75rem] leading-[120%] font-semibold'>
+                      {representativeCase?.title || '타이틀'}
                     </div>
-                    <div className='body-md bg-primary text-secondary1 rounded-[6.25rem] px-[1rem] py-[0.75rem] leading-[120%] font-semibold'>
-                      필수 소비재
+                    <div className='text-body-md bg-primary text-secondary1 rounded-[6.25rem] px-[1rem] py-[0.75rem] leading-[120%] font-semibold'>
+                      {representativeCase?.sector || '섹터'}
                     </div>
                   </div>
                 </div>
@@ -98,20 +147,35 @@ const Page = () => {
             ) : (
               <div className='flex flex-col items-center gap-[1.5rem] pt-[1rem]'>
                 <p className='text-heading-sm leading-[120%] font-extrabold'>
-                  애플
+                  {selectedStock?.stockName || '종목 정보 없음'}
                 </p>
-                <div className='bg-default text-body-md flex h-[8.25rem] w-[8.25rem] items-center justify-center text-center'>
-                  로고
+                <div className='bg-default text-body-md flex h-[8.25rem] w-[8.25rem] items-center justify-center rounded-[2rem] text-center'>
+                  {selectedStock?.stockName &&
+                  MASTER_STOCK_LOGOS[selectedStock.stockName] ? (
+                    <Image
+                      src={MASTER_STOCK_LOGOS[selectedStock.stockName]}
+                      alt={selectedStock.stockName}
+                      width={getLogoSize(selectedStock.stockName).width}
+                      height={getLogoSize(selectedStock.stockName).height}
+                      className={getLogoSize(selectedStock.stockName).className}
+                    />
+                  ) : (
+                    <span className='font-bold'></span>
+                  )}
                 </div>
                 <div className='flex items-center justify-center gap-[1rem]'>
-                  <div className='bg-field-it text-secondary1 text-body-lg rounded-[6.25rem] px-[1rem] py-[0.5rem] leading-[120%] font-bold'>
-                    #정보기술
-                  </div>
-                  <div className='bg-primary text-secondary1 text-body-lg rounded-[6.25rem] px-[1rem] py-[0.5rem] leading-[120%] font-bold'>
-                    #41.5%
-                  </div>
+                  {selectedStock && (
+                    <>
+                      <div className='bg-field-it text-secondary1 text-body-lg rounded-[6.25rem] px-[1rem] py-[0.5rem] leading-[120%] font-bold'>
+                        #{selectedStock.sector}
+                      </div>
+                      <div className='bg-primary text-secondary1 text-body-lg rounded-[6.25rem] px-[1rem] py-[0.5rem] leading-[120%] font-bold'>
+                        #{selectedStock.weight}%
+                      </div>
+                    </>
+                  )}
                 </div>
-                <div className='relative z-20 mt-[1rem] flex flex-col items-center'>
+                <div className='relative z-20 flex flex-col items-center'>
                   <StockListSelectIcon />
                 </div>
                 <motion.div
@@ -155,16 +219,16 @@ const Page = () => {
           ) : toggleValue === 'left' ? (
             <div className='bg-secondary1 shadow-card-shadow flex h-[33.625rem] flex-col gap-[1rem] rounded-[1.5rem] p-[1rem]'>
               <div className='bg-default text-body-md flex h-[2rem] w-[3.625rem] items-center justify-center self-end rounded-[77.125rem] text-center font-semibold'>
-                2025년
+                {descriptionData?.basePeriod?.split(' ')[0] || '2025년'}
               </div>
-              <MasterSectorChart masterId={1} />
+              <MasterSectorChart masterId={masterId} />
             </div>
           ) : (
             <div className='bg-secondary1 shadow-card-shadow flex h-[33.625rem] flex-col gap-[1rem] rounded-[1.5rem] p-[1rem]'>
               <div className='bg-default text-body-md flex h-[2rem] w-[3.625rem] items-center justify-center self-end rounded-[77.125rem] text-center font-semibold'>
-                2025년
+                {descriptionData?.basePeriod?.split(' ')[0] || '2025년'}
               </div>
-              <MasterCompanyChart masterId={1} />
+              <MasterCompanyChart masterId={masterId} />
             </div>
           )}
         </div>

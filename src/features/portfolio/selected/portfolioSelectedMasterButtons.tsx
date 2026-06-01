@@ -7,7 +7,11 @@ import { PortfolioDetailInformationIcon } from '@/components/icons/PortfolioDeta
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 
-export const PortfolioSelectedMasterButtons = () => {
+export const PortfolioSelectedMasterButtons = ({
+  masterId,
+}: {
+  masterId: number;
+}) => {
   const router = useRouter();
 
   return (
@@ -24,13 +28,21 @@ export const PortfolioSelectedMasterButtons = () => {
     >
       <Button
         className='bg-primary hover:bg-primary flex h-[4rem] w-[4rem] items-center justify-center rounded-full p-0 shadow-none [&_svg]:!h-[24px] [&_svg]:!w-[24px]'
-        onClick={() => router.push('/portfolio/selected/detail?mode=sub1')}
+        onClick={() =>
+          router.push(
+            `/portfolio/selected/detail?mode=sub1&masterId=${masterId}`,
+          )
+        }
       >
         <PortfolioDefaultInformationIcon />
       </Button>
       <Button
         className='bg-primary hover:bg-primary flex h-[4rem] w-[4rem] items-center justify-center rounded-full p-0 shadow-none [&_svg]:!h-[24px] [&_svg]:!w-[24px]'
-        onClick={() => router.push('/portfolio/selected/detail?mode=reverse')}
+        onClick={() =>
+          router.push(
+            `/portfolio/selected/detail?mode=reverse&masterId=${masterId}`,
+          )
+        }
       >
         <PortfolioDetailInformationIcon />
       </Button>
