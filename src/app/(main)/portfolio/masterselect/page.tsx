@@ -37,7 +37,7 @@ const Page = () => {
   };
 
   return (
-    <div className='flex flex-col p-[1rem]'>
+    <div className='flex flex-col px-[1rem] pt-[1rem] pb-[8rem]'>
       <div className='pb-[2.125rem]'>
         <BackButtonField color='secondary2' label='거장 포트폴리오' />
       </div>
