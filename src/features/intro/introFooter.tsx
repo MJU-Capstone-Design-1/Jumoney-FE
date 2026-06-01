@@ -64,7 +64,7 @@ export const IntroFooter = ({ step, handleNext }: IntroFooterProps) => {
   };
 
   return (
-    <div className='bg-secondary1 shadow-card-shadow flex h-[60rem] w-[60rem] translate-x-[-18.28125rem] flex-col items-center gap-[1rem] rounded-[77.125rem] pt-[2.25rem]'>
+    <div className='bg-secondary1 shadow-card-shadow relative left-1/2 flex h-[60rem] w-[60rem] -translate-x-1/2 flex-col items-center gap-[1rem] rounded-[77.125rem] pt-[2.25rem]'>
       <div className='flex flex-col items-center justify-center gap-[1.5rem] pt-[1.875rem]'>
         <AnimatePresence mode='wait'>
           <motion.div

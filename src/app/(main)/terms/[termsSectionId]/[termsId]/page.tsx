@@ -129,7 +129,7 @@ const Page = ({ params }: PageProps) => {
         <div className='bg-default mx-auto h-[18.75rem] w-[18.75rem]' />
       </div>
 
-      <div className='bg-secondary1 shadow-card-shadow flex h-[60rem] w-[60rem] translate-x-[-18.28125rem] flex-col items-center gap-[1rem] rounded-[77.125rem] pt-[2.25rem]'>
+      <div className='bg-secondary1 shadow-card-shadow relative left-1/2 flex h-[60rem] w-[60rem] -translate-x-1/2 flex-col items-center gap-[1rem] rounded-[77.125rem] pt-[2.25rem]'>
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}

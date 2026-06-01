@@ -103,7 +103,7 @@ const PageContent = () => {
       <div className='relative min-h-screen overflow-hidden'>
         {/* 거장별 테마 컬러 배경 */}
         <div
-          className={`${staticInfo.bgColor} absolute h-[60rem] w-[60rem] translate-x-[-18.28125rem] translate-y-[-37.6875rem] rounded-[77.125rem]`}
+          className={`${staticInfo.bgColor} absolute left-1/2 h-[60rem] w-[60rem] -translate-x-1/2 translate-y-[-37.6875rem] rounded-[77.125rem]`}
         />
         <div className='text-secondary1 flex min-h-screen items-center justify-center font-bold'>
           로딩 중...
@@ -124,7 +124,7 @@ const PageContent = () => {
     <div className='relative min-h-screen overflow-hidden pb-[10rem]'>
       {/* 거장별 테마 컬러 배경 */}
       <div
-        className={`${staticInfo.bgColor} absolute h-[60rem] w-[60rem] translate-x-[-18.28125rem] translate-y-[-37.6875rem] rounded-[77.125rem]`}
+        className={`${staticInfo.bgColor} absolute left-1/2 h-[60rem] w-[60rem] -translate-x-1/2 translate-y-[-37.6875rem] rounded-[77.125rem]`}
       />
 
       {/* 우측 상단 플로팅 변경 버튼 */}
