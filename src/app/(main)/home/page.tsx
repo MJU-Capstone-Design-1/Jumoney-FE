@@ -71,7 +71,7 @@ export const HomePage = () => {
       </motion.header>
 
       <main className='flex flex-col gap-[0.75rem] px-[1rem]'>
-        <section className='flex flex-col gap-[0.5rem] pt-[2.625rem]'>
+        <section className='flex flex-col gap-[0.5rem]'>
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
