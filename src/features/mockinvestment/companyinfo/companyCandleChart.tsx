@@ -209,6 +209,15 @@ export default function CompanyCandleChart({
     seriesRef.current.setData(formattedData);
 
     chartRef.current?.timeScale().fitContent();
+
+    if (formattedData.length > 0 && chartRef.current) {
+      const lastData = formattedData[formattedData.length - 1];
+      chartRef.current.setCrosshairPosition(
+        lastData.close,
+        lastData.time,
+        seriesRef.current,
+      );
+    }
   }, [chartResponse, period]);
 
   useEffect(() => {
