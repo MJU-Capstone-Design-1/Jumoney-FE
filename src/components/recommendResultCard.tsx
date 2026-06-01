@@ -20,10 +20,24 @@ const RecommendResultCard = ({ data }: RecommendResultCardProps) => {
     return price.toLocaleString();
   };
 
+  const getMetricLabel = (key: string) => {
+    const upperKey = key.toUpperCase();
+    return (
+      masterSortMetricLabels[upperKey as keyof typeof masterSortMetricLabels] ||
+      LOGIC_CODE_TO_KOREAN[upperKey] ||
+      labelMappings[upperKey as keyof typeof labelMappings] ||
+      key
+    );
+  };
+
   const formatMetricValue = (key: string, value: number) => {
     const upperKey = key.toUpperCase();
+    const label = getMetricLabel(key);
 
     if (
+      label.includes('대금') ||
+      label.includes('총액') ||
+      label.includes('매수') ||
       upperKey.includes('AMOUNT') ||
       upperKey.includes('CAP') ||
       upperKey.includes('VALUE') ||
@@ -34,6 +48,9 @@ const RecommendResultCard = ({ data }: RecommendResultCardProps) => {
     }
 
     if (
+      label.includes('PER') ||
+      label.includes('PBR') ||
+      label.includes('PEG') ||
       upperKey.includes('PER') ||
       upperKey.includes('PBR') ||
       upperKey.includes('PEG')
@@ -42,16 +59,6 @@ const RecommendResultCard = ({ data }: RecommendResultCardProps) => {
     }
 
     return `${value}%`;
-  };
-
-  const getMetricLabel = (key: string) => {
-    const upperKey = key.toUpperCase();
-    return (
-      masterSortMetricLabels[upperKey as keyof typeof masterSortMetricLabels] ||
-      LOGIC_CODE_TO_KOREAN[upperKey] ||
-      labelMappings[upperKey as keyof typeof labelMappings] ||
-      key
-    );
   };
 
   const stockTags = data.tags || [];
