@@ -28,7 +28,7 @@ export default function LoginPage() {
 
   return (
     <div className='flex flex-col gap-[2.75rem] px-[1.5rem]'>
-      <div className='flex flex-col items-center gap-[2.125rem] pt-[5.5rem]'>
+      <div className='flex flex-col items-center gap-[2.125rem] pt-[2.5rem]'>
         <Image src='/mainLogo.svg' alt='mainLogo' width={280} height={45} />
 
         <div className='flex flex-col gap-[2.5rem]'>
