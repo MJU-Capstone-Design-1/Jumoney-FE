@@ -59,7 +59,7 @@ const IntroPage = () => {
     <div
       className={`${backgrounds[step]} flex flex-col transition-colors duration-800 ease-in-out`}
     >
-      <div className='flex flex-col justify-center gap-[2.5rem] pt-[2.75rem] pb-[1.5rem]'>
+      <div className='flex flex-col justify-center gap-[1rem] pt-[0.75rem] pb-[1rem]'>
         <StepIndicator step={step} />
 
         <AnimatePresence mode='wait'>
