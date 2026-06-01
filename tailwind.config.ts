@@ -4,6 +4,9 @@ const config = {
   content: ['./src/**/*.{ts,tsx}'],
   theme: {
     extend: {
+      maxWidth: {
+        layout: 'var(--layout-max-width)',
+      },
       fontFamily: {
         sans: [
           'Urbanist',
