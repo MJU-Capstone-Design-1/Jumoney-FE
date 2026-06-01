@@ -286,10 +286,45 @@ const DetailPage = () => {
           )}
         </div>
 
-        <BottomButton
-          label={isOwned ? '매도하기' : '매수하기'}
-          onClick={handleOrderClick}
-        />
+        {!isIndicatorModalOpen && (
+          <div className='fixed bottom-[2.125rem] left-1/2 z-50 flex w-full max-w-[23.4375rem] -translate-x-1/2 flex-col items-center gap-[0.625rem]'>
+            <button
+              type='button'
+              className='flex h-[4rem] w-[21.4375rem] items-center justify-center gap-[2rem] rounded-[1000px] bg-[#EAE3DE] px-[2rem] py-[1rem]'
+            >
+              <span className='text-secondary2 text-body-xl font-extrabold'>
+                1주
+              </span>
+            </button>
+
+            <div className='flex w-full items-center justify-between gap-4 px-4'>
+              <button
+                type='button'
+                onClick={handleOrderClick}
+                disabled={!isOwned}
+                className={`flex h-[4rem] w-full items-center justify-center rounded-[1000px] transition-colors ${
+                  !isOwned
+                    ? 'bg-default cursor-not-allowed'
+                    : 'bg-secondary2 hover:opacity-90'
+                }`}
+              >
+                <span className='text-secondary1 text-body-xl font-extrabold'>
+                  매도하기
+                </span>
+              </button>
+
+              <button
+                type='button'
+                onClick={handleOrderClick}
+                className='bg-secondary2 flex h-[4rem] w-full items-center justify-center rounded-[1000px] transition-colors hover:opacity-90'
+              >
+                <span className='text-secondary1 text-body-xl font-extrabold'>
+                  매수하기
+                </span>
+              </button>
+            </div>
+          </div>
+        )}
       </motion.div>
 
       <IndicatorModal
