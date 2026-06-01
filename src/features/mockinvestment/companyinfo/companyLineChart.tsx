@@ -35,13 +35,13 @@ const mapPeriodToApi = (
 const formatCrosshairTime = (time: UTCTimestamp) => {
   const d = new Date(time * 1000);
 
-  const yyyy = d.getFullYear();
-  const mm = String(d.getMonth() + 1).padStart(2, '0');
-  const dd = String(d.getDate()).padStart(2, '0');
-  const hh = String(d.getHours()).padStart(2, '0');
-  const min = String(d.getMinutes()).padStart(2, '0');
+  const yyyy = d.getUTCFullYear();
+  const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const dd = String(d.getUTCDate()).padStart(2, '0');
+  const hh = String(d.getUTCHours()).padStart(2, '0');
+  const min = String(d.getUTCMinutes()).padStart(2, '0');
 
-  const hour = d.getHours();
+  const hour = d.getUTCHours();
 
   if (hour === 0 && min === '00') return `${yyyy}.${mm}.${dd}`;
   if (hour < 9) return `${yyyy}.${mm}.${dd}`;
@@ -88,7 +88,23 @@ export default function CompanyLineChart({
           barSpacing: 0,
           fixLeftEdge: true,
           fixRightEdge: true,
+          timeVisible: true,
+          secondsVisible: false,
+          tickMarkFormatter: (time: UTCTimestamp, tickMarkType: number) => {
+            const d = new Date(time * 1000);
+
+            const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
+            const dd = String(d.getUTCDate()).padStart(2, '0');
+            const hh = String(d.getUTCHours()).padStart(2, '0');
+            const min = String(d.getUTCMinutes()).padStart(2, '0');
+
+            if (tickMarkType === 3) {
+              return `${hh}:${min}`;
+            }
+            return `${mm}.${dd}`;
+          },
         },
+
         grid: {
           vertLines: { visible: false },
           horzLines: { visible: false },
@@ -144,10 +160,16 @@ export default function CompanyLineChart({
         (c): c is { candleTime: string; closePrice: number } =>
           !!c.candleTime && c.closePrice != null,
       )
-      .map((candle) => ({
-        time: (new Date(candle.candleTime).getTime() / 1000) as UTCTimestamp,
-        value: candle.closePrice,
-      }));
+      .map((candle) => {
+        const date = new Date(candle.candleTime);
+        const timeWithOffset =
+          date.getTime() - date.getTimezoneOffset() * 60000;
+
+        return {
+          time: (timeWithOffset / 1000) as UTCTimestamp,
+          value: candle.closePrice,
+        };
+      });
 
     seriesRef.current.setData(formattedData);
     chartRef.current?.timeScale().fitContent();
