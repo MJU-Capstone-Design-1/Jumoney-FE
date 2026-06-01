@@ -134,9 +134,22 @@ const Page = ({ params }: PageProps) => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1, ease: 'easeOut' }}
-          className={`text-heading-md ${config.textColor} leading-[120%] font-extrabold`}
+          className={`text-heading-md text-center ${config.textColor} leading-[100%] font-extrabold`}
         >
-          {term.termName}
+          {term.termName?.split(/(?=\()/).map((part: string, index: number) => {
+            const trimmedPart = part.trim();
+            return (
+              <React.Fragment key={index}>
+                {index > 0 ? (
+                  <span className='text-label-lg mt-[0.25rem] block leading-[100%]'>
+                    {trimmedPart}
+                  </span>
+                ) : (
+                  trimmedPart
+                )}
+              </React.Fragment>
+            );
+          })}
         </motion.h1>
         <div className='flex flex-col gap-[0.5rem] px-[20rem] text-center'>
           <motion.p
