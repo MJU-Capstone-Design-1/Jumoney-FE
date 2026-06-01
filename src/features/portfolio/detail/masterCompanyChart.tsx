@@ -68,6 +68,19 @@ const renderActiveShape = (props: PieSectorDataItem) => {
   );
 };
 
+const FALLBACK_COLORS = [
+  'var(--field-finance)',
+  'var(--field-it)',
+  'var(--field-staples)',
+  'var(--field-energy)',
+  'var(--field-mechanic)',
+  'var(--field-communication)',
+  '#C2185B',
+  '#4F545C',
+  '#D6C7B0',
+  'var(--field-bio)',
+];
+
 export function MasterCompanyChart({ masterId }: Props) {
   const { data, isLoading } = useGetMasterPortfolioChart(masterId);
   const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined);
@@ -153,7 +166,10 @@ export function MasterCompanyChart({ masterId }: Props) {
               {chartData.map((entry, index) => (
                 <Cell
                   key={`cell-${index}`}
-                  fill={COMPANY_COLORS[entry.name] ?? 'hsl(var(--chart-1))'}
+                  fill={
+                    COMPANY_COLORS[entry.name] ??
+                    FALLBACK_COLORS[index % FALLBACK_COLORS.length]
+                  }
                 />
               ))}
             </Pie>

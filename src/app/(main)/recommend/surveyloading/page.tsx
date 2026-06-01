@@ -12,6 +12,7 @@ import {
   recommend,
   getHojumoneySurvey,
 } from '@/api/generated/endpoints/오늘의-호주머니/오늘의-호주머니';
+import { useTodayNews } from '@/types/useTodayNews';
 
 const NEWS_FALLBACKS = [
   {
@@ -58,26 +59,28 @@ export default function Page() {
   const { purpose, getRiskLabel, period, setRecommendationData } =
     useSurveyStore();
 
-  const [newsItems, setNewsItems] =
-    useState<Array<{ subtitle: string; title: string; tag: string }>>(
-      NEWS_FALLBACKS,
-    );
+  const { data: newsData } = useTodayNews();
+  const fetchedItems = newsData?.items || [];
+  const newsItems =
+    fetchedItems.length > 0
+      ? fetchedItems.map((item) => ({
+          subtitle: '오늘의 주요 뉴스',
+          title: item.title,
+          tag: item.keyword,
+        }))
+      : NEWS_FALLBACKS;
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [dotCount, setDotCount] = useState(0);
   const [errorMsg, setErrorMsg] = useState('');
 
-  // 실시간 카드 변경 타이머 (newsItems 가 변경되면 자동 재조정)
+  // 실시간 카드 변경 타이머
   useEffect(() => {
     const timer = setInterval(() => {
-      setNewsItems((items) => {
-        if (items.length > 0) {
-          setCurrentIndex((prev) => (prev + 1) % items.length);
-        }
-        return items;
-      });
+      setCurrentIndex((prev) => (prev + 1) % newsItems.length);
     }, 3000);
     return () => clearInterval(timer);
-  }, [newsItems]);
+  }, [newsItems.length]);
 
   // 분석 중 말줄임표 타이머
   useEffect(() => {
@@ -100,7 +103,7 @@ export default function Page() {
 
       const risk = getRiskLabel();
 
-      // 1) API에서 설문 데이터 가져와 적절한 optionId 추출 및 뉴스 추출
+      // API에서 설문 데이터 가져와 적절한 optionId 추출
       const response = await getHojumoneySurvey();
       const questions = response.data?.questions || [];
 
@@ -111,13 +114,8 @@ export default function Page() {
       ].filter(Boolean);
 
       const selectedOptionIds: number[] = [];
-      const dynamicNews: Array<{
-        subtitle: string;
-        title: string;
-        tag: string;
-      }> = [];
 
-      // logicCode와 매칭되는 선택지 ID 및 설명 추출
+      // logicCode와 매칭되는 선택지 ID 추출
       questions.forEach((q) => {
         q.options?.forEach((opt) => {
           if (
@@ -126,19 +124,6 @@ export default function Page() {
             opt.optionId !== undefined
           ) {
             selectedOptionIds.push(opt.optionId);
-
-            // 실시간 기사 카드로 쓸 indicator 설명 추가
-            if (opt.description && opt.description.length > 0) {
-              opt.description.forEach((desc) => {
-                if (desc.indicatorName && desc.indicatorDescription) {
-                  dynamicNews.push({
-                    subtitle: desc.indicatorName,
-                    title: desc.indicatorDescription,
-                    tag: opt.content || '',
-                  });
-                }
-              });
-            }
           }
         });
       });
@@ -152,26 +137,8 @@ export default function Page() {
             !selectedOptionIds.includes(firstOpt.optionId)
           ) {
             selectedOptionIds.push(firstOpt.optionId);
-
-            if (firstOpt.description && firstOpt.description.length > 0) {
-              firstOpt.description.forEach((desc) => {
-                if (desc.indicatorName && desc.indicatorDescription) {
-                  dynamicNews.push({
-                    subtitle: desc.indicatorName,
-                    title: desc.indicatorDescription,
-                    tag: firstOpt.content || '',
-                  });
-                }
-              });
-            }
           }
         });
-      }
-
-      // 실시간 기사가 있다면 로딩 상태에 연동
-      if (dynamicNews.length > 0) {
-        setNewsItems(dynamicNews);
-        setCurrentIndex(0); // 새 뉴스 유입 시 인덱스 초기화
       }
 
       if (selectedOptionIds.length < 3) {

@@ -24,6 +24,7 @@ import {
 import { useParams } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import IndicatorModal from '@/features/mockinvestment/companyinfo/indicatorModal';
+import { useStockStream } from '@/hooks/useStockStream';
 
 const getSubjectParticle = (word: string) => {
   if (!word) return '이';
@@ -79,9 +80,15 @@ const DetailPage = () => {
 
   const stockData = detailResponse?.data;
   const stockName = stockData?.stockName || '기업명 불러오는 중...';
-  const currentPrice = stockData?.price?.currentPrice || 0;
-  const changeRate = stockData?.price?.changeRate || 0;
+  const initialPrice = stockData?.price?.currentPrice || 0;
+  const initialChangeRate = stockData?.price?.changeRate || 0;
   const descriptions = stockData?.description || [];
+
+  const { currentPrice, changeRate, latestCandle } = useStockStream(
+    stockCode,
+    initialPrice,
+    initialChangeRate,
+  );
 
   const formattedPrice = currentPrice.toLocaleString();
   const isPositive = changeRate > 0;
@@ -172,7 +179,7 @@ const DetailPage = () => {
             {stockName.length >= 7 ? <br /> : ' '}
             현재 가격은
             <br />
-            {formattedPrice}원 이에요
+            <span className={changeRateColor}>{formattedPrice}원</span> 이에요
           </div>
 
           <div
@@ -205,9 +212,17 @@ const DetailPage = () => {
 
         <motion.div variants={itemVariants} className='pt-[1rem]'>
           {isChart ? (
-            <CompanyCandleChart stockCode={stockCode} period={selectedPeriod} />
+            <CompanyCandleChart
+              stockCode={stockCode}
+              period={selectedPeriod}
+              latestCandle={latestCandle}
+            />
           ) : (
-            <CompanyLineChart stockCode={stockCode} period={selectedPeriod} />
+            <CompanyLineChart
+              stockCode={stockCode}
+              period={selectedPeriod}
+              latestCandle={latestCandle}
+            />
           )}
         </motion.div>
 

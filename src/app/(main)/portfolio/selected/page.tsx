@@ -142,7 +142,7 @@ const PageContent = () => {
       />
 
       {/* 정보 포트폴리오 버튼 영역 */}
-      <PortfolioSelectedMasterButtons />
+      <PortfolioSelectedMasterButtons masterId={masterId} />
 
       {/* 핵심 투자 철학 영역 */}
       <PortfolioSelectedMasterPhilosophy

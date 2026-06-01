@@ -13,10 +13,12 @@ import {
 import { useGetChart } from '@/api/generated/endpoints/모의투자-차트/모의투자-차트';
 import { PeriodValue } from './periodToggle';
 import { MockInvestmentChartResponsePeriod } from '@/api/generated/model';
+import { RealtimeCandle } from '@/hooks/useStockStream';
 
 interface CompanyLineChartProps {
   stockCode: string;
   period: PeriodValue | undefined;
+  latestCandle?: RealtimeCandle | null;
 }
 
 const mapPeriodToApi = (
@@ -35,6 +37,7 @@ const mapPeriodToApi = (
 export default function CompanyLineChart({
   stockCode,
   period,
+  latestCandle,
 }: CompanyLineChartProps) {
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
@@ -187,6 +190,29 @@ export default function CompanyLineChart({
     seriesRef.current.setData(formattedData);
     chartRef.current?.timeScale().fitContent();
   }, [chartResponse]);
+
+  useEffect(() => {
+    if (!seriesRef.current || !latestCandle) return;
+
+    const timeWithOffset =
+      latestCandle.minuteTs -
+      new Date(latestCandle.minuteTs).getTimezoneOffset() * 60000;
+
+    seriesRef.current.update({
+      time: (timeWithOffset / 1000) as UTCTimestamp,
+      value: latestCandle.close,
+    });
+
+    const color =
+      latestCandle.rate > 0
+        ? '#df4b01'
+        : latestCandle.rate < 0
+          ? '#3d16ca'
+          : '#926247';
+    seriesRef.current.applyOptions({
+      priceLineColor: color,
+    });
+  }, [latestCandle]);
 
   return (
     <div style={{ padding: 16, position: 'relative' }}>

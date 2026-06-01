@@ -13,10 +13,12 @@ import {
 import { useGetChart } from '@/api/generated/endpoints/모의투자-차트/모의투자-차트';
 import { PeriodValue } from './periodToggle';
 import { MockInvestmentChartResponsePeriod } from '@/api/generated/model';
+import { RealtimeCandle } from '@/hooks/useStockStream';
 
 interface CompanyCandleChartProps {
   stockCode: string;
   period: PeriodValue | undefined;
+  latestCandle?: RealtimeCandle | null;
 }
 
 const mapPeriodToApi = (
@@ -36,6 +38,7 @@ const mapPeriodToApi = (
 export default function CompanyCandleChart({
   stockCode,
   period,
+  latestCandle,
 }: CompanyCandleChartProps) {
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
@@ -207,6 +210,37 @@ export default function CompanyCandleChart({
 
     chartRef.current?.timeScale().fitContent();
   }, [chartResponse, period]);
+
+  useEffect(() => {
+    if (!seriesRef.current || !latestCandle) return;
+
+    // 현재 선택된 주기가 '1d' (혹은 분봉 기반)일 때만 실시간 업데이트 반영
+    // 실제로는 일봉/주봉/월봉일 때는 로직이 달라져야 할 수 있으나,
+    // 요구사항에서 "1분봉이고 업데이트 주기를 짧게 해서 현재 시점에만 프론트에서 분봉 SSE로 최소/최대가 갱신" 한다고 했으므로
+    // 모든 주기에 상관없이 최신 데이터를 업데이트 하도록 처리합니다.
+    const timeWithOffset =
+      latestCandle.minuteTs -
+      new Date(latestCandle.minuteTs).getTimezoneOffset() * 60000;
+
+    seriesRef.current.update({
+      time: (timeWithOffset / 1000) as UTCTimestamp,
+      open: latestCandle.open,
+      high: latestCandle.high,
+      low: latestCandle.low,
+      close: latestCandle.close,
+    });
+
+    // 차트 끝부분(현재가 선) 색상 변경
+    const color =
+      latestCandle.rate > 0
+        ? '#df4b01'
+        : latestCandle.rate < 0
+          ? '#3d16ca'
+          : '#926247';
+    seriesRef.current.applyOptions({
+      priceLineColor: color,
+    });
+  }, [latestCandle]);
 
   return (
     <div style={{ padding: 16, position: 'relative' }}>
