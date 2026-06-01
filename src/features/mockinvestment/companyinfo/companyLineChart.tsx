@@ -32,23 +32,6 @@ const mapPeriodToApi = (
   return period ? mapping[period] : 'ONE_DAY';
 };
 
-const formatCrosshairTime = (time: UTCTimestamp) => {
-  const d = new Date(time * 1000);
-
-  const yyyy = d.getUTCFullYear();
-  const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
-  const dd = String(d.getUTCDate()).padStart(2, '0');
-  const hh = String(d.getUTCHours()).padStart(2, '0');
-  const min = String(d.getUTCMinutes()).padStart(2, '0');
-
-  const hour = d.getUTCHours();
-
-  if (hour === 0 && min === '00') return `${yyyy}.${mm}.${dd}`;
-  if (hour < 9) return `${yyyy}.${mm}.${dd}`;
-  if (hour < 15) return `${mm}.${dd}`;
-  return `${mm}.${dd} ${hh}:${min}`;
-};
-
 export default function CompanyLineChart({
   stockCode,
   period,
@@ -56,11 +39,31 @@ export default function CompanyLineChart({
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<'Line'> | null>(null);
+  const periodRef = useRef(period);
+
+  useEffect(() => {
+    periodRef.current = period;
+  }, [period]);
 
   const apiPeriod = mapPeriodToApi(period);
   const { data: chartResponse, isLoading } = useGetChart(stockCode, {
     period: apiPeriod,
   });
+
+  const formatCrosshairTime = (time: UTCTimestamp) => {
+    const d = new Date(time * 1000);
+
+    const yyyy = d.getUTCFullYear();
+    const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
+    const dd = String(d.getUTCDate()).padStart(2, '0');
+    const hh = String(d.getUTCHours()).padStart(2, '0');
+    const min = String(d.getUTCMinutes()).padStart(2, '0');
+
+    if (periodRef.current === '1d' || periodRef.current === '1w') {
+      return `${mm}.${dd} ${hh}:${min}`;
+    }
+    return `${yyyy}.${mm}.${dd}`;
+  };
 
   useEffect(() => {
     if (!chartContainerRef.current) return;

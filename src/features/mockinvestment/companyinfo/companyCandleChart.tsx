@@ -40,6 +40,11 @@ export default function CompanyCandleChart({
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
+  const periodRef = useRef(period);
+
+  useEffect(() => {
+    periodRef.current = period;
+  }, [period]);
 
   const barSpacingRef = useRef(0);
 
@@ -58,20 +63,9 @@ export default function CompanyCandleChart({
     const hh = String(d.getUTCHours()).padStart(2, '0');
     const min = String(d.getUTCMinutes()).padStart(2, '0');
 
-    if (period === '1d') {
-      return `${yyyy}.${mm}.${dd} ${hh}:${min}`;
+    if (periodRef.current === '1d' || periodRef.current === '1w') {
+      return `${mm}.${dd} ${hh}:${min}`;
     }
-
-    if (period === '1w') {
-      const showTime = barSpacingRef.current > 10;
-
-      if (showTime) {
-        return `${yyyy}.${mm}.${dd} ${hh}:${min}`;
-      }
-
-      return `${yyyy}.${mm}.${dd}`;
-    }
-
     return `${yyyy}.${mm}.${dd}`;
   };
 
