@@ -58,7 +58,15 @@ const getTermImageName = (sectionId: string, termName: string) => {
   const eng = match ? match[1].trim().toUpperCase() : '';
 
   if (sectionId === 'diagnosis') {
-    if (eng && ['BPS', 'EPS', 'PBR', 'PER', 'ROE'].includes(eng)) return eng;
+    const engTerms = ['BPS', 'EPS', 'PBR', 'PER', 'ROE'];
+    const found = engTerms.find((key) => termName.toUpperCase().includes(key));
+    if (found) return found;
+    if (
+      termName.includes('매출액') ||
+      termName.includes('영업이익') ||
+      termName.includes('당기순이익')
+    )
+      return '매출액영업이익당기순이익 ';
     if (termName.includes('배당 수익률') || termName.includes('배당수익률'))
       return '배당 수익률';
     if (termName.includes('공시')) return '공시';
@@ -96,7 +104,11 @@ const getTermImageName = (sectionId: string, termName: string) => {
   }
 
   if (sectionId === 'trading') {
-    if (eng === 'VI' || termName.includes('변동성 완화장치')) return 'VI';
+    if (
+      termName.toUpperCase().includes('VI') ||
+      termName.includes('변동성 완화장치')
+    )
+      return 'VI';
     if (termName.includes('물타기') && termName.includes('불타기'))
       return '물타기불타기';
     if (termName.includes('미수거래') && termName.includes('반대매매'))
@@ -211,20 +223,40 @@ const Page = ({ params }: PageProps) => {
           transition={{ duration: 0.5, delay: 0.1, ease: 'easeOut' }}
           className={`text-heading-sm text-center ${config.textColor} leading-[100%] font-extrabold`}
         >
-          {term.termName?.split(/(?=\()/).map((part: string, index: number) => {
-            const trimmedPart = part.trim();
-            return (
-              <React.Fragment key={index}>
-                {index > 0 ? (
-                  <span className='text-label-lg mt-[0.25rem] block leading-[100%]'>
-                    {trimmedPart}
-                  </span>
-                ) : (
-                  trimmedPart
-                )}
-              </React.Fragment>
-            );
-          })}
+          {term.termName
+            ?.split(/(?=\()/)
+            .map((parenPart: string, pIndex: number) => {
+              const isParen = pIndex > 0;
+              const ampParts = parenPart.split('&').map((s) => s.trim());
+              return (
+                <React.Fragment key={pIndex}>
+                  {ampParts.map((ampPart, aIndex) => {
+                    const isAmpLineBreak = aIndex > 0;
+                    if (isParen) {
+                      return (
+                        <span
+                          key={aIndex}
+                          className='text-label-lg mt-[0.25rem] block leading-[100%]'
+                        >
+                          {ampPart}
+                        </span>
+                      );
+                    }
+                    return (
+                      <React.Fragment key={aIndex}>
+                        {isAmpLineBreak ? (
+                          <span className='mt-[0.25rem] block leading-[100%]'>
+                            {ampPart}
+                          </span>
+                        ) : (
+                          ampPart
+                        )}
+                      </React.Fragment>
+                    );
+                  })}
+                </React.Fragment>
+              );
+            })}
         </motion.h1>
         <div className='flex flex-col gap-[0.5rem] px-[20rem] text-center'>
           <motion.p
