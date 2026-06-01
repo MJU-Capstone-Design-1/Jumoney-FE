@@ -11,6 +11,7 @@ import {
 } from '@/constants/labelMappings';
 import FloatingButton from '@/features/recommend/selection/floatingButton';
 import { useRouter } from 'next/navigation';
+import BottomButton from '@/components/bottomButton';
 
 const Page = () => {
   const router = useRouter();
@@ -145,6 +146,10 @@ const Page = () => {
           )}
         </div>
       </div>
+      <BottomButton
+        label='거장의 선택 알아보기'
+        onClick={() => router.push('/recommend?tab=right')}
+      />
     </div>
   );
 };
