@@ -237,6 +237,7 @@ const MockInvestmentHeader = ({
                     stockName={portfolio.stockName}
                     currentPrice={portfolio.currentPrice}
                     changeRate={portfolio.changeRate}
+                    quantity={portfolio.quantity}
                   />
                 ))
               )}
