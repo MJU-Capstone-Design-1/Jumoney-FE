@@ -26,7 +26,7 @@ export const PERIODS = [
   {
     value: '5y',
     label: '5년',
-    subLabel: '최근 5년간의 장기 추세를 1일 단위(일봉)로 보여드려요.',
+    subLabel: '최근 5년간의 장기 추세를 1주일 단위(주봉)로 보여드려요.',
   },
 ] as const;
 
