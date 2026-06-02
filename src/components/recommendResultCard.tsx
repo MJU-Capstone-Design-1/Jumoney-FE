@@ -1,7 +1,11 @@
 'use client';
 
-/*import VerificationButton from './verificationButton';*/
-import type { RecommendedStockResponse } from '@/api/generated/model';
+import VerificationButton from './verificationButton';
+import { useParams, useRouter } from 'next/navigation';
+import type {
+  MasterChoiceRequest,
+  RecommendedStockResponse,
+} from '@/api/generated/model';
 import { LOGIC_CODE_TO_KOREAN } from '@/constants/masters';
 import { masterSortMetricLabels } from '@/constants/masterLabels';
 import { labelMappings } from '@/constants/labelMappings';
@@ -12,9 +16,47 @@ interface RecommendResultCardProps {
     tags?: string[];
     stockCode?: string;
   };
+  selectedOptionIds?: number[];
+  selectedSectorTypes?: MasterChoiceRequest['sectorTypes'];
 }
 
-const RecommendResultCard = ({ data }: RecommendResultCardProps) => {
+const RecommendResultCard = ({
+  data,
+  selectedOptionIds,
+  selectedSectorTypes,
+}: RecommendResultCardProps) => {
+  const params = useParams();
+  const router = useRouter();
+
+  const masterId = params?.masterId as string | undefined;
+  const isMasterIdPage = Boolean(masterId);
+
+  const handleVerifyClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (masterId && data.stockCode) {
+      const query = new URLSearchParams();
+
+      if (data.stockName) {
+        query.set('stockName', data.stockName);
+      }
+
+      if (selectedOptionIds?.length) {
+        query.set('optionIds', selectedOptionIds.join(','));
+      }
+
+      if (selectedSectorTypes?.length) {
+        query.set('sectors', selectedSectorTypes.join(','));
+      }
+
+      const queryString = query.toString();
+      router.push(
+        `/recommend/${masterId}/${encodeURIComponent(data.stockCode)}${
+          queryString ? `?${queryString}` : ''
+        }`,
+      );
+    }
+  };
+
   const formatPrice = (price?: number) => {
     if (price === undefined) return '0';
     return price.toLocaleString();
@@ -117,9 +159,11 @@ const RecommendResultCard = ({ data }: RecommendResultCardProps) => {
             </div>
           </div>
         </div>
-        {/*  <div className='flex-shrink-0'>
-          <VerificationButton />
-        </div> */}
+        {isMasterIdPage && (
+          <div className='flex-shrink-0'>
+            <VerificationButton onClick={handleVerifyClick} />
+          </div>
+        )}
       </div>
 
       <div className='flex items-center gap-[0.5rem]'>

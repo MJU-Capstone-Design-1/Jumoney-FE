@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   createChart,
   UTCTimestamp,
@@ -28,7 +28,17 @@ interface CompanyLineChartProps {
   stockCode: string;
   period: PeriodValue | undefined;
   latestCandle?: RealtimeCandle | null;
+  date?: string;
+  verificationResults?: {
+    date?: string;
+    matched?: boolean;
+  }[];
+  enabled?: boolean;
 }
+
+const TEXT_UP_COLOR = '#df4b01';
+const TEXT_DOWN_COLOR = '#3d16ca';
+const DEFAULT_LINE_COLOR = '#4b3425';
 
 const mapPeriodToApi = (
   period: PeriodValue | undefined,
@@ -47,6 +57,9 @@ export default function CompanyLineChart({
   stockCode,
   period,
   latestCandle,
+  date,
+  verificationResults = [],
+  enabled = true,
 }: CompanyLineChartProps) {
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
@@ -66,9 +79,38 @@ export default function CompanyLineChart({
   };
 
   const apiPeriod = mapPeriodToApi(period);
-  const { data: chartResponse, isLoading } = useGetChart(stockCode, {
-    period: apiPeriod,
-  });
+  const chartParams = useMemo(
+    () => ({
+      period: apiPeriod,
+      ...(date ? { date } : {}),
+    }),
+    [apiPeriod, date],
+  );
+  const verificationResultMap = useMemo(
+    () =>
+      new Map(
+        verificationResults
+          .filter(
+            (
+              result,
+            ): result is {
+              date: string;
+              matched: boolean;
+            } => typeof result.date === 'string' && result.matched != null,
+          )
+          .map((result) => [result.date, result.matched]),
+      ),
+    [verificationResults],
+  );
+  const { data: chartResponse, isLoading } = useGetChart(
+    stockCode,
+    chartParams,
+    {
+      query: {
+        enabled: enabled && Boolean(stockCode),
+      },
+    },
+  );
 
   const formatCrosshairTime = (time: UTCTimestamp) => {
     const d = new Date(time * 1000);
@@ -150,7 +192,7 @@ export default function CompanyLineChart({
       chartRef.current = chart;
 
       const series = chart.addSeries(LineSeries, {
-        color: '#4b3425',
+        color: DEFAULT_LINE_COLOR,
         lineWidth: 3,
       });
 
@@ -197,9 +239,19 @@ export default function CompanyLineChart({
         const timeWithOffset =
           date.getTime() - date.getTimezoneOffset() * 60000;
 
+        const dateKey = candle.candleTime.slice(0, 10);
+        const matched = verificationResultMap.get(dateKey);
+        const color =
+          matched === true
+            ? TEXT_UP_COLOR
+            : matched === false
+              ? TEXT_DOWN_COLOR
+              : undefined;
+
         return {
           time: (timeWithOffset / 1000) as UTCTimestamp,
           value: candle.closePrice,
+          ...(color ? { color } : {}),
         };
       });
 
@@ -216,7 +268,7 @@ export default function CompanyLineChart({
         seriesRef.current,
       );
     }
-  }, [chartResponse, period]);
+  }, [chartResponse, period, verificationResultMap]);
 
   useEffect(() => {
     if (!seriesRef.current || !latestCandle) return;
@@ -232,9 +284,9 @@ export default function CompanyLineChart({
 
     const color =
       latestCandle.rate > 0
-        ? '#df4b01'
+        ? TEXT_UP_COLOR
         : latestCandle.rate < 0
-          ? '#3d16ca'
+          ? TEXT_DOWN_COLOR
           : '#926247';
     seriesRef.current.applyOptions({
       priceLineColor: color,

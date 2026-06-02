@@ -322,7 +322,12 @@ export default function MasterRecommendPage({
               className='flex h-[calc(100vh-29rem)] [scrollbar-width:none] flex-col gap-[1rem] overflow-y-auto overscroll-contain pb-[6rem] [&::-webkit-scrollbar]:hidden'
             >
               {recommendedStocks.map((stock, i) => (
-                <RecommendResultCard key={stock.stockId || i} data={stock} />
+                <RecommendResultCard
+                  key={stock.stockId || i}
+                  data={stock}
+                  selectedOptionIds={submittedOptionIds ?? []}
+                  selectedSectorTypes={submittedSectorTypes ?? []}
+                />
               ))}
 
               {hasSearched && recommendedStocks.length === 0 && (
