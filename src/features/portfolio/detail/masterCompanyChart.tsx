@@ -38,18 +38,18 @@ interface ChartItem {
   value: number;
 }
 
-const COMPANY_COLORS: Record<string, string> = {
-  애플: 'var(--field-it)',
-  '아메리칸 익스프레스': 'var(--field-finance)',
-  뱅크오브아메리카: 'var(--field-finance)',
-  코카콜라: 'var(--field-staples)',
-  쉐브론: 'var(--field-energy)',
-  무디스: 'var(--field-finance)',
-  '옥시덴탈 페트롤리움': 'var(--field-energy)',
-  처브: 'var(--field-finance)',
-  '크래프트 하인즈': 'var(--field-staples)',
-  알파벳: 'var(--field-communication)',
-};
+export const COMPANY_CHART_COLORS = [
+  '#7FA8FF',
+  '#9A8FFF',
+  '#BE8FFF',
+  '#FF97C7',
+  '#FF9F8A',
+  '#FFBE73',
+  '#FFD76B',
+  '#A8D96C',
+  '#73D0A7',
+  '#7CC4F0',
+];
 
 const renderActiveShape = (props: PieSectorDataItem) => {
   const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } =
@@ -67,19 +67,6 @@ const renderActiveShape = (props: PieSectorDataItem) => {
     />
   );
 };
-
-const FALLBACK_COLORS = [
-  'var(--field-finance)',
-  'var(--field-it)',
-  'var(--field-staples)',
-  'var(--field-energy)',
-  'var(--field-mechanic)',
-  'var(--field-communication)',
-  '#C2185B',
-  '#4F545C',
-  '#D6C7B0',
-  'var(--field-bio)',
-];
 
 export function MasterCompanyChart({ masterId }: Props) {
   const { data, isLoading } = useGetMasterPortfolioChart(masterId);
@@ -167,9 +154,10 @@ export function MasterCompanyChart({ masterId }: Props) {
                 <Cell
                   key={`cell-${index}`}
                   fill={
-                    COMPANY_COLORS[entry.name] ??
-                    FALLBACK_COLORS[index % FALLBACK_COLORS.length]
+                    COMPANY_CHART_COLORS[index % COMPANY_CHART_COLORS.length]
                   }
+                  stroke={COMPANY_CHART_COLORS[index]}
+                  strokeWidth={1}
                 />
               ))}
             </Pie>
