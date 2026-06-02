@@ -124,14 +124,24 @@ export const HomePage = () => {
         </section>
 
         <section className='flex flex-col gap-[0.75rem] pt-[1.5rem]'>
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: 'easeOut' }}
-            className='text-label-md text-secondary2 font-extrabold'
-          >
-            모의 투자 랭킹
-          </motion.div>
+          <div className='flex items-center justify-between'>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: 'easeOut' }}
+              className='text-label-md text-secondary2 font-extrabold'
+            >
+              모의 투자 랭킹
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: 'easeOut' }}
+              className='text-body-md text-text-main mt-[0.5rem] font-semibold'
+            >
+              랭킹은 매시 정각에 업데이트돼요.
+            </motion.div>
+          </div>
           <RankProfile
             key={`${selectedMaster}-${selectedRankId}`}
             user={selectedUser}

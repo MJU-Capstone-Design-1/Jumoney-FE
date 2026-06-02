@@ -64,8 +64,8 @@ export const MockInvestment = () => {
 
   const formatCurrency = (amount: number) => `₩ ${amount.toLocaleString()}`;
   const formatRate = (rate: number) => {
-    if (rate > 0) return `+${rate.toFixed(1)}%`;
-    if (rate < 0) return `${rate.toFixed(1)}%`;
+    if (rate > 0) return `+${rate.toFixed(2)}%`;
+    if (rate < 0) return `${rate.toFixed(2)}%`;
     return `0.0%`;
   };
 
@@ -83,9 +83,9 @@ export const MockInvestment = () => {
           transition={{ ...itemMotion.transition, delay: 0.1 }}
           className='flex flex-col items-center justify-center pt-[0.25rem]'
         >
-          <div className='text-body-lg text-text-sub font-bold'>총 자산</div>
+          <div className='text-body-lg text-text-sub font-bold'>내 투자</div>
           <div className='text-label-md font-extrabold'>
-            {formatCurrency(totalAsset)}
+            {formatCurrency(totalPurchaseAmount)}
           </div>
         </motion.div>
 

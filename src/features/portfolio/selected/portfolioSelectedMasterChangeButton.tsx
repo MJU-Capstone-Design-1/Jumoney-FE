@@ -12,9 +12,12 @@ export const PortfolioSelectedMasterChangeButton = () => {
     <Button
       onClick={() => router.push('/portfolio/masterselect')}
       variant='ghost'
-      className='bg-secondary2 shadow-card-shadow pointer-events-auto flex h-[3.5rem] w-[3.5rem] items-center justify-center rounded-full p-0'
+      className='bg-secondary2 shadow-card-shadow pointer-events-auto flex h-[3.5rem] items-center justify-center gap-[0.25rem] rounded-full px-[1rem]'
     >
       <MasterChangeIcon />
+      <span className='text-body-lg text-secondary1 font-semibold'>
+        거장 변경
+      </span>
     </Button>
   );
 };

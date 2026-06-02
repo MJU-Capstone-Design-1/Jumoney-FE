@@ -145,76 +145,84 @@ const Page = () => {
                 </div>
               </div>
             ) : (
-              <div className='flex flex-col items-center gap-[1.5rem] pt-[1rem]'>
-                <p className='text-heading-sm leading-[120%] font-extrabold'>
-                  {selectedStock?.stockName || '종목 정보 없음'}
-                </p>
-                <div className='bg-default text-body-md flex h-[8.25rem] w-[8.25rem] items-center justify-center rounded-[2rem] text-center'>
-                  {selectedStock?.stockName &&
-                  MASTER_STOCK_LOGOS[selectedStock.stockName] ? (
-                    <Image
-                      src={MASTER_STOCK_LOGOS[selectedStock.stockName]}
-                      alt={selectedStock.stockName}
-                      width={getLogoSize(selectedStock.stockName).width}
-                      height={getLogoSize(selectedStock.stockName).height}
-                      className={getLogoSize(selectedStock.stockName).className}
+              <>
+                <div className='bg-default text-body-md -mt-[0.5rem] ml-auto flex h-[2rem] w-[3.625rem] items-center justify-center rounded-[77.125rem] text-center font-semibold'>
+                  {descriptionData?.basePeriod?.split(' ')[0] || '2025년'}
+                </div>
+                <div className='flex flex-col items-center gap-[1.5rem]'>
+                  <p className='text-heading-sm leading-[120%] font-extrabold'>
+                    {selectedStock?.stockName || '종목 정보 없음'}
+                  </p>
+                  <div className='bg-default text-body-md flex h-[8.25rem] w-[8.25rem] items-center justify-center rounded-[2rem] text-center'>
+                    {selectedStock?.stockName &&
+                    MASTER_STOCK_LOGOS[selectedStock.stockName] ? (
+                      <Image
+                        src={MASTER_STOCK_LOGOS[selectedStock.stockName]}
+                        alt={selectedStock.stockName}
+                        width={getLogoSize(selectedStock.stockName).width}
+                        height={getLogoSize(selectedStock.stockName).height}
+                        className={
+                          getLogoSize(selectedStock.stockName).className
+                        }
+                      />
+                    ) : (
+                      <span className='font-bold'></span>
+                    )}
+                  </div>
+                  <div className='flex items-center justify-center gap-[1rem]'>
+                    {selectedStock && (
+                      <>
+                        <div className='bg-field-it text-secondary1 text-body-lg rounded-[6.25rem] px-[1rem] py-[0.5rem] leading-[120%] font-bold'>
+                          #{selectedStock.sector}
+                        </div>
+                        <div className='bg-primary text-secondary1 text-body-lg rounded-[6.25rem] px-[1rem] py-[0.5rem] leading-[120%] font-bold'>
+                          #{selectedStock.weight}%
+                        </div>
+                      </>
+                    )}
+                  </div>
+                  <div className='relative z-20 flex flex-col items-center'>
+                    <StockListSelectIcon />
+                  </div>
+                  <motion.div
+                    className='relative flex w-full touch-none justify-center select-none'
+                    onPan={(e, info) => {
+                      // 1px drag = 0.5도 회전
+                      setDragOffset(info.offset.x * 0.5);
+                    }}
+                    onPanEnd={(e, info) => {
+                      const finalRotation = wheelRotation + info.offset.x * 0.5;
+                      // 30도 단위로 가장 가까운 곳으로 스냅
+                      const snappedRotation =
+                        Math.round(finalRotation / 30) * 30;
+                      // 왼쪽(-120도), 오른쪽(+150도) 제한 적용
+                      const boundedRotation = Math.max(
+                        -150,
+                        Math.min(120, snappedRotation),
+                      );
+                      setWheelRotation(boundedRotation);
+                      setDragOffset(0);
+                    }}
+                  >
+                    <div
+                      className='absolute top-[4rem] left-[-1.5rem] z-40 h-[16rem] w-[5rem] cursor-pointer'
+                      onClick={() =>
+                        setWheelRotation((r) => Math.min(120, r + 30))
+                      }
                     />
-                  ) : (
-                    <span className='font-bold'></span>
-                  )}
+                    <div
+                      className='absolute top-[4rem] right-[-1.5rem] z-40 h-[16rem] w-[5rem] cursor-pointer'
+                      onClick={() =>
+                        setWheelRotation((r) => Math.max(-150, r - 30))
+                      }
+                    />
+                    <WheelSection
+                      className='top-[-1rem] left-1/2 z-30 -translate-x-1/2'
+                      rotation={wheelRotation + dragOffset}
+                    />
+                  </motion.div>
                 </div>
-                <div className='flex items-center justify-center gap-[1rem]'>
-                  {selectedStock && (
-                    <>
-                      <div className='bg-field-it text-secondary1 text-body-lg rounded-[6.25rem] px-[1rem] py-[0.5rem] leading-[120%] font-bold'>
-                        #{selectedStock.sector}
-                      </div>
-                      <div className='bg-primary text-secondary1 text-body-lg rounded-[6.25rem] px-[1rem] py-[0.5rem] leading-[120%] font-bold'>
-                        #{selectedStock.weight}%
-                      </div>
-                    </>
-                  )}
-                </div>
-                <div className='relative z-20 flex flex-col items-center'>
-                  <StockListSelectIcon />
-                </div>
-                <motion.div
-                  className='relative flex w-full touch-none justify-center select-none'
-                  onPan={(e, info) => {
-                    // 1px drag = 0.5도 회전
-                    setDragOffset(info.offset.x * 0.5);
-                  }}
-                  onPanEnd={(e, info) => {
-                    const finalRotation = wheelRotation + info.offset.x * 0.5;
-                    // 30도 단위로 가장 가까운 곳으로 스냅
-                    const snappedRotation = Math.round(finalRotation / 30) * 30;
-                    // 왼쪽(-120도), 오른쪽(+150도) 제한 적용
-                    const boundedRotation = Math.max(
-                      -150,
-                      Math.min(120, snappedRotation),
-                    );
-                    setWheelRotation(boundedRotation);
-                    setDragOffset(0);
-                  }}
-                >
-                  <div
-                    className='absolute top-[4rem] left-[-1.5rem] z-40 h-[16rem] w-[5rem] cursor-pointer'
-                    onClick={() =>
-                      setWheelRotation((r) => Math.min(120, r + 30))
-                    }
-                  />
-                  <div
-                    className='absolute top-[4rem] right-[-1.5rem] z-40 h-[16rem] w-[5rem] cursor-pointer'
-                    onClick={() =>
-                      setWheelRotation((r) => Math.max(-150, r - 30))
-                    }
-                  />
-                  <WheelSection
-                    className='top-[-1rem] left-1/2 z-30 -translate-x-1/2'
-                    rotation={wheelRotation + dragOffset}
-                  />
-                </motion.div>
-              </div>
+              </>
             )
           ) : toggleValue === 'left' ? (
             <div className='bg-secondary1 shadow-card-shadow flex h-[33.625rem] flex-col gap-[1rem] rounded-[1.5rem] p-[1rem]'>
