@@ -128,7 +128,7 @@ const PageContent = () => {
       />
 
       {/* 우측 상단 플로팅 변경 버튼 */}
-      <div className='pointer-events-none fixed top-[1.5rem] left-1/2 z-20 flex w-full max-w-[375px] -translate-x-1/2 justify-end px-[1.5rem]'>
+      <div className='pointer-events-none fixed top-[1.5rem] left-1/2 z-20 flex w-full max-w-[375px] -translate-x-1/2 justify-end'>
         <PortfolioSelectedMasterChangeButton />
       </div>
 
