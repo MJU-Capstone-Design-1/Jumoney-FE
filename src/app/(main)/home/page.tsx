@@ -17,6 +17,7 @@ import { useRouter } from 'next/navigation';
 import { MASTERS_PORTFOLIO } from '@/constants/mastersPortfolio';
 import { useProfileStore } from '@/store/useProfileStore';
 import { useGetMockInvestmentRankings } from '@/api/generated/endpoints/홈/홈';
+import Image from 'next/image';
 
 export const HomePage = () => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -94,7 +95,9 @@ export const HomePage = () => {
         className='bg-background sticky top-0 z-15 rounded-b-[2.5rem] px-[1rem]'
       >
         <div className='flex h-[6.5rem] items-center justify-between py-[1.25rem]'>
-          <div className='bg-default ml-[0.25rem] h-[4rem] w-[4rem] rounded-full' />
+          <div className='flex pt-[0.75rem]'>
+            <Image src='/mainLogo.svg' alt='mainLogo' width={210} height={32} />
+          </div>
           <div className='mr-[0.75rem]'>
             <button
               type='button'
