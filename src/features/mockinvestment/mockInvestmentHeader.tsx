@@ -10,6 +10,7 @@ import { useGetPortfolios } from '@/api/generated/endpoints/모의투자/모의�
 import { ClockIcon } from '@/components/icons/clockIcon';
 import HistoryBottomSheet from './historyBottomSheet';
 import { RealtimeCandle } from '@/hooks/useStockStream';
+import { MyCompanyCard } from './myCompanyCard';
 
 interface MockInvestmentHeaderProps {
   isExpanded?: boolean;
@@ -123,8 +124,8 @@ const MockInvestmentHeader = ({
   const isPositive = totalProfitRate > 0;
   const isNegative = totalProfitRate < 0;
   const formattedProfitRate = isPositive
-    ? `+${totalProfitRate.toFixed(1)}%`
-    : `${totalProfitRate.toFixed(1)}%`;
+    ? `+${totalProfitRate.toFixed(2)}%`
+    : `${totalProfitRate.toFixed(2)}%`;
 
   const profitRateColorClass = isPositive
     ? 'text-text-up'
@@ -229,15 +230,15 @@ const MockInvestmentHeader = ({
                 </div>
               ) : (
                 portfolios.map((portfolio) => (
-                  <CompanyCard
+                  <MyCompanyCard
                     key={portfolio.stockId}
-                    showBadge={false}
                     stockId={portfolio.stockId}
                     stockCode={portfolio.stockCode}
                     stockName={portfolio.stockName}
-                    currentPrice={portfolio.currentPrice}
-                    changeRate={portfolio.changeRate}
                     quantity={portfolio.quantity}
+                    totalEvaluationAmount={portfolio.evaluationAmount}
+                    totalProfitAmount={portfolio.profitAmount}
+                    totalProfitRate={portfolio.profitRate}
                   />
                 ))
               )}

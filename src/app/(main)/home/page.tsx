@@ -168,7 +168,12 @@ export const HomePage = () => {
             >
               오늘의 추천 용어
             </motion.div>
-            <NavigateButton label='학습하기' />
+            <NavigateButton
+              label='학습하기'
+              onClick={() => {
+                router.push('/terms');
+              }}
+            />
           </div>
           <TodayTermCard />
         </section>
@@ -183,7 +188,12 @@ export const HomePage = () => {
             >
               모의 투자
             </motion.div>
-            <NavigateButton label='전체보기' />
+            <NavigateButton
+              label='전체보기'
+              onClick={() => {
+                router.push('/mockinvestment');
+              }}
+            />
           </div>
           <MockInvestment />
         </section>

@@ -193,15 +193,19 @@ const TestAccountPage = () => {
                 <div className='flex justify-between'>
                   <span>운용 손익</span>
                   <span
-                    className={formatProfit(account.totalProfitAmount).color}
+                    className={
+                      formatProfit(account.investmentProfitAmount).color
+                    }
                   >
-                    {formatProfit(account.totalProfitAmount).text}
+                    {formatProfit(account.investmentProfitAmount).text}
                   </span>
                 </div>
                 <div className='flex justify-between'>
                   <span>운용 수익률</span>
-                  <span className={formatRate(account.totalProfitRate).color}>
-                    {formatRate(account.totalProfitRate).text}
+                  <span
+                    className={formatRate(account.investmentProfitRate).color}
+                  >
+                    {formatRate(account.investmentProfitRate).text}
                   </span>
                 </div>
                 <div className='bg-primary my-[1rem] h-[0.375rem] w-full rounded-full' />
