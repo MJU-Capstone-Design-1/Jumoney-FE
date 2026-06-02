@@ -1,11 +1,34 @@
 'use client';
 
 import { motion, HTMLMotionProps } from 'framer-motion';
-import React from 'react';
+import React, { useMemo } from 'react';
 import RecommendResultCard from '@/components/recommendResultCard';
 import { LoadingNewsCard } from '@/features/recommend/survey/loadingNewsCard';
+import { useTodayNews } from '@/types/useTodayNews';
 
 export const Step2Card = (props: HTMLMotionProps<'div'>) => {
+  const { data: newsData, isLoading: isNewsLoading } = useTodayNews();
+
+  const newsCardData = useMemo(() => {
+    const firstNews = newsData?.items?.[0];
+
+    if (!firstNews) {
+      return {
+        title: isNewsLoading
+          ? '뉴스를 불러오는 중...'
+          : '오늘의 뉴스가 없습니다.',
+        subtitle: '호가 예상 금융 뉴스 인사이트',
+        tag: '시장',
+      };
+    }
+
+    return {
+      title: firstNews.title,
+      subtitle: '호가 예상 금융 뉴스 인사이트',
+      tag: firstNews.keyword || '시장',
+    };
+  }, [isNewsLoading, newsData?.items]);
+
   return (
     <motion.div
       {...props}
@@ -26,19 +49,22 @@ export const Step2Card = (props: HTMLMotionProps<'div'>) => {
         </div>
       </div>
       <LoadingNewsCard
-        title='기사 제목 기사 제목  기사 ...'
-        subtitle='호가 예상 금융 뉴스 인사이트 '
-        tag='가치투자'
+        title={newsCardData.title}
+        subtitle={newsCardData.subtitle}
+        tag={newsCardData.tag}
       />
       <RecommendResultCard
         data={{
-          stockName: '삼성전자',
-          stockCode: 'AAPL',
-          currentPrice: 200000,
-          changeRate: 2.5,
+          stockName: 'SK하이닉스',
+          stockCode: '000660',
+          currentPrice: 2360000,
+          changeRate: -1.7,
           sortMetricKey: 'ROE',
-          sortMetricValue: 150,
-          tags: ['안전성', '수익성'],
+          sortMetricValue: 45.74,
+
+          tags: ['자산의 꾸준한 성장', '시세 차익'],
+
+          goodSectorTags: ['호재섹터'],
         }}
       />
     </motion.div>
