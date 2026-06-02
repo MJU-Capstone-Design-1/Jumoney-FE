@@ -1,19 +1,23 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { motion, Variants } from 'framer-motion';
 
 import BackButtonField from '@/components/backButtonField';
 import type { MasterChoiceRequest } from '@/api/generated/model';
-import { useGetMasterChoiceBacktest } from '@/api/masterChoiceBacktest';
+import { useBacktestMaster } from '@/api/generated/endpoints/거장의-선택/거장의-선택';
 import CompanyLineChart from '@/features/mockinvestment/companyinfo/companyLineChart';
 import { masterCodeLabels } from '@/constants/labelMappings';
 
 const MASTER_ID_MAP: Record<string, number> = {
   buffett: 1,
+  warren_buffett: 1,
   lynch: 2,
+  peter_lynch: 2,
   dalio: 3,
+  ray_dalio: 3,
   oneil: 4,
+  william_oneil: 4,
 };
 
 const containerVariants: Variants = {
@@ -62,12 +66,18 @@ const parseStringList = (value?: string) => {
 };
 
 const getMasterIdNumber = (masterId: string) => {
-  const numericMasterId = Number(masterId);
+  const normalizedMasterId = decodeURIComponent(masterId)
+    .trim()
+    .toLowerCase()
+    .replaceAll('-', '_')
+    .replaceAll(' ', '_');
+  const numericMasterId = Number(normalizedMasterId);
+
   if (Number.isFinite(numericMasterId) && numericMasterId > 0) {
     return numericMasterId;
   }
 
-  return MASTER_ID_MAP[masterId.toLowerCase()] ?? null;
+  return MASTER_ID_MAP[normalizedMasterId] ?? null;
 };
 
 export default function VerifyBacktestClient({
@@ -98,14 +108,43 @@ export default function VerifyBacktestClient({
     }),
     [selectedOptionIds, selectedSectorTypes],
   );
+  const backtestRequestKey = useMemo(() => {
+    if (masterIdNumber === null || !stockCode) return null;
+
+    return JSON.stringify({
+      masterId: masterIdNumber,
+      stockCode,
+      requestBody,
+    });
+  }, [masterIdNumber, requestBody, stockCode]);
 
   const {
+    mutate: backtestMaster,
     data: backtestResponse,
-    isLoading: isBacktestLoading,
+    isPending: isBacktestLoading,
     isError: isBacktestError,
-  } = useGetMasterChoiceBacktest(masterIdNumber, stockCode, requestBody);
+    status: backtestStatus,
+  } = useBacktestMaster();
+
+  useEffect(() => {
+    if (masterIdNumber === null || !stockCode || !backtestRequestKey) return;
+
+    backtestMaster({
+      masterId: masterIdNumber,
+      stockCode,
+      data: requestBody,
+    });
+  }, [
+    backtestMaster,
+    backtestRequestKey,
+    masterIdNumber,
+    requestBody,
+    stockCode,
+  ]);
 
   const backtestData = backtestResponse?.data;
+  const isBacktestRequestReady = masterIdNumber !== null && Boolean(stockCode);
+  const isBacktestIdle = backtestStatus === 'idle';
   const displayStockName =
     stockName || backtestData?.stockCode || '선택한 기업';
   const displayMasterName = backtestData?.masterCode
@@ -141,7 +180,11 @@ export default function VerifyBacktestClient({
       </motion.div>
 
       <motion.div variants={itemVariants} className='pt-[2rem]'>
-        {isBacktestLoading ? (
+        {!isBacktestRequestReady ? (
+          <div className='text-body-lg text-text-sub flex h-[228px] items-center justify-center text-center font-bold'>
+            검증에 필요한 정보를 찾지 못했어요.
+          </div>
+        ) : isBacktestIdle || isBacktestLoading ? (
           <div className='text-body-lg text-secondary2 flex h-[228px] items-center justify-center font-bold'>
             데이터를 분석하고 있어요...
           </div>

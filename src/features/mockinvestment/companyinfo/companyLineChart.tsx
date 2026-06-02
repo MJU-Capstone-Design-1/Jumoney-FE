@@ -40,6 +40,31 @@ const TEXT_UP_COLOR = '#df4b01';
 const TEXT_DOWN_COLOR = '#3d16ca';
 const DEFAULT_LINE_COLOR = '#4b3425';
 
+const formatDateKeyInSeoul = (value: string) => {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return value.slice(0, 10);
+  }
+
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Seoul',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(date);
+
+  const year = parts.find((part) => part.type === 'year')?.value;
+  const month = parts.find((part) => part.type === 'month')?.value;
+  const day = parts.find((part) => part.type === 'day')?.value;
+
+  if (!year || !month || !day) {
+    return value.slice(0, 10);
+  }
+
+  return `${year}-${month}-${day}`;
+};
+
 const mapPeriodToApi = (
   period: PeriodValue | undefined,
 ): MockInvestmentChartResponsePeriod => {
@@ -98,19 +123,20 @@ export default function CompanyLineChart({
               matched: boolean;
             } => typeof result.date === 'string' && result.matched != null,
           )
-          .map((result) => [result.date, result.matched]),
+          .map((result) => [formatDateKeyInSeoul(result.date), result.matched]),
       ),
     [verificationResults],
   );
-  const { data: chartResponse, isLoading } = useGetChart(
-    stockCode,
-    chartParams,
-    {
-      query: {
-        enabled: enabled && Boolean(stockCode),
-      },
+  const {
+    data: chartResponse,
+    isLoading,
+    isError,
+  } = useGetChart(stockCode, chartParams, {
+    query: {
+      enabled: enabled && Boolean(stockCode),
     },
-  );
+  });
+  const hasChartCandles = (chartResponse?.data?.candles?.length ?? 0) > 0;
 
   const formatCrosshairTime = (time: UTCTimestamp) => {
     const d = new Date(time * 1000);
@@ -239,7 +265,7 @@ export default function CompanyLineChart({
         const timeWithOffset =
           date.getTime() - date.getTimezoneOffset() * 60000;
 
-        const dateKey = candle.candleTime.slice(0, 10);
+        const dateKey = formatDateKeyInSeoul(candle.candleTime);
         const matched = verificationResultMap.get(dateKey);
         const color =
           matched === true
@@ -298,6 +324,11 @@ export default function CompanyLineChart({
       {isLoading && (
         <div className='text-body-lg text-secondary2 absolute top-4 left-4 font-bold'>
           차트를 불러오고 있어요...
+        </div>
+      )}
+      {!isLoading && (isError || !hasChartCandles) && (
+        <div className='text-body-lg text-text-sub absolute inset-4 flex items-center justify-center text-center font-bold'>
+          차트 데이터를 불러오지 못했어요.
         </div>
       )}
 
