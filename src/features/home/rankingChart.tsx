@@ -3,40 +3,26 @@ import { ChartHappyIcon } from '@/components/icons/chartHappyIcon';
 import { ChartNeturalIcon } from '@/components/icons/chartNeturalIcon';
 import { ChartSadIcon } from '@/components/icons/chartSadIcon';
 import { ChartSmileIcon } from '@/components/icons/chartSmileIcon';
-import { MASTER_RANK_DATA } from '@/constants/rankData';
+import { RankingUser } from '@/api/generated/model';
 
 interface RankingChartProps {
   selectedId: string;
   onSelect: (id: string) => void;
-  masterFilter: string;
+  users: RankingUser[];
 }
 
-export const RankingChart = ({
-  selectedId,
-  onSelect,
-  masterFilter,
-}: RankingChartProps) => {
-  const masterData = MASTER_RANK_DATA[masterFilter] || MASTER_RANK_DATA['all'];
-
-  const rankList = [
-    masterData['1'],
-    masterData['2'],
-    masterData['3'],
-    masterData['4'],
-    masterData['5'],
-  ];
-
-  const getFaceIcon = (id: string) => {
-    switch (id) {
-      case '1':
-        return <ChartSadIcon />;
-      case '2':
-        return <ChartSmileIcon />;
-      case '3':
+export const RankingChart = ({ onSelect, users }: RankingChartProps) => {
+  const getFaceIcon = (rank: number) => {
+    switch (rank) {
+      case 1:
         return <ChartHappyIcon />;
-      case '4':
+      case 2:
+        return <ChartSmileIcon />;
+      case 3:
         return <ChartNeturalIcon />;
-      case '5':
+      case 4:
+        return <ChartSadIcon />;
+      case 5:
         return <ChartSadIcon />;
       default:
         return null;
@@ -44,11 +30,11 @@ export const RankingChart = ({
   };
 
   const DATA = [
-    { id: '1', height: '35.5%', color: 'bg-default' },
-    { id: '2', height: '69.6%', color: 'bg-main3' },
-    { id: '3', height: '86.5%', color: 'bg-primary' },
-    { id: '4', height: '52.5%', color: 'bg-main1' },
-    { id: '5', height: '18%', color: 'bg-default' },
+    { rank: 4, height: '35.5%', color: 'bg-default' },
+    { rank: 2, height: '69.6%', color: 'bg-main3' },
+    { rank: 1, height: '86.5%', color: 'bg-primary' },
+    { rank: 3, height: '52.5%', color: 'bg-main1' },
+    { rank: 5, height: '18%', color: 'bg-default' },
   ];
 
   return (
@@ -68,42 +54,46 @@ export const RankingChart = ({
       </motion.div>
 
       <div className='absolute inset-0 -bottom-[0.625rem] z-10 flex items-end justify-center gap-[0.25rem]'>
-        {DATA.map((item, index) => (
-          <div
-            key={item.id}
-            onClick={() => onSelect(item.id)}
-            className='flex h-full w-[3.75rem] flex-col items-center justify-end'
-          >
-            <motion.span
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 + index * 0.05 }}
-              className='text-body-sm text-secondary2 mb-[0.5rem] block w-[3.375rem] truncate text-center font-semibold'
-            >
-              {rankList[index]?.name || '-'}
-            </motion.span>
+        {DATA.map((item, index) => {
+          const matchedUser = users.find((u) => Number(u.rank) === item.rank);
 
-            <motion.div
-              initial={{ height: 0 }}
-              animate={{ height: item.height }}
-              transition={{
-                type: 'spring',
-                stiffness: 100,
-                damping: 12,
-                delay: index * 0.05,
-              }}
-              className={`${item.color} pointer-events-none flex w-full justify-center rounded-t-[6.25rem] pt-[0.75rem]`}
+          return (
+            <div
+              key={item.rank}
+              onClick={() => onSelect(String(item.rank))}
+              className='flex h-full w-[3.75rem] cursor-pointer flex-col items-center justify-end'
             >
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
+              <motion.span
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 + index * 0.05 }}
+                className='text-body-sm text-secondary2 mb-[0.5rem] block w-[3.375rem] truncate text-center font-semibold'
               >
-                {getFaceIcon(item.id)}
+                {matchedUser?.nickname || '-'}
+              </motion.span>
+
+              <motion.div
+                initial={{ height: 0 }}
+                animate={{ height: item.height }}
+                transition={{
+                  type: 'spring',
+                  stiffness: 100,
+                  damping: 12,
+                  delay: index * 0.05,
+                }}
+                className={`${item.color} pointer-events-none flex w-full justify-center rounded-t-[6.25rem] pt-[0.75rem]`}
+              >
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2 + index * 0.05 }}
+                >
+                  {getFaceIcon(item.rank)}
+                </motion.div>
               </motion.div>
-            </motion.div>
-          </div>
-        ))}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

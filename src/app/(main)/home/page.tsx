@@ -15,19 +15,38 @@ import { useState, useEffect } from 'react';
 import { motion, useMotionValue } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { MASTERS_PORTFOLIO } from '@/constants/mastersPortfolio';
+import { useProfileStore } from '@/store/useProfileStore';
+import { useGetMockInvestmentRankings } from '@/api/generated/endpoints/홈/홈';
+import Image from 'next/image';
 
 export const HomePage = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const [selectedRankId, setSelectedRankId] = useState('3');
+  const [selectedRankId, setSelectedRankId] = useState('1');
   const [selectedMaster, setSelectedMaster] = useState('all');
   const router = useRouter();
+
+  const { setName } = useProfileStore();
 
   const x = useMotionValue(0);
   const itemCount = 4;
   const itemWidth = 224;
   const gap = 10;
   const maxDrag = -(itemCount * (itemWidth + gap) - 350);
+
+  const { data: rankingsResponse } = useGetMockInvestmentRankings();
+  const rankingsData = rankingsResponse?.data;
+
+  const currentUsers =
+    selectedMaster === 'all'
+      ? rankingsData?.overall?.users || []
+      : rankingsData?.masters?.find(
+          (m) => m.masterId?.toString() === selectedMaster,
+        )?.users || [];
+
+  const selectedUser = currentUsers.find(
+    (u) => u.rank?.toString() === selectedRankId,
+  );
 
   useEffect(() => {
     const unsubscribe = x.on('change', (latest) => {
@@ -48,6 +67,25 @@ export const HomePage = () => {
     return () => unsubscribe();
   }, [x]);
 
+  const clearAuthData = () => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    setName('');
+  };
+
+  const handleLogoutComplete = () => {
+    clearAuthData();
+    setIsProfileModalOpen(false);
+    router.replace('/login');
+  };
+
+  const handleWithdrawComplete = () => {
+    alert('회원 탈퇴가 완료되었습니다.');
+    clearAuthData();
+    setIsProfileModalOpen(false);
+    router.replace('/login');
+  };
+
   return (
     <div className='relative flex h-screen flex-col overflow-x-hidden'>
       <motion.header
@@ -57,7 +95,9 @@ export const HomePage = () => {
         className='bg-background sticky top-0 z-15 rounded-b-[2.5rem] px-[1rem]'
       >
         <div className='flex h-[6.5rem] items-center justify-between py-[1.25rem]'>
-          <div className='bg-default ml-[0.25rem] h-[4rem] w-[4rem] rounded-full' />
+          <div className='flex pt-[0.75rem]'>
+            <Image src='/mainLogo.svg' alt='mainLogo' width={210} height={32} />
+          </div>
           <div className='mr-[0.75rem]'>
             <button
               type='button'
@@ -94,15 +134,17 @@ export const HomePage = () => {
           </motion.div>
           <RankProfile
             key={`${selectedMaster}-${selectedRankId}`}
-            selectedId={selectedRankId}
+            user={selectedUser}
             masterFilter={selectedMaster}
+            selectedId={selectedRankId}
           />
+
           <div className='flex w-full justify-center pt-[1.5rem]'>
             <MasterToggle
               selectedMaster={selectedMaster}
               onToggle={(masterId) => {
                 setSelectedMaster(masterId);
-                setSelectedRankId('3');
+                setSelectedRankId('1');
               }}
             />
           </div>
@@ -111,7 +153,7 @@ export const HomePage = () => {
               key={selectedMaster}
               selectedId={selectedRankId}
               onSelect={setSelectedRankId}
-              masterFilter={selectedMaster}
+              users={currentUsers}
             />
           </div>
         </section>
@@ -187,6 +229,8 @@ export const HomePage = () => {
         isOpen={isProfileModalOpen}
         onClose={() => setIsProfileModalOpen(false)}
         onRecommendClick={() => router.push('/portfolio/masterselect')}
+        onLogout={handleLogoutComplete}
+        onWithdraw={handleWithdrawComplete}
       />
     </div>
   );
