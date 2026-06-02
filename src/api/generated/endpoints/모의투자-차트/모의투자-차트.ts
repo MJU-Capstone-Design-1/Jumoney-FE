@@ -31,7 +31,7 @@ import { customInstance } from '../../../custom-instance';
 
 
 /**
- * period 기준 단일 차트 API입니다. ONE_DAY는 1분봉, ONE_WEEK는 30분봉, THREE_MONTHS/ONE_YEAR는 일봉, FIVE_YEARS는 주봉을 반환합니다. date 생략 시 직전 개장일 기준으로 보정합니다.
+ * period 기준 단일 차트 API입니다. ONE_DAY는 1분봉, ONE_WEEK는 30분봉, THREE_MONTHS/ONE_YEAR는 일봉, FIVE_YEARS는 주봉을 반환합니다. date 생략 시 직전 개장일 기준으로 보정합니다. 거장의 선택 백테스트 화면에서 최근 1년 차트를 함께 표시할 때는 period=ONE_YEAR, date=백테스트 응답의 toDate로 호출하세요. 정상 적재 상태에서는 백테스트 응답의 toDate가 직전 개장일입니다.
  * @summary 모의투자 종목 차트 조회
  */
 export const getChart = (

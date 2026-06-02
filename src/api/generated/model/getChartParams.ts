@@ -12,5 +12,8 @@ export type GetChartParams = {
  * 차트 기간
  */
 period: GetChartPeriod;
+/**
+ * 차트 기준일. 생략 시 직전 개장일 기준으로 보정됩니다. 백테스트 화면의 ONE_YEAR 차트는 백테스트 응답의 toDate를 전달하세요. 정상 적재 상태에서는 이 값이 직전 개장일입니다.
+ */
 date?: string;
 };

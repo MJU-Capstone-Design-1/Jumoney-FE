@@ -22,12 +22,18 @@ import type {
   ApiResponseKisSmokeResponse,
   ApiResponseListKisHtsConditionResultOutput,
   ApiResponseListKisHtsConditionTitleOutput,
+  ApiResponseMasterChoiceBacktestDataStatusResponse,
+  ApiResponseMasterChoiceBacktestDataSyncResponse,
   ApiResponseMinuteCandleSyncResponse,
   ApiResponseMockInvestmentChartCandleSyncResponse,
   ApiResponseMockInvestmentChartCandleSyncStatusResponse,
   ApiResponseStockIndicatorBatchStatusResponse
 } from '../../model';
 
+
+export const getSyncMasterChoiceBacktestFinancialsResponseMock = (overrideResponse: Partial<Extract<ApiResponseMasterChoiceBacktestDataSyncResponse, object>> = {}): ApiResponseMasterChoiceBacktestDataSyncResponse => ({success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), data: faker.helpers.arrayElement([{syncType: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), fromDate: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 10), undefined]), toDate: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 10), undefined]), totalCount: faker.helpers.arrayElement([faker.number.int(), undefined]), successCount: faker.helpers.arrayElement([faker.number.int(), undefined]), failureCount: faker.helpers.arrayElement([faker.number.int(), undefined]), items: faker.helpers.arrayElement([Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({stockCode: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), stockName: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), savedCount: faker.helpers.arrayElement([faker.number.int(), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined])}, undefined]), ...overrideResponse})
+
+export const getSyncMasterChoiceBacktestDailyIndicatorsResponseMock = (overrideResponse: Partial<Extract<ApiResponseMasterChoiceBacktestDataSyncResponse, object>> = {}): ApiResponseMasterChoiceBacktestDataSyncResponse => ({success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), data: faker.helpers.arrayElement([{syncType: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), fromDate: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 10), undefined]), toDate: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 10), undefined]), totalCount: faker.helpers.arrayElement([faker.number.int(), undefined]), successCount: faker.helpers.arrayElement([faker.number.int(), undefined]), failureCount: faker.helpers.arrayElement([faker.number.int(), undefined]), items: faker.helpers.arrayElement([Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({stockCode: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), stockName: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), savedCount: faker.helpers.arrayElement([faker.number.int(), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined])}, undefined]), ...overrideResponse})
 
 export const getSyncChartCandlesResponseMock = (overrideResponse: Partial<Extract<ApiResponseMockInvestmentChartCandleSyncResponse, object>> = {}): ApiResponseMockInvestmentChartCandleSyncResponse => ({success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), data: faker.helpers.arrayElement([{requestedStockCode: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), targetDate: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 10), undefined]), requestedAt: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 19) + 'Z', undefined]), requestedPeriods: faker.helpers.arrayElement([Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 10, max: 20}}))), undefined]), sourceSyncs: faker.helpers.arrayElement([Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({source: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), intervalType: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), fromDate: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 10), undefined]), toDate: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 10), undefined]), targetStockCount: faker.helpers.arrayElement([faker.number.int(), undefined]), kisRequestCount: faker.helpers.arrayElement([faker.number.int(), undefined]), successCount: faker.helpers.arrayElement([faker.number.int(), undefined]), failureCount: faker.helpers.arrayElement([faker.number.int(), undefined]), savedCandleCount: faker.helpers.arrayElement([faker.number.int(), undefined]), skippedRecentCandleCount: faker.helpers.arrayElement([faker.number.int(), undefined]), failures: faker.helpers.arrayElement([Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({stockCode: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), stockName: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), reason: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined])})), undefined])}, undefined]), ...overrideResponse})
 
@@ -47,6 +53,8 @@ export const getRunHtsConditionBatchResponseMock = (overrideResponse: Partial<Ex
 
 export const getSmokeResponseMock = (overrideResponse: Partial<Extract<ApiResponseKisSmokeResponse, object>> = {}): ApiResponseKisSmokeResponse => ({success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), data: faker.helpers.arrayElement([{stockCode: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), baseDate: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 10), undefined]), dividendFrom: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 10), undefined]), dividendTo: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 10), undefined]), totalCount: faker.helpers.arrayElement([faker.number.int(), undefined]), successCount: faker.helpers.arrayElement([faker.number.int(), undefined]), failureCount: faker.helpers.arrayElement([faker.number.int(), undefined]), results: faker.helpers.arrayElement([Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({step: faker.helpers.arrayElement([faker.number.int(), undefined]), name: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), trId: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), itemCount: faker.helpers.arrayElement([faker.number.int(), undefined]), sample: faker.helpers.arrayElement([{}, undefined]), errorMessage: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined])}, undefined]), ...overrideResponse})
 
+export const getGetMasterChoiceBacktestDataStatusResponseMock = (overrideResponse: Partial<Extract<ApiResponseMasterChoiceBacktestDataStatusResponse, object>> = {}): ApiResponseMasterChoiceBacktestDataStatusResponse => ({success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), data: faker.helpers.arrayElement([{stockCode: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), stockName: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), financialCount: faker.helpers.arrayElement([faker.number.int(), undefined]), latestSettlementYearMonth: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), latestFinancialAvailableDate: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 10), undefined]), dailyIndicatorCount: faker.helpers.arrayElement([faker.number.int(), undefined]), latestDailyIndicatorTradeDate: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 10), undefined])}, undefined]), ...overrideResponse})
+
 export const getHtsConditionTitlesResponseMock = (overrideResponse: Partial<Extract<ApiResponseListKisHtsConditionTitleOutput, object>> = {}): ApiResponseListKisHtsConditionTitleOutput => ({success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), data: faker.helpers.arrayElement([Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({user_id: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), seq: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), grp_nm: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), condition_nm: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined]), ...overrideResponse})
 
 export const getHtsConditionResultsResponseMock = (overrideResponse: Partial<Extract<ApiResponseListKisHtsConditionResultOutput, object>> = {}): ApiResponseListKisHtsConditionResultOutput => ({success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), data: faker.helpers.arrayElement([Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), name: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), price: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), chgrate: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), trade_amt: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), cttr: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), stotprice: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined]), ...overrideResponse})
@@ -55,6 +63,30 @@ export const getGetChartCandleSyncStatusResponseMock = (overrideResponse: Partia
 
 export const getGetStockIndicatorBatchStatusResponseMock = (overrideResponse: Partial<Extract<ApiResponseStockIndicatorBatchStatusResponse, object>> = {}): ApiResponseStockIndicatorBatchStatusResponse => ({success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), code: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), data: faker.helpers.arrayElement([{baseDate: faker.helpers.arrayElement([faker.date.past().toISOString().slice(0, 10), undefined]), baseTime: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), stockCount: faker.helpers.arrayElement([faker.number.int(), undefined]), indicatorCount: faker.helpers.arrayElement([faker.number.int(), undefined]), missingCount: faker.helpers.arrayElement([faker.number.int(), undefined]), invalidRequiredFieldCount: faker.helpers.arrayElement([faker.number.int(), undefined]), complete: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), missingStocks: faker.helpers.arrayElement([Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({stockId: faker.helpers.arrayElement([faker.number.int(), undefined]), stockCode: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), stockName: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined])}, undefined]), ...overrideResponse})
 
+
+export const getSyncMasterChoiceBacktestFinancialsMockHandler = (overrideResponse?: ApiResponseMasterChoiceBacktestDataSyncResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<ApiResponseMasterChoiceBacktestDataSyncResponse> | ApiResponseMasterChoiceBacktestDataSyncResponse), options?: RequestHandlerOptions) => {
+  return http.post('*/api/smoke/kis/master-choice/backtest/financials/sync', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+
+
+    return HttpResponse.json(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getSyncMasterChoiceBacktestFinancialsResponseMock(),
+      { status: 200
+      })
+  }, options)
+}
+
+export const getSyncMasterChoiceBacktestDailyIndicatorsMockHandler = (overrideResponse?: ApiResponseMasterChoiceBacktestDataSyncResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<ApiResponseMasterChoiceBacktestDataSyncResponse> | ApiResponseMasterChoiceBacktestDataSyncResponse), options?: RequestHandlerOptions) => {
+  return http.post('*/api/smoke/kis/master-choice/backtest/daily-indicators/sync', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
+
+
+    return HttpResponse.json(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getSyncMasterChoiceBacktestDailyIndicatorsResponseMock(),
+      { status: 200
+      })
+  }, options)
+}
 
 export const getSyncChartCandlesMockHandler = (overrideResponse?: ApiResponseMockInvestmentChartCandleSyncResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<ApiResponseMockInvestmentChartCandleSyncResponse> | ApiResponseMockInvestmentChartCandleSyncResponse), options?: RequestHandlerOptions) => {
   return http.post('*/api/smoke/kis/chart/sync', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
@@ -140,6 +172,18 @@ export const getSmokeMockHandler = (overrideResponse?: ApiResponseKisSmokeRespon
   }, options)
 }
 
+export const getGetMasterChoiceBacktestDataStatusMockHandler = (overrideResponse?: ApiResponseMasterChoiceBacktestDataStatusResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<ApiResponseMasterChoiceBacktestDataStatusResponse> | ApiResponseMasterChoiceBacktestDataStatusResponse), options?: RequestHandlerOptions) => {
+  return http.get('*/api/smoke/kis/master-choice/backtest/status', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
+
+
+    return HttpResponse.json(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getGetMasterChoiceBacktestDataStatusResponseMock(),
+      { status: 200
+      })
+  }, options)
+}
+
 export const getHtsConditionTitlesMockHandler = (overrideResponse?: ApiResponseListKisHtsConditionTitleOutput | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<ApiResponseListKisHtsConditionTitleOutput> | ApiResponseListKisHtsConditionTitleOutput), options?: RequestHandlerOptions) => {
   return http.get('*/api/smoke/kis/hts/titles', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
 
@@ -188,6 +232,8 @@ export const getGetStockIndicatorBatchStatusMockHandler = (overrideResponse?: Ap
   }, options)
 }
 export const getKisSmokeMock = () => [
+  getSyncMasterChoiceBacktestFinancialsMockHandler(),
+  getSyncMasterChoiceBacktestDailyIndicatorsMockHandler(),
   getSyncChartCandlesMockHandler(),
   getSyncChartCandlesInRangeMockHandler(),
   getSyncTodayMinuteCandlesMockHandler(),
@@ -195,6 +241,7 @@ export const getKisSmokeMock = () => [
   getRunStockIndicatorBatchMockHandler(),
   getRunHtsConditionBatchMockHandler(),
   getSmokeMockHandler(),
+  getGetMasterChoiceBacktestDataStatusMockHandler(),
   getHtsConditionTitlesMockHandler(),
   getHtsConditionResultsMockHandler(),
   getGetChartCandleSyncStatusMockHandler(),
