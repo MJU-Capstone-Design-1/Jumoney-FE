@@ -21,7 +21,7 @@ import { useGetMockInvestmentRankings } from '@/api/generated/endpoints/홈/홈'
 export const HomePage = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const [selectedRankId, setSelectedRankId] = useState('3');
+  const [selectedRankId, setSelectedRankId] = useState('1');
   const [selectedMaster, setSelectedMaster] = useState('all');
   const router = useRouter();
 
@@ -141,7 +141,7 @@ export const HomePage = () => {
               selectedMaster={selectedMaster}
               onToggle={(masterId) => {
                 setSelectedMaster(masterId);
-                setSelectedRankId('3');
+                setSelectedRankId('1');
               }}
             />
           </div>
