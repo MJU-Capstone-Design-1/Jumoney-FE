@@ -29,11 +29,14 @@ import type {
   ApiResponseKisSmokeResponse,
   ApiResponseListKisHtsConditionResultOutput,
   ApiResponseListKisHtsConditionTitleOutput,
+  ApiResponseMasterChoiceBacktestDataStatusResponse,
+  ApiResponseMasterChoiceBacktestDataSyncResponse,
   ApiResponseMinuteCandleSyncResponse,
   ApiResponseMockInvestmentChartCandleSyncResponse,
   ApiResponseMockInvestmentChartCandleSyncStatusResponse,
   ApiResponseStockIndicatorBatchStatusResponse,
   GetChartCandleSyncStatusParams,
+  GetMasterChoiceBacktestDataStatusParams,
   GetStockIndicatorBatchStatusParams,
   HtsConditionResultsParams,
   HtsConditionTitlesParams,
@@ -42,6 +45,8 @@ import type {
   SmokeParams,
   SyncChartCandlesInRangeParams,
   SyncChartCandlesParams,
+  SyncMasterChoiceBacktestDailyIndicatorsParams,
+  SyncMasterChoiceBacktestFinancialsParams,
   SyncMinuteCandlesByTradingDayParams,
   SyncTodayMinuteCandlesParams
 } from '../../model';
@@ -52,6 +57,132 @@ import { customInstance } from '../../../custom-instance';
 
 
 /**
+ * KIS 연간 재무비율/손익계산서를 조회해 master_choice_backtest_financials 테이블에 upsert합니다. stockCodes를 생략하면 등록된 전체 종목을 대상으로 실행합니다. 운영 환경에서는 adminKey가 필요합니다.
+ * @summary 거장의 선택 백테스트 재무 데이터 수동 동기화
+ */
+export const syncMasterChoiceBacktestFinancials = (
+    params?: SyncMasterChoiceBacktestFinancialsParams,
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<ApiResponseMasterChoiceBacktestDataSyncResponse>(
+      {url: `/api/smoke/kis/master-choice/backtest/financials/sync`, method: 'POST',
+        params, signal
+    },
+      );
+    }
+
+
+
+export const getSyncMasterChoiceBacktestFinancialsMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof syncMasterChoiceBacktestFinancials>>, TError,{params?: SyncMasterChoiceBacktestFinancialsParams}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof syncMasterChoiceBacktestFinancials>>, TError,{params?: SyncMasterChoiceBacktestFinancialsParams}, TContext> => {
+
+const mutationKey = ['syncMasterChoiceBacktestFinancials'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof syncMasterChoiceBacktestFinancials>>, {params?: SyncMasterChoiceBacktestFinancialsParams}> = (props) => {
+          const {params} = props ?? {};
+
+          return  syncMasterChoiceBacktestFinancials(params,)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SyncMasterChoiceBacktestFinancialsMutationResult = NonNullable<Awaited<ReturnType<typeof syncMasterChoiceBacktestFinancials>>>
+
+    export type SyncMasterChoiceBacktestFinancialsMutationError = unknown
+
+    /**
+ * @summary 거장의 선택 백테스트 재무 데이터 수동 동기화
+ */
+export const useSyncMasterChoiceBacktestFinancials = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof syncMasterChoiceBacktestFinancials>>, TError,{params?: SyncMasterChoiceBacktestFinancialsParams}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof syncMasterChoiceBacktestFinancials>>,
+        TError,
+        {params?: SyncMasterChoiceBacktestFinancialsParams},
+        TContext
+      > => {
+      return useMutation(getSyncMasterChoiceBacktestFinancialsMutationOptions(options), queryClient);
+    }
+    /**
+ * KIS 신용잔고 일별추이와 종목별 투자자매매동향 일별 API를 조회해 master_choice_backtest_daily_indicators 테이블에 upsert합니다. stockCodes를 생략하면 등록된 전체 종목을 대상으로 실행합니다. 운영 환경에서는 adminKey가 필요합니다.
+ * @summary 거장의 선택 백테스트 일별 보조지표 수동 동기화
+ */
+export const syncMasterChoiceBacktestDailyIndicators = (
+    params?: SyncMasterChoiceBacktestDailyIndicatorsParams,
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<ApiResponseMasterChoiceBacktestDataSyncResponse>(
+      {url: `/api/smoke/kis/master-choice/backtest/daily-indicators/sync`, method: 'POST',
+        params, signal
+    },
+      );
+    }
+
+
+
+export const getSyncMasterChoiceBacktestDailyIndicatorsMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof syncMasterChoiceBacktestDailyIndicators>>, TError,{params?: SyncMasterChoiceBacktestDailyIndicatorsParams}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof syncMasterChoiceBacktestDailyIndicators>>, TError,{params?: SyncMasterChoiceBacktestDailyIndicatorsParams}, TContext> => {
+
+const mutationKey = ['syncMasterChoiceBacktestDailyIndicators'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof syncMasterChoiceBacktestDailyIndicators>>, {params?: SyncMasterChoiceBacktestDailyIndicatorsParams}> = (props) => {
+          const {params} = props ?? {};
+
+          return  syncMasterChoiceBacktestDailyIndicators(params,)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SyncMasterChoiceBacktestDailyIndicatorsMutationResult = NonNullable<Awaited<ReturnType<typeof syncMasterChoiceBacktestDailyIndicators>>>
+
+    export type SyncMasterChoiceBacktestDailyIndicatorsMutationError = unknown
+
+    /**
+ * @summary 거장의 선택 백테스트 일별 보조지표 수동 동기화
+ */
+export const useSyncMasterChoiceBacktestDailyIndicators = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof syncMasterChoiceBacktestDailyIndicators>>, TError,{params?: SyncMasterChoiceBacktestDailyIndicatorsParams}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof syncMasterChoiceBacktestDailyIndicators>>,
+        TError,
+        {params?: SyncMasterChoiceBacktestDailyIndicatorsParams},
+        TContext
+      > => {
+      return useMutation(getSyncMasterChoiceBacktestDailyIndicatorsMutationOptions(options), queryClient);
+    }
+    /**
  * 차트 period 기준으로 필요한 캔들을 동기화합니다. period 생략 시 ONE_DAY, ONE_WEEK, THREE_MONTHS, ONE_YEAR, FIVE_YEARS를 오늘 또는 직전 개장일 기준으로 모두 채웁니다. ONE_DAY/ONE_WEEK는 분봉 동기화와 30분봉 집계를 사용하고, THREE_MONTHS/ONE_YEAR는 DAY, FIVE_YEARS는 WEEK 기간봉을 사용합니다. stockCode를 생략하면 등록된 전체 종목을 대상으로 실행합니다. 운영 환경에서는 adminKey가 필요합니다.
  * @summary 차트 기간 기준 수동 동기화
  */
@@ -512,6 +643,100 @@ export function useSmoke<TData = Awaited<ReturnType<typeof smoke>>, TError = unk
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getSmokeQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+/**
+ * 특정 종목의 백테스트 재무/일별 보조지표 적재 건수와 최신 기준일을 확인합니다. 운영 환경에서는 adminKey가 필요합니다.
+ * @summary 거장의 선택 백테스트 데이터 적재 상태 확인
+ */
+export const getMasterChoiceBacktestDataStatus = (
+    params: GetMasterChoiceBacktestDataStatusParams,
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<ApiResponseMasterChoiceBacktestDataStatusResponse>(
+      {url: `/api/smoke/kis/master-choice/backtest/status`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+
+
+
+
+export const getGetMasterChoiceBacktestDataStatusQueryKey = (params?: GetMasterChoiceBacktestDataStatusParams,) => {
+    return [
+    `/api/smoke/kis/master-choice/backtest/status`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGetMasterChoiceBacktestDataStatusQueryOptions = <TData = Awaited<ReturnType<typeof getMasterChoiceBacktestDataStatus>>, TError = unknown>(params: GetMasterChoiceBacktestDataStatusParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMasterChoiceBacktestDataStatus>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetMasterChoiceBacktestDataStatusQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMasterChoiceBacktestDataStatus>>> = ({ signal }) => getMasterChoiceBacktestDataStatus(params, signal);
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getMasterChoiceBacktestDataStatus>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetMasterChoiceBacktestDataStatusQueryResult = NonNullable<Awaited<ReturnType<typeof getMasterChoiceBacktestDataStatus>>>
+export type GetMasterChoiceBacktestDataStatusQueryError = unknown
+
+
+export function useGetMasterChoiceBacktestDataStatus<TData = Awaited<ReturnType<typeof getMasterChoiceBacktestDataStatus>>, TError = unknown>(
+ params: GetMasterChoiceBacktestDataStatusParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMasterChoiceBacktestDataStatus>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMasterChoiceBacktestDataStatus>>,
+          TError,
+          Awaited<ReturnType<typeof getMasterChoiceBacktestDataStatus>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMasterChoiceBacktestDataStatus<TData = Awaited<ReturnType<typeof getMasterChoiceBacktestDataStatus>>, TError = unknown>(
+ params: GetMasterChoiceBacktestDataStatusParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMasterChoiceBacktestDataStatus>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getMasterChoiceBacktestDataStatus>>,
+          TError,
+          Awaited<ReturnType<typeof getMasterChoiceBacktestDataStatus>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetMasterChoiceBacktestDataStatus<TData = Awaited<ReturnType<typeof getMasterChoiceBacktestDataStatus>>, TError = unknown>(
+ params: GetMasterChoiceBacktestDataStatusParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMasterChoiceBacktestDataStatus>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 거장의 선택 백테스트 데이터 적재 상태 확인
+ */
+
+export function useGetMasterChoiceBacktestDataStatus<TData = Awaited<ReturnType<typeof getMasterChoiceBacktestDataStatus>>, TError = unknown>(
+ params: GetMasterChoiceBacktestDataStatusParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMasterChoiceBacktestDataStatus>>, TError, TData>>, }
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetMasterChoiceBacktestDataStatusQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

@@ -25,6 +25,7 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  ApiResponseMasterChoiceBacktestResponse,
   ApiResponseMasterChoiceResponse,
   ApiResponseMasterResponse,
   MasterChoiceRequest
@@ -99,6 +100,72 @@ export const useRecommendMaster = <TError = unknown,
         TContext
       > => {
       return useMutation(getRecommendMasterMutationOptions(options), queryClient);
+    }
+    /**
+ * 선택 종목의 직전 개장일까지 최근 1년 거래일에 현재 거장의 선택 추천 조건을 적용해 날짜별 조건 만족 여부를 조회합니다. 일별 보조지표가 필요한 조건은 적재된 최신 거래일까지만 조회될 수 있습니다. 프론트에서 차트를 함께 표시할 때는 모의투자 종목 차트 API를 period=ONE_YEAR, date=응답의 toDate로 호출하세요. 정상 적재 상태에서는 응답의 toDate가 직전 개장일입니다.
+ * @summary 거장의 선택 백테스팅 검증
+ */
+export const backtestMaster = (
+    masterId: number,
+    stockCode: string,
+    masterChoiceRequest: MasterChoiceRequest,
+ signal?: AbortSignal
+) => {
+
+
+      return customInstance<ApiResponseMasterChoiceBacktestResponse>(
+      {url: `/api/master-choice/masters/${masterId}/backtests/stocks/${stockCode}`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: masterChoiceRequest, signal
+    },
+      );
+    }
+
+
+
+export const getBacktestMasterMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof backtestMaster>>, TError,{masterId: number;stockCode: string;data: MasterChoiceRequest}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof backtestMaster>>, TError,{masterId: number;stockCode: string;data: MasterChoiceRequest}, TContext> => {
+
+const mutationKey = ['backtestMaster'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof backtestMaster>>, {masterId: number;stockCode: string;data: MasterChoiceRequest}> = (props) => {
+          const {masterId,stockCode,data} = props ?? {};
+
+          return  backtestMaster(masterId,stockCode,data,)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type BacktestMasterMutationResult = NonNullable<Awaited<ReturnType<typeof backtestMaster>>>
+    export type BacktestMasterMutationBody = MasterChoiceRequest
+    export type BacktestMasterMutationError = unknown
+
+    /**
+ * @summary 거장의 선택 백테스팅 검증
+ */
+export const useBacktestMaster = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof backtestMaster>>, TError,{masterId: number;stockCode: string;data: MasterChoiceRequest}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof backtestMaster>>,
+        TError,
+        {masterId: number;stockCode: string;data: MasterChoiceRequest},
+        TContext
+      > => {
+      return useMutation(getBacktestMasterMutationOptions(options), queryClient);
     }
     /**
  * 선택한 거장의 설명과 추천 조건 버튼 목록을 조회합니다.
