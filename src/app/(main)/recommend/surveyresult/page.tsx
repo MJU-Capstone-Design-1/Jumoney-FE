@@ -95,18 +95,6 @@ const Page = () => {
                 });
               }
 
-              if (stock.goodSectorTags) {
-                stock.goodSectorTags.forEach((sect) => {
-                  if (sect && sect in labelMappings) {
-                    mappedTags.push(
-                      labelMappings[sect as keyof typeof labelMappings],
-                    );
-                  } else if (sect) {
-                    mappedTags.push(sect);
-                  }
-                });
-              }
-
               // 2. 정렬 지표 키 매핑 처리
               const mappedSortMetricKey =
                 stock.sortMetricKey && stock.sortMetricKey in labelMappings
