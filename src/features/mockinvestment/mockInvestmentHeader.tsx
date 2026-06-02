@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import BackButtonField from '@/components/backButtonField';
 import { MyCompanyToggle } from './myCompanyToggle';
-import { CompanyCard } from './companyCard';
 import { MockInvestmentAccountResponse } from '@/api/generated/model';
 import { useGetPortfolios } from '@/api/generated/endpoints/모의투자/모의투자';
 import { ClockIcon } from '@/components/icons/clockIcon';
