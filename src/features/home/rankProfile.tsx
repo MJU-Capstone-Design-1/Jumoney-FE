@@ -2,6 +2,14 @@
 
 import { RankingUser } from '@/api/generated/model';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
+
+const MASTER_STATIC_INFO: Record<number, { image: string; bgColor: string }> = {
+  1: { image: '/images/warrenBuffetImage.svg', bgColor: 'bg-main1' },
+  2: { image: '/images/peterLynchImage.svg', bgColor: 'bg-main2' },
+  3: { image: '/images/rayDalioImage.svg', bgColor: 'bg-main3' },
+  4: { image: '/images/williamOneilImage.svg', bgColor: 'bg-main4' },
+};
 
 interface RankProfileProps {
   user?: RankingUser;
@@ -32,6 +40,9 @@ export const RankProfile = ({
 
   const stocks = user?.representativeStocks || [];
 
+  const masterId = user?.masterId;
+  const masterData = masterId ? MASTER_STATIC_INFO[masterId] : null;
+
   return (
     <motion.div
       key={`${masterFilter}-${selectedId}`}
@@ -41,7 +52,21 @@ export const RankProfile = ({
       className='bg-secondary1 shadow-card-shadow flex h-[12.25rem] w-full items-start justify-between rounded-[1.5rem] p-[1rem]'
     >
       <div className='flex flex-col gap-[0.25rem]'>
-        <div className='bg-default h-[4.5rem] w-[4.5rem] rounded-full p-[0.375rem]' />
+        {masterData?.image ? (
+          <div
+            className={`flex h-[4.5rem] w-[4.5rem] flex-shrink-0 items-center justify-center overflow-hidden rounded-full ${masterData.bgColor}`}
+          >
+            <Image
+              src={masterData.image}
+              alt={name}
+              width={72}
+              height={72}
+              className='h-full w-full object-cover'
+            />
+          </div>
+        ) : (
+          <div className='bg-default h-[4.5rem] w-[4.5rem] rounded-full p-[0.375rem]' />
+        )}
         <div className='text-body-xl text-secondary2 ml-[0.375rem] w-[7rem] truncate pt-[0.9375rem] leading-[120%] font-extrabold'>
           {name}
         </div>
