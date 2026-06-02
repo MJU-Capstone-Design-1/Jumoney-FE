@@ -79,13 +79,14 @@ export default function MasterRecommendPage({
 
   const [selectedOptionIds, setSelectedOptionIds] = useState<number[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isAnimationTrigger, setIsAnimationTrigger] = useState(true);
   const [isSectorBottomSheetOpen, setIsSectorBottomSheetOpen] = useState(false);
   const [selectedSectorTypes, setSelectedSectorTypes] =
     useState<MasterRecommendationSectorTypes>([]);
   const [activeSectorOptionId, setActiveSectorOptionId] = useState<
     number | null
   >(null);
+  const criteriaPanelRef = React.useRef<HTMLDivElement | null>(null);
+  const shouldScrollToResultsRef = React.useRef(false);
 
   const submittedOptionIds =
     recommendMutation.variables?.data.selectedOptionIds;
@@ -156,7 +157,7 @@ export default function MasterRecommendPage({
   };
 
   const handleResultSubmit = () => {
-    setIsAnimationTrigger(false);
+    shouldScrollToResultsRef.current = true;
 
     const requestData: MasterChoiceRequest = {
       selectedOptionIds,
@@ -172,16 +173,35 @@ export default function MasterRecommendPage({
         data: requestData,
       },
       {
-        onSuccess: () => {
-          setTimeout(() => setIsAnimationTrigger(true), 40);
-        },
         onError: (error) => {
           console.error('추천 종목 조회 실패:', error);
-          setTimeout(() => setIsAnimationTrigger(true), 40);
         },
       },
     );
   };
+
+  React.useEffect(() => {
+    if (
+      !shouldScrollToResultsRef.current ||
+      submittedOptionIds === undefined ||
+      recommendMutation.isPending
+    ) {
+      return;
+    }
+
+    shouldScrollToResultsRef.current = false;
+
+    const firstFrame = window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        window.scrollTo({
+          top: document.documentElement.scrollHeight,
+          behavior: 'smooth',
+        });
+      });
+    });
+
+    return () => window.cancelAnimationFrame(firstFrame);
+  }, [recommendMutation.isPending, submittedOptionIds]);
 
   const isOptionIdsUnchanged =
     submittedOptionIds !== undefined &&
@@ -267,77 +287,85 @@ export default function MasterRecommendPage({
           </p>
         </motion.div>
 
-        {/* Criteria Tags */}
-        <motion.div
-          variants={itemVariants}
-          className='mt-[1.25rem] flex flex-wrap justify-center gap-[0.5rem]'
+        <div
+          ref={criteriaPanelRef}
+          className={cn(
+            'bg-background sticky top-0 z-20 mt-[1.25rem] flex w-full flex-col',
+            submittedOptionIds !== undefined ? 'h-[100dvh]' : '',
+          )}
         >
-          {masterData?.options?.map((option) => {
-            const optionId = option.optionId ?? 0;
-            const isSelected = selectedOptionIds.includes(optionId);
-
-            const rawContent = option.content || '';
-            const displayContent =
-              masterSortMetricLabels[rawContent] ||
-              LOGIC_CODE_TO_KOREAN[rawContent] ||
-              rawContent;
-
-            return (
-              <motion.button
-                whileTap={{ scale: 0.9, rotate: isSelected ? -2 : 2 }}
-                key={optionId}
-                onClick={() => toggleCriteria(option)}
-                className={cn(
-                  'text-body-md rounded-full border px-[1.125rem] py-[0.5625rem] font-semibold transition-colors duration-200',
-                  isSelected
-                    ? cn(
-                        masterThemeInfo.theme,
-                        'text-secondary1 border-transparent',
-                      )
-                    : 'text-secondary2 border-secondary2 bg-transparent',
-                )}
-              >
-                {displayContent}
-              </motion.button>
-            );
-          })}
-
-          <motion.button
-            whileTap={{ scale: 0.9, rotate: -2 }}
-            onClick={() => setIsModalOpen(true)}
-            className='text-body-md bg-sub4 text-secondary1 rounded-full px-[1.125rem] py-[0.5625rem] font-semibold'
+          {/* Criteria Tags */}
+          <motion.div
+            variants={itemVariants}
+            className='flex flex-wrap justify-center gap-[0.5rem] px-4 py-[1rem]'
           >
-            조건 설명
-          </motion.button>
-        </motion.div>
+            {masterData?.options?.map((option) => {
+              const optionId = option.optionId ?? 0;
+              const isSelected = selectedOptionIds.includes(optionId);
 
-        {/* Stock Cards */}
-        {submittedOptionIds !== undefined && isAnimationTrigger && (
-          <div className='mt-[1rem] flex w-full flex-col px-4'>
-            <motion.div
-              variants={itemVariants}
-              initial='hidden'
-              animate='show'
-              key={`${submittedOptionIds.join(',')}-${submittedSectorTypes?.join(',') ?? ''}`}
-              className='flex h-[calc(100vh-29rem)] [scrollbar-width:none] flex-col gap-[1rem] overflow-y-auto overscroll-contain pb-[6rem] [&::-webkit-scrollbar]:hidden'
+              const rawContent = option.content || '';
+              const displayContent =
+                masterSortMetricLabels[rawContent] ||
+                LOGIC_CODE_TO_KOREAN[rawContent] ||
+                rawContent;
+
+              return (
+                <motion.button
+                  whileTap={{ scale: 0.9, rotate: isSelected ? -2 : 2 }}
+                  key={optionId}
+                  onClick={() => toggleCriteria(option)}
+                  className={cn(
+                    'text-body-md rounded-full border px-[1.125rem] py-[0.5625rem] font-semibold transition-colors duration-200',
+                    isSelected
+                      ? cn(
+                          masterThemeInfo.theme,
+                          'text-secondary1 border-transparent',
+                        )
+                      : 'text-secondary2 border-secondary2 bg-transparent',
+                  )}
+                >
+                  {displayContent}
+                </motion.button>
+              );
+            })}
+
+            <motion.button
+              whileTap={{ scale: 0.9, rotate: -2 }}
+              onClick={() => setIsModalOpen(true)}
+              className='text-body-md bg-sub4 text-secondary1 rounded-full px-[1.125rem] py-[0.5625rem] font-semibold'
             >
-              {recommendedStocks.map((stock, i) => (
-                <RecommendResultCard
-                  key={stock.stockId || i}
-                  data={stock}
-                  selectedOptionIds={submittedOptionIds ?? []}
-                  selectedSectorTypes={submittedSectorTypes ?? []}
-                />
-              ))}
+              조건 설명
+            </motion.button>
+          </motion.div>
 
-              {hasSearched && recommendedStocks.length === 0 && (
-                <div className='text-body-lg text-text-sub py-8 text-center font-extrabold'>
-                  선택하신 조건에 매칭되는 종목이 없어요.
-                </div>
-              )}
-            </motion.div>
-          </div>
-        )}
+          {/* Stock Cards */}
+          {submittedOptionIds !== undefined && (
+            <div className='flex min-h-0 w-full flex-1 flex-col px-4'>
+              <motion.div
+                variants={itemVariants}
+                initial='hidden'
+                animate='show'
+                key={`${submittedOptionIds.join(',')}-${submittedSectorTypes?.join(',') ?? ''}`}
+                className='flex min-h-0 flex-1 [scrollbar-width:none] flex-col gap-[1rem] overflow-y-auto pb-[7rem] [&::-webkit-scrollbar]:hidden'
+              >
+                {recommendedStocks.map((stock, i) => (
+                  <RecommendResultCard
+                    key={stock.stockId || i}
+                    data={stock}
+                    selectedOptionIds={submittedOptionIds ?? []}
+                    selectedSectorTypes={submittedSectorTypes ?? []}
+                  />
+                ))}
+
+                {hasSearched && recommendedStocks.length === 0 && (
+                  <div className='text-body-lg text-text-sub py-8 text-center font-extrabold'>
+                    선택하신 조건에 매칭되는 종목이 없어요.
+                  </div>
+                )}
+              </motion.div>
+            </div>
+          )}
+        </div>
 
         <BottomButton
           label={recommendMutation.isPending ? '조회 중...' : '결과 확인'}
