@@ -36,41 +36,6 @@ const SECTOR_ID_MAP: Record<FieldType, number> = {
   staples: 10,
 };
 
-const DEFAULT_STOCKS = [
-  {
-    stockId: 1,
-    stockCode: '005930',
-    stockName: '삼성전자',
-    currentPrice: 317000,
-    changeRate: 5.84,
-    tags: ['IT_SEMICONDUCTOR'],
-  },
-  {
-    stockId: 2,
-    stockCode: '000660',
-    stockName: 'SK하이닉스',
-    currentPrice: 2333000,
-    changeRate: 1.92,
-    tags: ['IT_SEMICONDUCTOR'],
-  },
-  {
-    stockId: 3,
-    stockCode: '005380',
-    stockName: '현대차',
-    currentPrice: 723000,
-    changeRate: 6.79,
-    tags: ['AUTOMOBILE_TRANSPORT', 'MARKET_LEADER'],
-  },
-  {
-    stockId: 4,
-    stockCode: '373220',
-    stockName: 'LG에너지솔루션',
-    currentPrice: 458000,
-    changeRate: 3.62,
-    tags: ['AUTOMOBILE_TRANSPORT'],
-  },
-];
-
 const SORT_OPTIONS = [
   { value: 'NAME_ASC', label: '이름순' },
   { value: 'PRICE_DESC', label: '주가 높은 순' },
@@ -106,7 +71,7 @@ const MockInvestmentPage = () => {
   const [inputValue, setInputValue] = useState('');
   const [searchKeyword, setSearchKeyword] = useState('');
 
-  const [selectedSector, setSelectedSector] = useState<FieldType | null>(null);
+  const [selectedSector, setSelectedSector] = useState<FieldType | null>('it');
 
   const [sortOption, setSortOption] = useState<SearchStocksSort>(
     'NAME_ASC' as SearchStocksSort,
@@ -130,9 +95,9 @@ const MockInvestmentPage = () => {
   );
 
   const { data: sectorResponse, isLoading: isSectorLoading } =
-    useGetSectorStocks(selectedSector ? SECTOR_ID_MAP[selectedSector] : 0, {
+    useGetSectorStocks(SECTOR_ID_MAP[selectedSector || 'it'], {
       query: {
-        enabled: searchKeyword.trim().length === 0 && selectedSector !== null,
+        enabled: searchKeyword.trim().length === 0,
         placeholderData: keepPreviousData,
       },
     });
@@ -229,7 +194,7 @@ const MockInvestmentPage = () => {
                     }`}
                     onClick={() => {
                       setSelectedSector((prev) =>
-                        prev === field ? null : field,
+                        prev === field ? prev : field,
                       );
                       setInputValue('');
                       setSearchKeyword('');
@@ -280,7 +245,7 @@ const MockInvestmentPage = () => {
                     />
                   </motion.div>
                 ))
-              ) : selectedSector ? (
+              ) : (
                 <>
                   {isSectorLoading ? (
                     <div className='text-text-sub text-body-md py-4 text-center font-bold'>
@@ -288,12 +253,12 @@ const MockInvestmentPage = () => {
                     </div>
                   ) : sectorStocks.length === 0 ? (
                     <div className='text-text-sub text-body-md py-4 text-center font-bold'>
-                      해당 섹터에 종목이 없습니다.
+                      표시할 종목이 없습니다.
                     </div>
                   ) : (
                     sectorStocks.map((stock, index) => (
                       <motion.div
-                        key={`${selectedSector}-${stock.stockId}`}
+                        key={`${selectedSector || 'default'}-${stock.stockId}`}
                         className='w-full'
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -315,32 +280,6 @@ const MockInvestmentPage = () => {
                       </motion.div>
                     ))
                   )}
-                </>
-              ) : (
-                <>
-                  {DEFAULT_STOCKS.map((stock, index) => (
-                    <motion.div
-                      key={stock.stockId}
-                      className='w-full'
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{
-                        type: 'spring',
-                        stiffness: 260,
-                        damping: 20,
-                        delay: 0.8 + index * 0.1,
-                      }}
-                    >
-                      <CompanyCard
-                        stockId={stock.stockId}
-                        stockCode={stock.stockCode}
-                        stockName={stock.stockName}
-                        currentPrice={stock.currentPrice}
-                        changeRate={stock.changeRate}
-                        tags={stock.tags}
-                      />
-                    </motion.div>
-                  ))}
                 </>
               )}
             </div>

@@ -15,6 +15,7 @@ interface CompanyCardProps {
   currentPrice?: number;
   changeRate?: number;
   tags?: string[];
+  quantity?: number;
 }
 
 export const CompanyCard = ({
@@ -25,6 +26,7 @@ export const CompanyCard = ({
   currentPrice = 0,
   changeRate = 0,
   tags = [],
+  quantity,
 }: CompanyCardProps) => {
   const router = useRouter();
 
@@ -79,7 +81,16 @@ export const CompanyCard = ({
         </div>
         <div className='flex min-w-0 flex-col gap-[0.125rem]'>
           <div className='flex w-full items-center gap-[0.75rem]'>
-            <div className='text-label-sm truncate font-bold'>{stockName}</div>
+            <div className='flex items-center gap-[0.25rem]'>
+              <div className='text-label-sm truncate font-bold'>
+                {stockName}
+              </div>
+              {quantity !== undefined && (
+                <div className='text-label-sm font-bold'>
+                  • {quantity.toLocaleString()}주
+                </div>
+              )}
+            </div>
             {showBadge && tags.length > 0 && (
               <div className='text-main2 bg-default text-body-sm mb-[0.25rem] flex h-[1.625rem] shrink-0 items-center justify-center rounded-[6.25rem] px-[0.625rem] font-bold whitespace-nowrap'>
                 #{displayTag}

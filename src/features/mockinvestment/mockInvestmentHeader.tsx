@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import BackButtonField from '@/components/backButtonField';
 import { MyCompanyToggle } from './myCompanyToggle';
@@ -9,6 +9,7 @@ import { MockInvestmentAccountResponse } from '@/api/generated/model';
 import { useGetPortfolios } from '@/api/generated/endpoints/모의투자/모의투자';
 import { ClockIcon } from '@/components/icons/clockIcon';
 import HistoryBottomSheet from './historyBottomSheet';
+import { RealtimeCandle } from '@/hooks/useStockStream';
 
 interface MockInvestmentHeaderProps {
   isExpanded?: boolean;
@@ -28,7 +29,67 @@ const MockInvestmentHeader = ({
 
   const { data: portfolioResponse, isLoading: isPortfolioLoading } =
     useGetPortfolios();
-  const portfolios = portfolioResponse?.data?.portfolios || [];
+  const portfolios = useMemo(
+    () => portfolioResponse?.data?.portfolios || [],
+    [portfolioResponse?.data?.portfolios],
+  );
+  const portfolioStockCodes = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          portfolios
+            .map((portfolio) => portfolio.stockCode)
+            .filter((stockCode): stockCode is string => Boolean(stockCode)),
+        ),
+      ),
+    [portfolios],
+  );
+  const portfolioStockCodesKey = portfolioStockCodes.join(',');
+  const [realtimePrices, setRealtimePrices] = useState<Record<string, number>>(
+    {},
+  );
+
+  useEffect(() => {
+    const stockCodes = portfolioStockCodesKey
+      ? portfolioStockCodesKey.split(',')
+      : [];
+
+    if (stockCodes.length === 0) return;
+
+    const eventSources = stockCodes.map((stockCode) => {
+      const eventSource = new EventSource(
+        `/api/stream/${encodeURIComponent(stockCode)}`,
+      );
+
+      eventSource.onmessage = (event) => {
+        try {
+          const candle: RealtimeCandle = JSON.parse(event.data);
+
+          if (candle.code !== stockCode) return;
+
+          setRealtimePrices((prev) => {
+            if (prev[stockCode] === candle.close) return prev;
+            return {
+              ...prev,
+              [stockCode]: candle.close,
+            };
+          });
+        } catch (err) {
+          console.error('내 투자 SSE 데이터 파싱 에러', err);
+        }
+      };
+
+      eventSource.onerror = () => {
+        console.error(`내 투자 SSE 연결이 끊어졌습니다. (${stockCode})`);
+      };
+
+      return eventSource;
+    });
+
+    return () => {
+      eventSources.forEach((eventSource) => eventSource.close());
+    };
+  }, [portfolioStockCodesKey]);
 
   const handlePressedChange = (pressed: boolean) => {
     if (onExpandedChange) {
@@ -39,8 +100,22 @@ const MockInvestmentHeader = ({
   };
 
   const totalPurchaseAmount = accountData?.totalPurchaseAmount ?? 0;
-  const totalAsset = accountData?.totalAsset ?? 0;
-  const totalProfitRate = accountData?.totalProfitRate ?? 0;
+  const realtimePortfolioValue = portfolios.reduce((sum, portfolio) => {
+    const stockCode = portfolio.stockCode ?? '';
+    const price = realtimePrices[stockCode] ?? portfolio.currentPrice ?? 0;
+    const quantity = portfolio.quantity ?? 0;
+
+    return sum + price * quantity;
+  }, 0);
+  const hasRealtimePortfolioValue = portfolios.length > 0;
+  const totalAsset = hasRealtimePortfolioValue
+    ? (accountData?.cashBalance ?? 0) + realtimePortfolioValue
+    : (accountData?.totalAsset ?? 0);
+  const totalProfitRate =
+    totalPurchaseAmount > 0
+      ? ((realtimePortfolioValue - totalPurchaseAmount) / totalPurchaseAmount) *
+        100
+      : (accountData?.totalProfitRate ?? 0);
 
   const formattedTotalPurchaseAmount = totalPurchaseAmount.toLocaleString();
   const formattedTotalAsset = totalAsset.toLocaleString();
@@ -162,6 +237,7 @@ const MockInvestmentHeader = ({
                     stockName={portfolio.stockName}
                     currentPrice={portfolio.currentPrice}
                     changeRate={portfolio.changeRate}
+                    quantity={portfolio.quantity}
                   />
                 ))
               )}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   createChart,
   UTCTimestamp,
@@ -8,12 +8,21 @@ import {
   IChartApi,
   ISeriesApi,
   LineData,
+  TickMarkType,
+  Time,
 } from 'lightweight-charts';
 
 import { useGetChart } from '@/api/generated/endpoints/모의투자-차트/모의투자-차트';
 import { PeriodValue } from './periodToggle';
 import { MockInvestmentChartResponsePeriod } from '@/api/generated/model';
 import { RealtimeCandle } from '@/hooks/useStockStream';
+import {
+  formatChartTickMark,
+  getXAxisLabels,
+  positionXAxisLabels,
+  PositionedXAxisLabel,
+  XAxisLabel,
+} from './chartXAxis';
 
 interface CompanyLineChartProps {
   stockCode: string;
@@ -43,10 +52,18 @@ export default function CompanyLineChart({
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<'Line'> | null>(null);
   const periodRef = useRef(period);
+  const xAxisLabelsRef = useRef<XAxisLabel[]>([]);
+  const [xAxisLabels, setXAxisLabels] = useState<PositionedXAxisLabel[]>([]);
 
   useEffect(() => {
     periodRef.current = period;
   }, [period]);
+
+  const updateXAxisLabelPositions = () => {
+    setXAxisLabels(
+      positionXAxisLabels(chartRef.current, xAxisLabelsRef.current),
+    );
+  };
 
   const apiPeriod = mapPeriodToApi(period);
   const { data: chartResponse, isLoading } = useGetChart(stockCode, {
@@ -96,18 +113,8 @@ export default function CompanyLineChart({
           fixRightEdge: true,
           timeVisible: true,
           secondsVisible: false,
-          tickMarkFormatter: (time: UTCTimestamp, tickMarkType: number) => {
-            const d = new Date(time * 1000);
-
-            const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
-            const dd = String(d.getUTCDate()).padStart(2, '0');
-            const hh = String(d.getUTCHours()).padStart(2, '0');
-            const min = String(d.getUTCMinutes()).padStart(2, '0');
-
-            if (tickMarkType === 3) {
-              return `${hh}:${min}`;
-            }
-            return `${mm}.${dd}`;
+          tickMarkFormatter: (time: Time, tickMarkType: TickMarkType) => {
+            return formatChartTickMark(time, tickMarkType, periodRef.current);
           },
         },
         handleScroll: {
@@ -155,11 +162,20 @@ export default function CompanyLineChart({
         chartRef.current.applyOptions({
           width: chartContainerRef.current.clientWidth,
         });
+        updateXAxisLabelPositions();
       };
 
+      chart
+        .timeScale()
+        .subscribeVisibleLogicalRangeChange(updateXAxisLabelPositions);
+      chart.timeScale().subscribeSizeChange(updateXAxisLabelPositions);
       window.addEventListener('resize', handleResize);
 
       return () => {
+        chart
+          .timeScale()
+          .unsubscribeVisibleLogicalRangeChange(updateXAxisLabelPositions);
+        chart.timeScale().unsubscribeSizeChange(updateXAxisLabelPositions);
         window.removeEventListener('resize', handleResize);
         chartRef.current?.remove();
         chartRef.current = null;
@@ -189,6 +205,8 @@ export default function CompanyLineChart({
 
     seriesRef.current.setData(formattedData);
     chartRef.current?.timeScale().fitContent();
+    xAxisLabelsRef.current = getXAxisLabels(formattedData, period);
+    requestAnimationFrame(updateXAxisLabelPositions);
 
     if (formattedData.length > 0 && chartRef.current) {
       const lastData = formattedData[formattedData.length - 1];
@@ -198,7 +216,7 @@ export default function CompanyLineChart({
         seriesRef.current,
       );
     }
-  }, [chartResponse]);
+  }, [chartResponse, period]);
 
   useEffect(() => {
     if (!seriesRef.current || !latestCandle) return;
@@ -238,6 +256,19 @@ export default function CompanyLineChart({
           height: '228px',
         }}
       />
+      {xAxisLabels.length > 0 && (
+        <div className='absolute right-4 bottom-4 left-4 h-6 bg-[#f7f4f2]'>
+          {xAxisLabels.map((label) => (
+            <span
+              key={label.key}
+              className='text-caption-md text-text-main absolute top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap'
+              style={{ left: label.left }}
+            >
+              {label.label}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
