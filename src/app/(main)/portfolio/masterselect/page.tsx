@@ -10,25 +10,35 @@ import { PortfolioSelectInvestmentPhilosophy } from '@/features/portfolio/master
 import { useRouter } from 'next/navigation';
 import BottomButton from '@/components/bottomButton';
 import { useSelectMaster } from '@/api/generated/endpoints/거장-정보/거장-정보';
+import { PortfolioMasterChangeConfirmBottomSheet } from '@/features/portfolio/masterselect/portfolioMasterChangeConfirmBottomSheet';
 
 const Page = () => {
   const router = useRouter();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isPhilosophyOpen, setIsPhilosophyOpen] = useState(false);
+  const [isConfirmBottomSheetOpen, setIsConfirmBottomSheetOpen] =
+    useState(false);
   const selectedMaster = MASTERS[selectedIndex];
 
-  const { mutate: selectMaster } = useSelectMaster();
+  const { mutate: selectMaster, isPending: isSelectMasterPending } =
+    useSelectMaster();
 
   const handleSelect = () => {
+    setIsConfirmBottomSheetOpen(true);
+  };
+
+  const handleConfirmSelect = () => {
     selectMaster(
       { masterId: selectedIndex + 1 },
       {
         onSuccess: () => {
+          setIsConfirmBottomSheetOpen(false);
           localStorage.setItem('selectedMasterIndex', String(selectedIndex));
           router.push(`/portfolio/selected?master=${selectedIndex}`);
         },
         onError: (err) => {
           console.error('Select master error:', err);
+          setIsConfirmBottomSheetOpen(false);
           localStorage.setItem('selectedMasterIndex', String(selectedIndex));
           router.push(`/portfolio/selected?master=${selectedIndex}`);
         },
@@ -98,7 +108,15 @@ const Page = () => {
         </AnimatePresence>
       </div>
 
-      <BottomButton label='선택하기' onClick={handleSelect} />
+      {!isConfirmBottomSheetOpen && (
+        <BottomButton label='선택하기' onClick={handleSelect} />
+      )}
+      <PortfolioMasterChangeConfirmBottomSheet
+        isOpen={isConfirmBottomSheetOpen}
+        isLoading={isSelectMasterPending}
+        onCancel={() => setIsConfirmBottomSheetOpen(false)}
+        onConfirm={handleConfirmSelect}
+      />
     </div>
   );
 };
