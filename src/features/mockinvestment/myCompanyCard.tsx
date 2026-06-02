@@ -72,7 +72,7 @@ export const MyCompanyCard = ({
               ₩ {totalEvaluationAmount.toLocaleString()}
             </div>
             <div className={`text-body-lg ${profitColorClass} font-bold`}>
-              ({totalProfitAmount > 0 ? '+' : ''}
+              ({totalProfitAmount > 0 ? '+' : ''} ₩{' '}
               {totalProfitAmount.toLocaleString()})
             </div>
             <div className='bg-secondary2 h-[0.75rem] w-[0.0625rem]' />
