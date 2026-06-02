@@ -2,12 +2,32 @@ import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import React from 'react';
 
-const PERIODS = [
-  { value: '1d', label: '1일' },
-  { value: '1w', label: '1주일' },
-  { value: '3m', label: '3개월' },
-  { value: '1y', label: '1년' },
-  { value: '5y', label: '5년' },
+export const PERIODS = [
+  {
+    value: '1d',
+    label: '1일',
+    subLabel: '최근 1일간의 흐름을 1분 단위(1분봉)로 보여드려요.',
+  },
+  {
+    value: '1w',
+    label: '1주일',
+    subLabel: '최근 1주간의 흐름을 30분 단위(30분봉)로 보여드려요.',
+  },
+  {
+    value: '3m',
+    label: '3개월',
+    subLabel: '최근 3개월간의 추세를 1일 단위(일봉)로 보여드려요.',
+  },
+  {
+    value: '1y',
+    label: '1년',
+    subLabel: '최근 1년간의 추세를 1일 단위(일봉)로 보여드려요.',
+  },
+  {
+    value: '5y',
+    label: '5년',
+    subLabel: '최근 5년간의 장기 추세를 1일 단위(일봉)로 보여드려요.',
+  },
 ] as const;
 
 export type PeriodValue = (typeof PERIODS)[number]['value'];

@@ -189,6 +189,15 @@ export default function CompanyLineChart({
 
     seriesRef.current.setData(formattedData);
     chartRef.current?.timeScale().fitContent();
+
+    if (formattedData.length > 0 && chartRef.current) {
+      const lastData = formattedData[formattedData.length - 1];
+      chartRef.current.setCrosshairPosition(
+        lastData.value,
+        lastData.time,
+        seriesRef.current,
+      );
+    }
   }, [chartResponse]);
 
   useEffect(() => {

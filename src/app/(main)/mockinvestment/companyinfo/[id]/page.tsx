@@ -3,12 +3,12 @@
 import React, { useState } from 'react';
 import { motion, Variants } from 'framer-motion';
 import BackButtonField from '@/components/backButtonField';
-import BottomButton from '@/components/bottomButton';
 import { BulbIcon } from '@/components/icons/bulbIcon';
 import { KeyIcon } from '@/components/icons/keyIcon';
 import { PencilIcon } from '@/components/icons/pencilIcon';
 import { CompanyInformationCard } from '@/features/mockinvestment/companyinfo/companyInformationCard';
 import {
+  PERIODS,
   PeriodToggle,
   PeriodValue,
 } from '@/features/mockinvestment/companyinfo/periodToggle';
@@ -17,6 +17,7 @@ import CompanyLineChart from '@/features/mockinvestment/companyinfo/companyLineC
 import CompanyCandleChart from '@/features/mockinvestment/companyinfo/companyCandleChart';
 import {
   useBuy,
+  useGetDashboard,
   useGetPortfolios,
   useGetStockDetail,
   useSell,
@@ -25,6 +26,7 @@ import { useParams } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import IndicatorModal from '@/features/mockinvestment/companyinfo/indicatorModal';
 import { useStockStream } from '@/hooks/useStockStream';
+import QuantityButton from '@/features/mockinvestment/companyinfo/quantityButton';
 
 const getSubjectParticle = (word: string) => {
   if (!word) return '이';
@@ -63,6 +65,7 @@ const DetailPage = () => {
   );
   const [isChart, setIsChart] = useState(false);
   const [isIndicatorModalOpen, setIsIndicatorModalOpen] = useState(false);
+  const [quantity, setQuantity] = useState(1);
 
   const params = useParams();
   const stockCode = typeof params.id === 'string' ? params.id : '005930';
@@ -71,9 +74,14 @@ const DetailPage = () => {
   const { data: detailResponse, isLoading } = useGetStockDetail(stockCode);
 
   const { data: portfolioResponse } = useGetPortfolios();
-  const portfolios = portfolioResponse?.data?.portfolios || [];
 
-  const isOwned = portfolios.some((p) => p.stockCode === stockCode);
+  const { data: dashboardResponse } = useGetDashboard();
+  const availableCash = dashboardResponse?.data?.cashBalance || 0;
+
+  const portfolios = portfolioResponse?.data?.portfolios || [];
+  const ownedStock = portfolios.find((p) => p.stockCode === stockCode);
+  const isOwned = !!ownedStock;
+  const ownedQuantity = ownedStock?.quantity || 0;
 
   const buyMutation = useBuy();
   const sellMutation = useSell();
@@ -89,6 +97,11 @@ const DetailPage = () => {
     initialPrice,
     initialChangeRate,
   );
+
+  const maxBuyQuantity =
+    currentPrice > 0 ? Math.floor(availableCash / currentPrice) : 0;
+  const maxLimit = Math.max(maxBuyQuantity, ownedQuantity);
+  const isMaxReached = quantity >= maxLimit;
 
   const formattedPrice = currentPrice.toLocaleString();
   const isPositive = changeRate > 0;
@@ -120,44 +133,62 @@ const DetailPage = () => {
     );
   };
 
-  const handleAllClick = () => {
-    setIsAllSelected((prev) => {
-      if (prev) return prev;
-      setSelectedPeriod(undefined);
-      return true;
-    });
+  const handleIncrease = () => {
+    setQuantity((prev) => (prev < maxLimit ? prev + 1 : prev));
   };
 
-  const handleOrderClick = () => {
-    const quantity = 1;
+  const handleDecrease = () => {
+    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+  };
 
-    if (isOwned) {
-      sellMutation.mutate(
-        { data: { stockCode, quantity } },
-        {
-          onSuccess: () => {
-            alert('시장가 매도 주문이 체결되었습니다.');
-            queryClient.invalidateQueries({
-              queryKey: ['/api/mock-investments/portfolios'],
-            });
-          },
-          onError: () => alert('매도 주문에 실패했습니다.'),
-        },
-      );
-    } else {
-      buyMutation.mutate(
-        { data: { stockCode, quantity } },
-        {
-          onSuccess: () => {
-            alert('시장가 매수 주문이 체결되었습니다.');
-            queryClient.invalidateQueries({
-              queryKey: ['/api/mock-investments/portfolios'],
-            });
-          },
-          onError: () => alert('매수 주문에 실패했습니다.'),
-        },
-      );
+  const handleSellClick = () => {
+    if (quantity > ownedQuantity) {
+      alert(`보유 주식 수(${ownedQuantity}주)를 초과하여 매도할 수 없습니다.`);
+      return;
     }
+    sellMutation.mutate(
+      { data: { stockCode, quantity } },
+      {
+        onSuccess: () => {
+          alert('시장가 매도 주문이 체결되었습니다.');
+          queryClient.invalidateQueries({
+            queryKey: ['/api/mock-investments/portfolios'],
+          });
+          queryClient.invalidateQueries({
+            queryKey: ['/api/mock-investments/dashboards'],
+          });
+        },
+        onError: () => alert('매도 주문에 실패했습니다.'),
+      },
+    );
+  };
+
+  const currentSubLabel = PERIODS.find(
+    (p) => p.value === selectedPeriod,
+  )?.subLabel;
+
+  const handleBuyClick = () => {
+    if (quantity > maxBuyQuantity) {
+      alert(
+        `가용 자산(${availableCash.toLocaleString()}원)이 부족합니다. (최대 ${maxBuyQuantity}주 매수 가능)`,
+      );
+      return;
+    }
+    buyMutation.mutate(
+      { data: { stockCode, quantity } },
+      {
+        onSuccess: () => {
+          alert('시장가 매수 주문이 체결되었습니다.');
+          queryClient.invalidateQueries({
+            queryKey: ['/api/mock-investments/portfolios'],
+          });
+          queryClient.invalidateQueries({
+            queryKey: ['/api/mock-investments/dashboards'],
+          });
+        },
+        onError: () => alert('매수 주문에 실패했습니다.'),
+      },
+    );
   };
 
   return (
@@ -188,25 +219,31 @@ const DetailPage = () => {
             어제보다 {changeRateText}
           </div>
 
-          <div className='flex h-auto w-full items-center justify-between pt-[1.5rem]'>
-            <button
-              type='button'
-              onClick={() => setIsIndicatorModalOpen(true)}
-              className='bg-sub4 flex h-[2.25rem] items-center justify-center rounded-full px-[1.5rem]'
-            >
-              <span className='text-body-md font-semibold'>지표 확인하기</span>
-            </button>
-            <SwitchChartButton isChart={isChart} setIsChart={setIsChart} />
-          </div>
+          <div className='flex w-full flex-col items-center gap-[0.5rem] pt-[1.5rem]'>
+            <div className='flex w-[21.4375rem] items-center justify-between'>
+              <button
+                type='button'
+                onClick={() => setIsIndicatorModalOpen(true)}
+                className='bg-sub4 flex h-[2.25rem] items-center justify-center rounded-full px-[1.5rem]'
+              >
+                <span className='text-body-md font-semibold'>
+                  지표 확인하기
+                </span>
+              </button>
+              <SwitchChartButton isChart={isChart} setIsChart={setIsChart} />
+            </div>
 
-          <div className='pt-[0.5rem]'>
-            <PeriodToggle
-              value={selectedPeriod}
-              onValueChange={(val: PeriodValue) => {
-                setSelectedPeriod(val);
-                setIsAllSelected(false);
-              }}
-            />
+            <div className='flex w-full flex-col items-center justify-center gap-[0.5rem]'>
+              <PeriodToggle
+                value={selectedPeriod}
+                onValueChange={(val: PeriodValue) => {
+                  setSelectedPeriod(val);
+                }}
+              />
+              <div className='text-body-sm text-text-main text-center font-semibold'>
+                {currentSubLabel}
+              </div>
+            </div>
           </div>
         </motion.div>
 
@@ -286,10 +323,41 @@ const DetailPage = () => {
           )}
         </div>
 
-        <BottomButton
-          label={isOwned ? '매도하기' : '매수하기'}
-          onClick={handleOrderClick}
-        />
+        {!isIndicatorModalOpen && (
+          <div className='fixed bottom-[2.125rem] left-1/2 z-50 flex w-full max-w-[23.4375rem] -translate-x-1/2 flex-col items-center gap-[0.625rem]'>
+            <QuantityButton
+              quantity={quantity}
+              onIncrease={handleIncrease}
+              onDecrease={handleDecrease}
+              isMaxReached={isMaxReached}
+            />
+
+            <div className='flex w-full items-center justify-between gap-4 px-4'>
+              <button
+                type='button'
+                onClick={handleSellClick}
+                disabled={!isOwned}
+                className={`flex h-[4rem] w-full items-center justify-center rounded-[1000px] transition-colors ${
+                  !isOwned ? 'bg-default cursor-not-allowed' : 'bg-secondary2'
+                }`}
+              >
+                <span className='text-secondary1 text-body-xl font-extrabold'>
+                  매도하기
+                </span>
+              </button>
+
+              <button
+                type='button'
+                onClick={handleBuyClick}
+                className='bg-secondary2 flex h-[4rem] w-full items-center justify-center rounded-[1000px] transition-colors'
+              >
+                <span className='text-secondary1 text-body-xl font-extrabold'>
+                  매수하기
+                </span>
+              </button>
+            </div>
+          </div>
+        )}
       </motion.div>
 
       <IndicatorModal
