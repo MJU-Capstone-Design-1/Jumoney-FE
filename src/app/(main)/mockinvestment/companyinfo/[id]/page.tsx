@@ -195,7 +195,7 @@ const DetailPage = () => {
   return (
     <>
       <motion.div
-        className='flex w-full flex-col px-4 pt-4'
+        className='flex w-full flex-col px-4 pt-4 pb-[6rem]'
         variants={containerVariants}
         initial='hidden'
         animate='visible'
