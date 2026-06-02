@@ -16,6 +16,7 @@ import { motion, useMotionValue } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { MASTERS_PORTFOLIO } from '@/constants/mastersPortfolio';
 import { useProfileStore } from '@/store/useProfileStore';
+import { useGetMockInvestmentRankings } from '@/api/generated/endpoints/홈/홈';
 
 export const HomePage = () => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -31,6 +32,20 @@ export const HomePage = () => {
   const itemWidth = 224;
   const gap = 10;
   const maxDrag = -(itemCount * (itemWidth + gap) - 350);
+
+  const { data: rankingsResponse } = useGetMockInvestmentRankings();
+  const rankingsData = rankingsResponse?.data;
+
+  const currentUsers =
+    selectedMaster === 'all'
+      ? rankingsData?.overall?.users || []
+      : rankingsData?.masters?.find(
+          (m) => m.masterId?.toString() === selectedMaster,
+        )?.users || [];
+
+  const selectedUser = currentUsers.find(
+    (u) => u.rank?.toString() === selectedRankId,
+  );
 
   useEffect(() => {
     const unsubscribe = x.on('change', (latest) => {
@@ -116,9 +131,11 @@ export const HomePage = () => {
           </motion.div>
           <RankProfile
             key={`${selectedMaster}-${selectedRankId}`}
-            selectedId={selectedRankId}
+            user={selectedUser}
             masterFilter={selectedMaster}
+            selectedId={selectedRankId}
           />
+
           <div className='flex w-full justify-center pt-[1.5rem]'>
             <MasterToggle
               selectedMaster={selectedMaster}
@@ -133,7 +150,7 @@ export const HomePage = () => {
               key={selectedMaster}
               selectedId={selectedRankId}
               onSelect={setSelectedRankId}
-              masterFilter={selectedMaster}
+              users={currentUsers}
             />
           </div>
         </section>

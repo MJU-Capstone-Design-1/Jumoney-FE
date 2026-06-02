@@ -3,6 +3,7 @@
 import { useLogout } from '@/api/generated/endpoints/auth/auth';
 import {
   getGetUserInfoQueryKey,
+  GetUserInfoQueryResult,
   useGetUserInfo,
   useUpdateNickname,
   useWithdraw,
@@ -54,12 +55,43 @@ export const ProfileModal = ({
 
   const { mutate: updateNickname } = useUpdateNickname({
     mutation: {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: getGetUserInfoQueryKey() });
+      onMutate: async (newNicknameData) => {
+        await queryClient.cancelQueries({ queryKey: getGetUserInfoQueryKey() });
+
+        const previousUserInfo =
+          queryClient.getQueryData<GetUserInfoQueryResult>(
+            getGetUserInfoQueryKey(),
+          );
+
+        queryClient.setQueryData<GetUserInfoQueryResult>(
+          getGetUserInfoQueryKey(),
+          (old) => {
+            if (!old || !old.data) return old;
+
+            return {
+              ...old,
+              data: {
+                ...old.data,
+                nickname: newNicknameData.data.serviceNickname,
+              },
+            };
+          },
+        );
+
+        return { previousUserInfo };
       },
-      onError: () => {
+      onError: (err, newNicknameData, context) => {
+        if (context?.previousUserInfo) {
+          queryClient.setQueryData(
+            getGetUserInfoQueryKey(),
+            context.previousUserInfo,
+          );
+        }
         setName(originalNickname);
         alert('닉네임 수정에 실패했습니다. 다시 시도해주세요.');
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries({ queryKey: getGetUserInfoQueryKey() });
       },
     },
   });
@@ -102,10 +134,12 @@ export const ProfileModal = ({
   useEffect(() => {
     if (isEditing && textareaRef.current) {
       const el = textareaRef.current;
-      requestAnimationFrame(() => {
+      const timeoutId = setTimeout(() => {
         el.focus();
         el.setSelectionRange(el.value.length, el.value.length);
-      });
+      }, 0);
+
+      return () => clearTimeout(timeoutId);
     }
   }, [isEditing]);
 
@@ -150,6 +184,7 @@ export const ProfileModal = ({
                   <div className='flex items-center justify-center gap-[0.5rem]'>
                     <button
                       onClick={handleToggleEdit}
+                      onMouseDown={(e) => e.preventDefault()}
                       className={`flex-shrink-0 transition-opacity ${
                         name.trim() === ''
                           ? 'cursor-not-allowed opacity-30'

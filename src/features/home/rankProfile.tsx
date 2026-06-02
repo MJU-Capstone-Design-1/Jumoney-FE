@@ -1,16 +1,36 @@
 'use client';
 
-import { MASTER_RANK_DATA, RankData } from '@/constants/rankData';
+import { RankingUser } from '@/api/generated/model';
 import { motion } from 'framer-motion';
 
 interface RankProfileProps {
+  user?: RankingUser;
   selectedId: string;
   masterFilter: string;
 }
 
-export const RankProfile = ({ selectedId, masterFilter }: RankProfileProps) => {
-  const masterData = MASTER_RANK_DATA[masterFilter] || MASTER_RANK_DATA['all'];
-  const data: RankData = masterData[selectedId] || masterData['1'];
+export const RankProfile = ({
+  user,
+  selectedId,
+  masterFilter,
+}: RankProfileProps) => {
+  const name = user?.nickname || '데이터 없음';
+  const asset = user?.totalAsset
+    ? `${user.totalAsset.toLocaleString()}원`
+    : '-원';
+
+  const profitRate = user?.totalProfitRate || 0;
+  const formattedProfit =
+    profitRate > 0 ? `+${profitRate.toFixed(2)}%` : `${profitRate.toFixed(2)}%`;
+
+  const profitColor =
+    profitRate > 0
+      ? 'text-text-up'
+      : profitRate < 0
+        ? 'text-text-down'
+        : 'text-text-main';
+
+  const stocks = user?.representativeStocks || [];
 
   return (
     <motion.div
@@ -23,35 +43,61 @@ export const RankProfile = ({ selectedId, masterFilter }: RankProfileProps) => {
       <div className='flex flex-col gap-[0.25rem]'>
         <div className='bg-default h-[4.5rem] w-[4.5rem] rounded-full p-[0.375rem]' />
         <div className='text-body-xl text-secondary2 ml-[0.375rem] w-[7rem] truncate pt-[0.9375rem] leading-[120%] font-extrabold'>
-          {data.name}
+          {name}
         </div>
         <div className='text-body-md text-text-main ml-[0.375rem] leading-[120%] font-bold'>
-          {data.asset}
+          {asset}
         </div>
-        <div className='text-body-md text-text-up ml-[0.375rem] leading-[120%] font-bold'>
-          {data.profit}
+        <div
+          className={`text-body-md ml-[0.375rem] leading-[120%] font-bold ${profitColor}`}
+        >
+          {formattedProfit}
         </div>
       </div>
 
-      <div className='flex flex-col gap-[0.4375rem]'>
-        {data.portfolios.map((item, index) => (
-          <div
-            key={index}
-            className='bg-sub3 flex h-[3.125rem] w-[11.0625rem] flex-col justify-center rounded-[1.5rem] px-[1.1875rem] py-[0.5rem]'
-          >
-            <div className='text-body-md text-secondary2 mt-[0.125rem] text-left leading-[120%] font-bold'>
-              {item.name}
-            </div>
-            <div className='flex w-full items-center justify-between pt-[0.25rem]'>
-              <div className='text-body-sm text-secondary2 leading-[120%] font-semibold'>
-                {item.price}
+      <div className='flex flex-col gap-[0.4375rem] overflow-hidden'>
+        {stocks.length > 0 ? (
+          stocks.slice(0, 3).map((item, index) => {
+            const stockRate = item.profitRate || 0;
+            const formattedStockRate =
+              stockRate > 0
+                ? `+${stockRate.toFixed(2)}%`
+                : `${stockRate.toFixed(2)}%`;
+            const stockColor =
+              stockRate > 0
+                ? 'text-text-up'
+                : stockRate < 0
+                  ? 'text-text-down'
+                  : 'text-text-main';
+
+            return (
+              <div
+                key={index}
+                className='bg-sub3 flex h-[3.125rem] w-[11.0625rem] flex-col justify-center rounded-[1.5rem] px-[1.1875rem] py-[0.5rem]'
+              >
+                <div className='text-body-md text-secondary2 mt-[0.125rem] truncate text-left leading-[120%] font-bold'>
+                  {item.stockName || '-'}
+                </div>
+                <div className='flex w-full items-center justify-between pt-[0.25rem]'>
+                  <div className='text-body-sm text-secondary2 leading-[120%] font-semibold'>
+                    {item.purchaseAmount
+                      ? `${item.purchaseAmount.toLocaleString()}원`
+                      : '-원'}
+                  </div>
+                  <div
+                    className={`text-body-sm leading-[120%] font-semibold ${stockColor}`}
+                  >
+                    {formattedStockRate}
+                  </div>
+                </div>
               </div>
-              <div className='text-body-sm text-text-up leading-[120%] font-semibold'>
-                {item.rate}
-              </div>
-            </div>
+            );
+          })
+        ) : (
+          <div className='text-body-md text-text-main mt-[4rem] text-center font-semibold'>
+            보유 종목이 없습니다.
           </div>
-        ))}
+        )}
       </div>
     </motion.div>
   );
