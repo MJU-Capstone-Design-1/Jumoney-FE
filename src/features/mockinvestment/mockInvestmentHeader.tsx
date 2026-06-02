@@ -123,8 +123,8 @@ const MockInvestmentHeader = ({
   const isPositive = totalProfitRate > 0;
   const isNegative = totalProfitRate < 0;
   const formattedProfitRate = isPositive
-    ? `+${totalProfitRate.toFixed(1)}%`
-    : `${totalProfitRate.toFixed(1)}%`;
+    ? `+${totalProfitRate.toFixed(2)}%`
+    : `${totalProfitRate.toFixed(2)}%`;
 
   const profitRateColorClass = isPositive
     ? 'text-text-up'
