@@ -12,6 +12,7 @@ import { HelpButton } from './helpButton';
 interface RiskSelectorProps {
   value: number;
   onChange: (value: number) => void;
+  allowedValues?: number[];
 }
 
 const RISK_LEVELS = [
@@ -89,7 +90,11 @@ const RISK_LEVELS = [
   },
 ];
 
-export const RiskSelector = ({ value, onChange }: RiskSelectorProps) => {
+export const RiskSelector = ({
+  value,
+  onChange,
+  allowedValues = RISK_LEVELS.map((level) => level.val),
+}: RiskSelectorProps) => {
   const [isEntered, setIsEntered] = useState(false);
 
   useEffect(() => {
@@ -106,14 +111,18 @@ export const RiskSelector = ({ value, onChange }: RiskSelectorProps) => {
       <div className='absolute left-[1.25rem] flex h-full flex-col justify-between py-0'>
         {RISK_LEVELS.map((level, index) => {
           const isActive = value === level.val;
+          const isDisabled = !allowedValues.includes(level.val);
           return (
             <motion.div
               key={level.val}
               initial={{ scale: 0, opacity: 0 }}
               animate={{
                 scale: isActive ? 1.15 : 1,
-                opacity: 1,
-                color: isActive ? 'var(--secondary2)' : 'var(--text-sub)',
+                opacity: isDisabled ? 0.35 : 1,
+                color:
+                  isActive && !isDisabled
+                    ? 'var(--secondary2)'
+                    : 'var(--text-sub)',
               }}
               transition={
                 isEntered
@@ -129,8 +138,12 @@ export const RiskSelector = ({ value, onChange }: RiskSelectorProps) => {
                       damping: 20,
                     }
               }
-              className='flex h-[3rem] origin-left cursor-pointer flex-col justify-center'
-              onClick={() => onChange(level.val)}
+              className={`flex h-[3rem] origin-left flex-col justify-center ${
+                isDisabled ? 'cursor-not-allowed' : 'cursor-pointer'
+              }`}
+              onClick={() => {
+                if (!isDisabled) onChange(level.val);
+              }}
             >
               <div className='flex items-center gap-[0.25rem]'>
                 <span className='text-body-xl font-extrabold'>
@@ -158,21 +171,27 @@ export const RiskSelector = ({ value, onChange }: RiskSelectorProps) => {
         }}
         className='flex h-full items-center justify-center'
       >
-        <RiskSlider value={value} onChange={onChange} />
+        <RiskSlider
+          value={value}
+          onChange={onChange}
+          allowedValues={allowedValues}
+        />
       </motion.div>
 
       {/* Right Emojis */}
       <div className='absolute right-[1.25rem] flex h-full flex-col justify-between py-0'>
         {RISK_LEVELS.map((level, index) => {
           const isActive = value === level.val;
+          const isDisabled = !allowedValues.includes(level.val);
           return (
             <motion.div
               key={level.val}
               initial={{ scale: 0, opacity: 0 }}
               animate={{
                 scale: isActive ? 1.15 : 1,
-                opacity: isActive ? 1 : 0.4,
-                filter: isActive ? 'grayscale(0)' : 'grayscale(1)',
+                opacity: isDisabled ? 0.25 : isActive ? 1 : 0.4,
+                filter:
+                  isActive && !isDisabled ? 'grayscale(0)' : 'grayscale(1)',
               }}
               transition={
                 isEntered
@@ -188,8 +207,12 @@ export const RiskSelector = ({ value, onChange }: RiskSelectorProps) => {
                       damping: 20,
                     }
               }
-              className='flex h-[3rem] origin-right cursor-pointer items-center justify-center'
-              onClick={() => onChange(level.val)}
+              className={`flex h-[3rem] origin-right items-center justify-center ${
+                isDisabled ? 'cursor-not-allowed' : 'cursor-pointer'
+              }`}
+              onClick={() => {
+                if (!isDisabled) onChange(level.val);
+              }}
             >
               <level.Icon className='transition-all duration-300' />
             </motion.div>

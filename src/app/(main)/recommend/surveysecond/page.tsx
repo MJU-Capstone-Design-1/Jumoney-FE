@@ -7,13 +7,23 @@ import { SurveyDetailButton } from '@/components/surveyDetailButton';
 import { SurveyStepper } from '@/components/surveyStepper';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useSurveyStore } from '@/store/surveyStore';
+import { getAllowedRiskValues } from '@/constants/surveyConstraints';
 
 const SurveySecondPage = () => {
   const router = useRouter();
+  const purpose = useSurveyStore((state) => state.purpose);
+  const allowedRiskValues = useMemo(
+    () => getAllowedRiskValues(purpose),
+    [purpose],
+  );
   const [value, setValue] = useState<number>(0);
+  const selectedRiskValue = allowedRiskValues.includes(value)
+    ? value
+    : allowedRiskValues[0];
+
   return (
     <div className='flex w-full flex-col px-4 pt-4 pb-[10rem]'>
       <BackButtonField
@@ -58,14 +68,18 @@ const SurveySecondPage = () => {
         </div>
 
         <div className='flex w-full items-center justify-center'>
-          <RiskSelector value={value} onChange={setValue} />
+          <RiskSelector
+            value={selectedRiskValue}
+            onChange={setValue}
+            allowedValues={allowedRiskValues}
+          />
         </div>
       </div>
 
       <Link
         href='/recommend/surveythird'
         onClick={() => {
-          useSurveyStore.getState().setRiskValue(value);
+          useSurveyStore.getState().setRiskValue(selectedRiskValue);
         }}
       >
         <BottomButton label='다음으로' disabled={false} />
