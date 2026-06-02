@@ -12,6 +12,7 @@ import {
 import FloatingButton from '@/features/recommend/selection/floatingButton';
 import { useRouter } from 'next/navigation';
 import BottomButton from '@/components/bottomButton';
+import BackButtonField from '@/components/backButtonField';
 
 const Page = () => {
   const router = useRouter();
@@ -36,6 +37,11 @@ const Page = () => {
         onClick={() => router.push('/recommend/testaccount')}
       />
       <div className='bg-primary gap-full text-secondary1 flex h-auto flex-col gap-[1rem] rounded-[2.5rem] p-[1.5rem]'>
+        <BackButtonField
+          color='secondary1'
+          label='오늘의 호주머니'
+          href='/recommend'
+        />
         <p className='text-body-sm font-semibold'>
           {typingText.split('').map((char, index) => (
             <motion.span
