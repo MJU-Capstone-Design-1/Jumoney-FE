@@ -51,11 +51,13 @@ const OPTIONS = [
 interface SurveyThirdToggleGroupProps {
   value?: string;
   onChange?: (value: string) => void;
+  allowedValues?: string[];
 }
 
 export const SurveyThirdToggleGroup = ({
   value,
   onChange,
+  allowedValues = OPTIONS.map((option) => option.id),
 }: SurveyThirdToggleGroupProps) => {
   return (
     <motion.div
@@ -77,25 +79,29 @@ export const SurveyThirdToggleGroup = ({
         }}
         className='grid grid-cols-2 gap-[1rem]'
       >
-        {OPTIONS.map((option) => (
-          <motion.div
-            key={option.id}
-            whileTap={{ scale: 0.8 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 10 }}
-          >
-            <ToggleGroupItem
-              value={option.id}
-              className='text-label-md border-secondary2 text-secondary2 data-[state=on]:bg-main1 data-[state=on]:text-secondary1 data-[state=on]:shadow-select-orange flex h-[3.5rem] w-[7.6875rem] items-center justify-center gap-[0.5rem] rounded-[77.125rem] rounded-full border font-extrabold transition-all duration-300 data-[state=on]:border-transparent'
+        {OPTIONS.map((option) => {
+          const isDisabled = !allowedValues.includes(option.id);
+          return (
+            <motion.div
+              key={option.id}
+              whileTap={isDisabled ? undefined : { scale: 0.8 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 10 }}
             >
-              <span>{option.id}</span>
+              <ToggleGroupItem
+                value={option.id}
+                disabled={isDisabled}
+                className='text-label-md border-secondary2 text-secondary2 data-[state=on]:bg-main1 data-[state=on]:text-secondary1 data-[state=on]:shadow-select-orange disabled:bg-default disabled:text-text-sub flex h-[3.5rem] w-[7.6875rem] items-center justify-center gap-[0.5rem] rounded-[77.125rem] rounded-full border font-extrabold transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-40 disabled:shadow-none data-[state=on]:border-transparent'
+              >
+                <span>{option.id}</span>
 
-              <HelpButton
-                color={value === option.id ? 'secondary1' : 'secondary2'}
-                items={option.helpItems}
-              />
-            </ToggleGroupItem>
-          </motion.div>
-        ))}
+                <HelpButton
+                  color={value === option.id ? 'secondary1' : 'secondary2'}
+                  items={option.helpItems}
+                />
+              </ToggleGroupItem>
+            </motion.div>
+          );
+        })}
       </ToggleGroup>
     </motion.div>
   );

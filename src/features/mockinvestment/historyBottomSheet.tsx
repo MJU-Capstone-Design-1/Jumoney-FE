@@ -29,12 +29,12 @@ export default function HistoryBottomSheet({
     >
       <DrawerPrimitive.Portal>
         <DrawerPrimitive.Overlay className='fixed inset-0 z-20 bg-black/60' />
-        <DrawerPrimitive.Content className='bg-background fixed bottom-0 left-1/2 z-100 flex w-full max-w-[375px] -translate-x-1/2 flex-col overflow-hidden rounded-t-[2.5rem] outline-none focus:outline-none'>
+        <DrawerPrimitive.Content className='bg-background fixed bottom-0 left-1/2 z-100 flex max-h-[calc(100dvh-8rem)] w-full max-w-[375px] -translate-x-1/2 flex-col overflow-hidden rounded-t-[2.5rem] outline-none focus:outline-none'>
           <DrawerPrimitive.Title className='sr-only'>
             모의투자 거래 내역
           </DrawerPrimitive.Title>
           <div className='bg-default absolute top-[0.75rem] left-1/2 h-[0.25rem] w-[6rem] -translate-x-1/2 rounded-[77.125rem]' />
-          <div className='flex flex-col gap-[1rem] overflow-y-auto px-[1.25rem] pt-[2.5rem] pb-[3rem]'>
+          <div className='flex min-h-0 flex-1 flex-col gap-[1rem] overflow-y-auto overscroll-contain px-[1.25rem] pt-[2.5rem] pb-[3rem]'>
             {isLoading ? (
               <div className='text-text-sub py-10 text-center text-sm font-bold'>
                 거래 내역을 불러오는 중입니다...

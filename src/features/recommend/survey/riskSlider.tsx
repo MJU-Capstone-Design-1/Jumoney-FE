@@ -14,9 +14,22 @@ import SliderThumbIcon from '@/components/icons/sliderThumbIcon';
 interface RiskSliderProps {
   value: number;
   onChange: (value: number) => void;
+  allowedValues?: number[];
 }
 
-export const RiskSlider = ({ value, onChange }: RiskSliderProps) => {
+const RISK_VALUES = [0, 33, 66, 100];
+
+const getNearestAllowedValue = (value: number, allowedValues: number[]) => {
+  return allowedValues.reduce((nearest, current) =>
+    Math.abs(current - value) < Math.abs(nearest - value) ? current : nearest,
+  );
+};
+
+export const RiskSlider = ({
+  value,
+  onChange,
+  allowedValues = RISK_VALUES,
+}: RiskSliderProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const [basePx] = useState(() => {
@@ -105,13 +118,19 @@ export const RiskSlider = ({ value, onChange }: RiskSliderProps) => {
     dragY.set(newY);
   };
 
-  const handleDragEnd = () => {
-    const rawValue = (-dragY.get() / trackHeightPx) * 100;
+  const normalizeValue = (rawValue: number) => {
     let normalizedValue = 0;
     if (rawValue < 16.5) normalizedValue = 0;
     else if (rawValue < 49.5) normalizedValue = 33;
     else if (rawValue < 82.5) normalizedValue = 66;
     else normalizedValue = 100;
+
+    return getNearestAllowedValue(normalizedValue, allowedValues);
+  };
+
+  const handleDragEnd = () => {
+    const rawValue = (-dragY.get() / trackHeightPx) * 100;
+    const normalizedValue = normalizeValue(rawValue);
 
     const snappedY = -(normalizedValue / 100) * trackHeightPx;
     animate(dragY, snappedY, {
@@ -128,11 +147,7 @@ export const RiskSlider = ({ value, onChange }: RiskSliderProps) => {
     const clickY = e.clientY - rect.top;
     const percentage = 100 - (clickY / rect.height) * 100;
 
-    let normalizedValue = 0;
-    if (percentage < 16.5) normalizedValue = 0;
-    else if (percentage < 49.5) normalizedValue = 33;
-    else if (percentage < 82.5) normalizedValue = 66;
-    else normalizedValue = 100;
+    const normalizedValue = normalizeValue(percentage);
 
     const snappedY = -(normalizedValue / 100) * trackHeightPx;
     animate(dragY, snappedY, {

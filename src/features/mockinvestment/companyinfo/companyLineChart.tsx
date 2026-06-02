@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { PointerEvent, useEffect, useMemo, useRef, useState } from 'react';
 import {
   createChart,
   UTCTimestamp,
@@ -19,8 +19,10 @@ import { RealtimeCandle } from '@/hooks/useStockStream';
 import {
   formatChartTickMark,
   getXAxisLabels,
+  moveTimeScaleByDrag,
   positionXAxisLabels,
   PositionedXAxisLabel,
+  TimeAxisDragState,
   XAxisLabel,
 } from './chartXAxis';
 
@@ -90,6 +92,7 @@ export default function CompanyLineChart({
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<'Line'> | null>(null);
   const periodRef = useRef(period);
+  const timeAxisDragRef = useRef<TimeAxisDragState | null>(null);
   const xAxisLabelsRef = useRef<XAxisLabel[]>([]);
   const [xAxisLabels, setXAxisLabels] = useState<PositionedXAxisLabel[]>([]);
 
@@ -101,6 +104,37 @@ export default function CompanyLineChart({
     setXAxisLabels(
       positionXAxisLabels(chartRef.current, xAxisLabelsRef.current),
     );
+  };
+
+  const handleTimeAxisPointerDown = (event: PointerEvent<HTMLDivElement>) => {
+    const visibleRange = chartRef.current?.timeScale().getVisibleLogicalRange();
+    if (!visibleRange) return;
+
+    event.currentTarget.setPointerCapture(event.pointerId);
+    timeAxisDragRef.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startRange: visibleRange,
+    };
+  };
+
+  const handleTimeAxisPointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    const dragState = timeAxisDragRef.current;
+    if (!dragState || dragState.pointerId !== event.pointerId) return;
+
+    event.preventDefault();
+    moveTimeScaleByDrag(
+      chartRef.current,
+      chartContainerRef.current?.clientWidth ?? 0,
+      dragState.startRange,
+      event.clientX - dragState.startX,
+    );
+  };
+
+  const handleTimeAxisPointerEnd = (event: PointerEvent<HTMLDivElement>) => {
+    if (timeAxisDragRef.current?.pointerId !== event.pointerId) return;
+
+    timeAxisDragRef.current = null;
   };
 
   const apiPeriod = mapPeriodToApi(period);
@@ -340,18 +374,33 @@ export default function CompanyLineChart({
         }}
       />
       {xAxisLabels.length > 0 && (
-        <div className='absolute right-4 bottom-4 left-4 h-6 bg-[#f7f4f2]'>
-          {xAxisLabels.map((label) => (
-            <span
-              key={label.key}
-              className='text-caption-md text-text-main absolute top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap'
-              style={{ left: label.left }}
-            >
-              {label.label}
-            </span>
-          ))}
-        </div>
+        <div className='pointer-events-none absolute right-0 bottom-4 h-6 w-4 bg-[#f7f4f2]' />
       )}
+      <div
+        className={`absolute right-4 bottom-4 left-4 h-6 cursor-grab touch-none overflow-hidden active:cursor-grabbing ${
+          xAxisLabels.length > 0 ? 'bg-[#f7f4f2]' : ''
+        }`}
+        onPointerDown={handleTimeAxisPointerDown}
+        onPointerMove={handleTimeAxisPointerMove}
+        onPointerUp={handleTimeAxisPointerEnd}
+        onPointerCancel={handleTimeAxisPointerEnd}
+      >
+        {xAxisLabels.map((label) => (
+          <span
+            key={label.key}
+            className={`text-caption-md text-text-main absolute top-1/2 -translate-y-1/2 whitespace-nowrap ${
+              label.align === 'left'
+                ? 'translate-x-0'
+                : label.align === 'right'
+                  ? '-translate-x-full'
+                  : '-translate-x-1/2'
+            }`}
+            style={{ left: label.left }}
+          >
+            {label.label}
+          </span>
+        ))}
+      </div>
     </div>
   );
 }

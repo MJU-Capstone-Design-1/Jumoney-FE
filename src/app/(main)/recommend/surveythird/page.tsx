@@ -6,9 +6,10 @@ import BottomButton from '@/components/bottomButton';
 import { SurveyStepper } from '@/components/surveyStepper';
 import { motion } from 'framer-motion';
 import { SurveyThirdToggleGroup } from '@/features/recommend/survey/surveyThirdToggleGroup';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { useSurveyStore, SurveyPeriod } from '@/store/surveyStore';
+import { getAllowedPeriods } from '@/constants/surveyConstraints';
 
 const SUBTITLES: Record<string, string> = {
   초단기: '(1분/10분)',
@@ -20,6 +21,15 @@ const SUBTITLES: Record<string, string> = {
 const Page = () => {
   const [selectedValue, setSelectedValue] = useState<string>('장기');
   const [isEntered, setIsEntered] = useState(false);
+  const { purpose, getRiskLabel } = useSurveyStore();
+  const risk = getRiskLabel();
+  const allowedPeriods = useMemo(
+    () => getAllowedPeriods(purpose, risk),
+    [purpose, risk],
+  );
+  const selectedPeriod = allowedPeriods.includes(selectedValue as SurveyPeriod)
+    ? selectedValue
+    : (allowedPeriods[0] ?? selectedValue);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsEntered(true), 1500);
@@ -72,7 +82,7 @@ const Page = () => {
         <div className='flex flex-col items-center'>
           <div className='flex flex-col items-center'>
             <motion.h2
-              key={`title-${selectedValue}`}
+              key={`title-${selectedPeriod}`}
               initial={{ opacity: 0, y: 20, scale: 0.85 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{
@@ -83,10 +93,10 @@ const Page = () => {
               }}
               className='text-heading-lg text-secondary2 font-extrabold'
             >
-              {selectedValue}
+              {selectedPeriod}
             </motion.h2>
             <motion.p
-              key={`sub-${selectedValue}`}
+              key={`sub-${selectedPeriod}`}
               initial={{ opacity: 0, y: 15, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{
@@ -97,14 +107,15 @@ const Page = () => {
               }}
               className='text-label-xl text-secondary2 -mt-[0.0625rem] text-center font-extrabold'
             >
-              {SUBTITLES[selectedValue]}
+              {SUBTITLES[selectedPeriod]}
             </motion.p>
           </div>
 
           <div className='mt-[4.625rem]'>
             <SurveyThirdToggleGroup
-              value={selectedValue}
+              value={selectedPeriod}
               onChange={setSelectedValue}
+              allowedValues={allowedPeriods}
             />
           </div>
         </div>
@@ -112,11 +123,12 @@ const Page = () => {
 
       <Link
         href={`/recommend/surveyloading`}
+        className={allowedPeriods.length === 0 ? 'pointer-events-none' : ''}
         onClick={() => {
-          useSurveyStore.getState().setPeriod(selectedValue as SurveyPeriod);
+          useSurveyStore.getState().setPeriod(selectedPeriod as SurveyPeriod);
         }}
       >
-        <BottomButton label='결과확인' />
+        <BottomButton label='결과확인' disabled={allowedPeriods.length === 0} />
       </Link>
     </div>
   );

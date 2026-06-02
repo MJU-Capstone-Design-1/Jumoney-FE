@@ -104,6 +104,12 @@ const RecommendResultCard = ({
   };
 
   const stockTags = data.tags || [];
+  const goodSectorTags = data.goodSectorTags || [];
+  const hasDisplayTags = stockTags.length > 0 || goodSectorTags.length > 0;
+
+  const getGoodSectorTagLabel = (key: string) => {
+    return labelMappings[key as keyof typeof labelMappings] || key;
+  };
 
   return (
     <div
@@ -138,21 +144,35 @@ const RecommendResultCard = ({
               {data.stockName || '추천 종목'}
             </div>
 
-            <div className='text-text-sub text-body-sm flex flex-wrap gap-x-[0.5rem] font-bold'>
-              {stockTags.length > 0 ? (
-                stockTags.map((code, index) => {
-                  const displayTag =
-                    masterSortMetricLabels[code.toUpperCase()] ||
-                    LOGIC_CODE_TO_KOREAN[
-                      code as keyof typeof LOGIC_CODE_TO_KOREAN
-                    ] ||
-                    code;
-                  return (
-                    <div key={index} className='whitespace-nowrap'>
-                      # {displayTag}
+            <div className='text-body-sm flex flex-wrap gap-x-[0.5rem] font-bold'>
+              {hasDisplayTags ? (
+                <>
+                  {stockTags.map((code, index) => {
+                    const displayTag =
+                      masterSortMetricLabels[code.toUpperCase()] ||
+                      LOGIC_CODE_TO_KOREAN[
+                        code as keyof typeof LOGIC_CODE_TO_KOREAN
+                      ] ||
+                      code;
+                    return (
+                      <div
+                        key={`tag-${index}`}
+                        className='text-text-sub whitespace-nowrap'
+                      >
+                        # {displayTag}
+                      </div>
+                    );
+                  })}
+
+                  {goodSectorTags.map((code, index) => (
+                    <div
+                      key={`good-sector-${index}`}
+                      className='text-primary whitespace-nowrap'
+                    >
+                      # {getGoodSectorTagLabel(code)}
                     </div>
-                  );
-                })
+                  ))}
+                </>
               ) : (
                 <div className='text-text-sub'>#종목 태그</div>
               )}

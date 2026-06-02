@@ -38,6 +38,12 @@ export const MyCompanyCard = ({
       : totalProfitAmount < 0
         ? 'text-text-down'
         : 'text-text-main';
+  const formattedProfitAmount =
+    totalProfitAmount > 0
+      ? `+ ₩ ${totalProfitAmount.toLocaleString()}`
+      : totalProfitAmount < 0
+        ? `- ₩ ${Math.abs(totalProfitAmount).toLocaleString()}`
+        : '₩0';
 
   return (
     <div
@@ -60,24 +66,28 @@ export const MyCompanyCard = ({
             />
           )}
         </div>
-        <div className='flex min-w-0 flex-col gap-[0.125rem]'>
-          <div className='flex items-center gap-[0.25rem]'>
-            <div className='text-label-sm truncate font-bold'>{stockName}</div>
-            <div className='text-label-sm font-bold'>
-              • {quantity.toLocaleString()}주
+        <div className='flex min-w-0 flex-1 flex-col gap-[0.125rem]'>
+          <div className='flex w-full min-w-0 items-center justify-between gap-[0.5rem]'>
+            <div className='flex min-w-0 items-center gap-[0.25rem]'>
+              <div className='text-label-sm truncate font-bold'>
+                {stockName}
+              </div>
+              <div className='text-label-sm shrink-0 font-bold'>
+                • {quantity.toLocaleString()}주
+              </div>
+            </div>
+            <div
+              className={`text-label-sm ${profitColorClass} shrink-0 font-bold`}
+            >
+              {totalProfitRate.toFixed(2)}%
             </div>
           </div>
           <div className='flex items-center gap-[0.5rem]'>
-            <div className='text-body-lg gap-[0.25rem] font-bold'>
+            <div className='text-body-lg font-bold'>
               ₩ {totalEvaluationAmount.toLocaleString()}
             </div>
             <div className={`text-body-lg ${profitColorClass} font-bold`}>
-              ({totalProfitAmount > 0 ? '+' : ''} ₩{' '}
-              {totalProfitAmount.toLocaleString()})
-            </div>
-            <div className='bg-secondary2 h-[0.75rem] w-[0.0625rem]' />
-            <div className={`text-body-lg ${profitColorClass} font-bold`}>
-              {totalProfitRate.toFixed(2)}%
+              ({formattedProfitAmount})
             </div>
           </div>
         </div>

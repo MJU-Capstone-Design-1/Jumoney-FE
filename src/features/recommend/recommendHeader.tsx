@@ -13,6 +13,7 @@ const RecommendHeader = ({ value, onValueChange }: RecommendHeaderProps) => {
       <BackButtonField
         label='원하시는 기능을 선택해주세요'
         color='secondary1'
+        href='/home'
       />
       <CustomToggle
         theme='primary'

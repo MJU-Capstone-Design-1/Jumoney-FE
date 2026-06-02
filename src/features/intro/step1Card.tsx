@@ -3,6 +3,7 @@
 import { motion, HTMLMotionProps } from 'framer-motion';
 import Image from 'next/image';
 import React from 'react';
+import { MasterSectorChart } from '@/features/portfolio/detail/masterSectorChart';
 
 export const Step1Card = (props: HTMLMotionProps<'div'>) => {
   return (
@@ -17,8 +18,10 @@ export const Step1Card = (props: HTMLMotionProps<'div'>) => {
         height={328}
         className='absolute opacity-70'
       />
-      <div className='bg-secondary1/30 absolute z-10 h-[15rem] w-[15rem]'>
-        차트 영역
+      <div className='absolute z-10 h-[15rem] w-[15rem] overflow-hidden rounded-[1rem]'>
+        <div className='h-[30rem] w-[30rem] origin-top-left scale-50'>
+          <MasterSectorChart masterId={1} />
+        </div>
       </div>
       <Image
         src='/logos/cocaColaLogo.svg'
