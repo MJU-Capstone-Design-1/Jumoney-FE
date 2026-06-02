@@ -1,4 +1,9 @@
-import { IChartApi, TickMarkType, Time } from 'lightweight-charts';
+import {
+  IChartApi,
+  LogicalRange,
+  TickMarkType,
+  Time,
+} from 'lightweight-charts';
 
 import { PeriodValue } from './periodToggle';
 
@@ -117,4 +122,27 @@ export const positionXAxisLabels = (
       return { ...label, left: Number(left) };
     })
     .filter((label): label is PositionedXAxisLabel => label != null);
+};
+
+export interface TimeAxisDragState {
+  pointerId: number;
+  startX: number;
+  startRange: LogicalRange;
+}
+
+export const moveTimeScaleByDrag = (
+  chart: IChartApi | null,
+  chartWidth: number,
+  startRange: LogicalRange,
+  deltaX: number,
+) => {
+  if (!chart || chartWidth <= 0) return;
+
+  const logicalWidth = startRange.to - startRange.from;
+  const deltaLogical = (deltaX / chartWidth) * logicalWidth;
+
+  chart.timeScale().setVisibleLogicalRange({
+    from: startRange.from - deltaLogical,
+    to: startRange.to - deltaLogical,
+  });
 };
