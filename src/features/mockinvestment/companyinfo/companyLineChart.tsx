@@ -373,8 +373,11 @@ export default function CompanyLineChart({
           height: '228px',
         }}
       />
+      {xAxisLabels.length > 0 && (
+        <div className='pointer-events-none absolute right-0 bottom-4 h-6 w-4 bg-[#f7f4f2]' />
+      )}
       <div
-        className={`absolute right-4 bottom-4 left-4 h-6 cursor-grab touch-none active:cursor-grabbing ${
+        className={`absolute right-4 bottom-4 left-4 h-6 cursor-grab touch-none overflow-hidden active:cursor-grabbing ${
           xAxisLabels.length > 0 ? 'bg-[#f7f4f2]' : ''
         }`}
         onPointerDown={handleTimeAxisPointerDown}
@@ -385,7 +388,13 @@ export default function CompanyLineChart({
         {xAxisLabels.map((label) => (
           <span
             key={label.key}
-            className='text-caption-md text-text-main absolute top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap'
+            className={`text-caption-md text-text-main absolute top-1/2 -translate-y-1/2 whitespace-nowrap ${
+              label.align === 'left'
+                ? 'translate-x-0'
+                : label.align === 'right'
+                  ? '-translate-x-full'
+                  : '-translate-x-1/2'
+            }`}
             style={{ left: label.left }}
           >
             {label.label}

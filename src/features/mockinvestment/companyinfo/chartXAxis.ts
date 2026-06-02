@@ -18,8 +18,27 @@ export interface XAxisLabel {
 }
 
 export interface PositionedXAxisLabel extends XAxisLabel {
+  align: 'left' | 'center' | 'right';
   left: number;
 }
+
+const X_AXIS_LABEL_EDGE_PADDING = 24;
+
+const clampXAxisLabelLeft = (left: number, chartWidth: number) => {
+  const maxLeft = Math.max(
+    X_AXIS_LABEL_EDGE_PADDING,
+    chartWidth - X_AXIS_LABEL_EDGE_PADDING,
+  );
+
+  return Math.min(Math.max(left, X_AXIS_LABEL_EDGE_PADDING), maxLeft);
+};
+
+const getXAxisLabelAlign = (left: number, chartWidth: number) => {
+  if (left <= X_AXIS_LABEL_EDGE_PADDING) return 'left';
+  if (left >= chartWidth - X_AXIS_LABEL_EDGE_PADDING) return 'right';
+
+  return 'center';
+};
 
 const getDateFromTime = (time: Time) => {
   if (typeof time === 'number') {
@@ -113,13 +132,19 @@ export const positionXAxisLabels = (
 ): PositionedXAxisLabel[] => {
   if (!chart) return [];
 
+  const chartWidth = chart.timeScale().width();
+
   return labels
     .map((label) => {
       const left = chart.timeScale().timeToCoordinate(label.time);
 
       if (left == null) return null;
 
-      return { ...label, left: Number(left) };
+      return {
+        ...label,
+        align: getXAxisLabelAlign(Number(left), chartWidth),
+        left: clampXAxisLabelLeft(Number(left), chartWidth),
+      };
     })
     .filter((label): label is PositionedXAxisLabel => label != null);
 };
