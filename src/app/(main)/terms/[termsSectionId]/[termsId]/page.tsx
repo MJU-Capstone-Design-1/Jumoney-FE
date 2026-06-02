@@ -101,6 +101,8 @@ const getTermImageName = (sectionId: string, termName: string) => {
     if (termName.includes('보조지표')) return '보조지표';
     if (termName.includes('이동평균선')) return '이동평균선';
     if (termName.includes('캔들차트')) return '캔들차트';
+    if (termName.includes('지지선') && termName.includes('저항선'))
+      return '저항선지지선';
   }
 
   if (sectionId === 'trading') {
