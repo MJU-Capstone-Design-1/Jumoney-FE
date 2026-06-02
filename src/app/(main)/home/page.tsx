@@ -15,6 +15,7 @@ import { useState, useEffect } from 'react';
 import { motion, useMotionValue } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { MASTERS_PORTFOLIO } from '@/constants/mastersPortfolio';
+import { useProfileStore } from '@/store/useProfileStore';
 
 export const HomePage = () => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -22,6 +23,8 @@ export const HomePage = () => {
   const [selectedRankId, setSelectedRankId] = useState('3');
   const [selectedMaster, setSelectedMaster] = useState('all');
   const router = useRouter();
+
+  const { setName } = useProfileStore();
 
   const x = useMotionValue(0);
   const itemCount = 4;
@@ -47,6 +50,25 @@ export const HomePage = () => {
     });
     return () => unsubscribe();
   }, [x]);
+
+  const clearAuthData = () => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    setName('');
+  };
+
+  const handleLogoutComplete = () => {
+    clearAuthData();
+    setIsProfileModalOpen(false);
+    router.replace('/login');
+  };
+
+  const handleWithdrawComplete = () => {
+    alert('회원 탈퇴가 완료되었습니다.');
+    clearAuthData();
+    setIsProfileModalOpen(false);
+    router.replace('/login');
+  };
 
   return (
     <div className='relative flex h-screen flex-col overflow-x-hidden'>
@@ -187,6 +209,8 @@ export const HomePage = () => {
         isOpen={isProfileModalOpen}
         onClose={() => setIsProfileModalOpen(false)}
         onRecommendClick={() => router.push('/portfolio/masterselect')}
+        onLogout={handleLogoutComplete}
+        onWithdraw={handleWithdrawComplete}
       />
     </div>
   );
