@@ -27,7 +27,7 @@ export const PortfolioSelectedMasterButtons = ({
       className='relative flex justify-between px-[1.75rem] pt-[0.5rem]'
     >
       <Button
-        className='bg-primary hover:bg-primary flex h-[4rem] w-[4rem] items-center justify-center rounded-full p-0 shadow-none [&_svg]:!h-[24px] [&_svg]:!w-[24px]'
+        className='bg-primary hover:bg-primary flex h-[4.5rem] w-[4.5rem] flex-col items-center justify-center gap-[0.25rem] rounded-full p-0 shadow-none [&_svg]:!h-[24px] [&_svg]:!w-[24px]'
         onClick={() =>
           router.push(
             `/portfolio/selected/detail?mode=sub1&masterId=${masterId}`,
@@ -35,9 +35,12 @@ export const PortfolioSelectedMasterButtons = ({
         }
       >
         <PortfolioDefaultInformationIcon />
+        <span className='text-body-sm text-secondary1 font-semibold'>
+          포트폴리오
+        </span>
       </Button>
       <Button
-        className='bg-primary hover:bg-primary flex h-[4rem] w-[4rem] items-center justify-center rounded-full p-0 shadow-none [&_svg]:!h-[24px] [&_svg]:!w-[24px]'
+        className='bg-primary hover:bg-primary flex h-[4.5rem] w-[4.5rem] flex-col items-center justify-center gap-[0.25rem] rounded-full p-0 shadow-none [&_svg]:!h-[24px] [&_svg]:!w-[24px]'
         onClick={() =>
           router.push(
             `/portfolio/selected/detail?mode=reverse&masterId=${masterId}`,
@@ -45,6 +48,9 @@ export const PortfolioSelectedMasterButtons = ({
         }
       >
         <PortfolioDetailInformationIcon />
+        <span className='text-body-sm text-secondary1 font-semibold'>
+          과거 사례
+        </span>
       </Button>
     </motion.div>
   );
