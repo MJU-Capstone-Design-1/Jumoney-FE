@@ -17,7 +17,15 @@ import { WithdrawIcon } from '@/components/icons/withdrawIcon';
 import { useProfileStore } from '@/store/useProfileStore';
 import { useQueryClient } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'framer-motion';
+import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
+
+const MASTER_STATIC_INFO: Record<number, { image: string; bgColor: string }> = {
+  1: { image: '/images/warrenBuffetImage.svg', bgColor: 'bg-main1' },
+  2: { image: '/images/peterLynchImage.svg', bgColor: 'bg-main2' },
+  3: { image: '/images/rayDalioImage.svg', bgColor: 'bg-main3' },
+  4: { image: '/images/williamOneilImage.svg', bgColor: 'bg-main4' },
+};
 
 interface ProfileModalProps {
   isOpen: boolean;
@@ -46,7 +54,10 @@ export const ProfileModal = ({
     },
   });
   const originalNickname = userInfoResponse?.data?.nickname || '';
-
+  const selectedMasterId = userInfoResponse?.data?.selectedMasterId;
+  const masterData = selectedMasterId
+    ? MASTER_STATIC_INFO[selectedMasterId]
+    : null;
   useEffect(() => {
     if (originalNickname && !isEditing) {
       setName(originalNickname);
@@ -180,7 +191,21 @@ export const ProfileModal = ({
 
               <div className='bg-secondary1 shadow-card-shadow mt-[1.5rem] flex h-auto w-[15.0625rem] flex-col items-center justify-center rounded-[1.5rem] p-[1.25rem]'>
                 <div className='flex items-center gap-[1rem]'>
-                  <div className='bg-default h-[4.125rem] w-[4.125rem] flex-shrink-0 rounded-full' />
+                  {masterData?.image ? (
+                    <div
+                      className={`flex h-[4.125rem] w-[4.125rem] flex-shrink-0 items-center justify-center overflow-hidden rounded-full ${masterData.bgColor}`}
+                    >
+                      <Image
+                        src={masterData.image}
+                        alt={name || '거장 이미지'}
+                        width={66}
+                        height={66}
+                      />
+                    </div>
+                  ) : (
+                    <div className='bg-default h-[4.125rem] w-[4.125rem] flex-shrink-0 rounded-full' />
+                  )}
+
                   <div className='flex items-center justify-center gap-[0.5rem]'>
                     <button
                       onClick={handleToggleEdit}

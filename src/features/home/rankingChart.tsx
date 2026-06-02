@@ -55,7 +55,7 @@ export const RankingChart = ({ onSelect, users }: RankingChartProps) => {
 
       <div className='absolute inset-0 -bottom-[0.625rem] z-10 flex items-end justify-center gap-[0.25rem]'>
         {DATA.map((item, index) => {
-          const matchedUser = users.find((u) => u.rank === item.rank);
+          const matchedUser = users.find((u) => Number(u.rank) === item.rank);
 
           return (
             <div

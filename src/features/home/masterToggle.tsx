@@ -8,25 +8,25 @@ import { motion, Variants } from 'framer-motion';
 const MASTERS = [
   { id: 'all', name: '전체', bgColor: 'bg-primary' },
   {
-    id: 'buffett',
+    id: '1',
     name: '워런 버핏',
     image: '/images/warrenBuffetImage.svg',
     bgColor: 'bg-main1',
   },
   {
-    id: 'lynch',
+    id: '2',
     name: '피터 린치',
     image: '/images/peterLynchImage.svg',
     bgColor: 'bg-main2',
   },
   {
-    id: 'dalio',
+    id: '3',
     name: '레이 달리오',
     image: '/images/rayDalioImage.svg',
     bgColor: 'bg-main3',
   },
   {
-    id: 'oneil',
+    id: '4',
     name: '윌리엄 오닐',
     image: '/images/williamOneilImage.svg',
     bgColor: 'bg-main4',
