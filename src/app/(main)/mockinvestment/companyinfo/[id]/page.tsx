@@ -102,6 +102,7 @@ const DetailPage = () => {
     currentPrice > 0 ? Math.floor(availableCash / currentPrice) : 0;
   const maxLimit = Math.max(maxBuyQuantity, ownedQuantity);
   const isMaxReached = quantity >= maxLimit;
+  const isSellDisabled = !isOwned || quantity > ownedQuantity;
 
   const formattedPrice = currentPrice.toLocaleString();
   const isPositive = changeRate > 0;
@@ -336,9 +337,11 @@ const DetailPage = () => {
               <button
                 type='button'
                 onClick={handleSellClick}
-                disabled={!isOwned}
+                disabled={isSellDisabled}
                 className={`flex h-[4rem] w-full items-center justify-center rounded-[1000px] transition-colors ${
-                  !isOwned ? 'bg-default cursor-not-allowed' : 'bg-secondary2'
+                  isSellDisabled
+                    ? 'bg-default cursor-not-allowed'
+                    : 'bg-secondary2'
                 }`}
               >
                 <span className='text-secondary1 text-body-xl font-extrabold'>
