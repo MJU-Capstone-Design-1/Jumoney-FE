@@ -51,26 +51,6 @@ export default function HistoryBottomSheet({
                 />
               ))
             )}
-
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
           </div>
         </DrawerPrimitive.Content>
       </DrawerPrimitive.Portal>
