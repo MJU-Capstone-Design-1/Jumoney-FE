@@ -36,14 +36,6 @@ const SECTOR_ID_MAP: Record<FieldType, number> = {
   staples: 10,
 };
 
-const SORT_OPTIONS = [
-  { value: 'NAME_ASC', label: '이름순' },
-  { value: 'PRICE_DESC', label: '주가 높은 순' },
-  { value: 'PRICE_ASC', label: '주가 낮은 순' },
-  { value: 'MARKET_CAP_DESC', label: '시가총액 순' },
-  { value: 'TRADE_AMOUNT_DESC', label: '거래대금 순' },
-];
-
 const MockInvestmentPage = () => {
   const displayFields: FieldType[] = [
     'it',
@@ -77,7 +69,7 @@ const MockInvestmentPage = () => {
     'NAME_ASC' as SearchStocksSort,
   );
 
-  const initializeAccountMutation = useMutation(
+  const { mutate: initializeAccount } = useMutation(
     getInitializeAccountMutationOptions(),
   );
 
@@ -94,17 +86,21 @@ const MockInvestmentPage = () => {
     },
   );
 
-  const { data: sectorResponse, isLoading: isSectorLoading } =
-    useGetSectorStocks(SECTOR_ID_MAP[selectedSector || 'it'], {
-      query: {
-        enabled: searchKeyword.trim().length === 0,
-        placeholderData: keepPreviousData,
-      },
-    });
+  const selectedSectorLabel = FIELD_CONFIGS[selectedSector || 'it'].label;
+  const selectedSectorId = SECTOR_ID_MAP[selectedSector || 'it'];
+
+  const {
+    data: sectorResponse,
+    isLoading: isSectorLoading,
+    isError: isSectorError,
+  } = useGetSectorStocks(selectedSectorId, {
+    query: {
+      enabled: searchKeyword.trim().length === 0,
+    },
+  });
 
   const searchedStocks = searchResponse?.data?.stocks || [];
   const sectorStocks = sectorResponse?.data?.stocks || [];
-  const sectorName = sectorResponse?.data?.sectorName || '';
 
   const handleSearch = () => {
     if (inputValue.trim() === '') {
@@ -115,7 +111,7 @@ const MockInvestmentPage = () => {
   };
 
   useEffect(() => {
-    initializeAccountMutation.mutate(undefined, {
+    initializeAccount(undefined, {
       onSuccess: (res) => {
         const accountData = res.data;
 
@@ -135,7 +131,7 @@ const MockInvestmentPage = () => {
         console.error('모의투자 계좌 초기화에 실패했습니다.', error);
       },
     });
-  }, []);
+  }, [initializeAccount]);
 
   return (
     <div className='relative h-screen w-full overflow-hidden'>
@@ -249,7 +245,11 @@ const MockInvestmentPage = () => {
                 <>
                   {isSectorLoading ? (
                     <div className='text-text-sub text-body-md py-4 text-center font-bold'>
-                      데이터를 불러오는 중입니다...
+                      {selectedSectorLabel} 섹터의 기업을 조회하고있어요
+                    </div>
+                  ) : isSectorError ? (
+                    <div className='text-text-sub text-body-md py-4 text-center font-bold'>
+                      섹터 기업을 불러오지 못했습니다.
                     </div>
                   ) : sectorStocks.length === 0 ? (
                     <div className='text-text-sub text-body-md py-4 text-center font-bold'>
