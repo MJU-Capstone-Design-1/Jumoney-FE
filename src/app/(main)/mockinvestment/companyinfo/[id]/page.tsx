@@ -322,6 +322,13 @@ const DetailPage = () => {
               )}
             </>
           )}
+          <span className='text-body-md text-text-main flex items-center justify-center gap-[0.25rem] pt-[1rem] text-center font-semibold'>
+            매수/매도 체결은{' '}
+            <p className='text-text-up font-extrabold'>
+              정규 거래 시간(09:00 ~ 15:30)
+            </p>
+            에만 가능해요
+          </span>
         </div>
 
         {!isIndicatorModalOpen && (
