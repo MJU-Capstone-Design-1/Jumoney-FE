@@ -21,6 +21,7 @@ export const labelMappings = {
   EXECUTION_STRENGTH: '체결강도',
   ACCUMULATED_TRADE_AMOUNT: '거래대금',
   EPS_GROWTH_RATE: 'EPS 성장률',
+  SALES_GROWTH_RATE: '매출액 증가율',
   ROE: 'ROE',
 
   IT_SEMICONDUCTOR: 'IT/반도체',
@@ -83,6 +84,7 @@ export const masterOptionLabels = {
 export const masterSortMetricLabels = {
   ROE: 'ROE',
   PEG: 'PEG',
+  SALES_GROWTH_RATE: '매출액 증가율',
   MARKET_CAP: '시가총액',
   HIGH_52_WEEK_RATE: '52주 신고가 대비 현재가 비율',
 } as const;

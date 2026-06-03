@@ -33,6 +33,7 @@ export const labelMappings = {
   EXECUTION_STRENGTH: '체결강도',
   ACCUMULATED_TRADE_AMOUNT: '거래대금',
   EPS_GROWTH_RATE: 'EPS 성장률',
+  SALES_GROWTH_RATE: '매출액 증가율',
   ROE: 'ROE',
 
   IT_SEMICONDUCTOR: 'IT/반도체',
@@ -95,6 +96,7 @@ export const masterOptionLabels = {
 export const masterSortMetricLabels = {
   ROE: 'ROE',
   PEG: 'PEG',
+  SALES_GROWTH_RATE: '매출액 증가율',
   MARKET_CAP: '시가총액',
   HIGH_52_WEEK_RATE: '52주 신고가 대비 현재가 비율',
 } as const;
@@ -110,5 +112,5 @@ export const masterSortMetricLabels = {
 - `recommendations[].sortMetricKey`: `EXECUTION_STRENGTH`, `ACCUMULATED_TRADE_AMOUNT`, `EPS_GROWTH_RATE`, `ROE`
 - `masterCode`: `WARREN_BUFFETT`, `PETER_LYNCH`, `RAY_DALIO`, `WILLIAM_ONEIL`
 - `MasterRecommendationResponse.recommendations[].tags`: `MasterOptionLogicCode` key
-- `MasterRecommendationResponse.recommendations[].sortMetricKey`: `ROE`, `PEG`, `MARKET_CAP`, `HIGH_52_WEEK_RATE`
+- `MasterRecommendationResponse.recommendations[].sortMetricKey`: `ROE`, `PEG`, `SALES_GROWTH_RATE`, `MARKET_CAP`, `HIGH_52_WEEK_RATE`
 - `MasterResponse.sectorOptions[].sectorType`, `MasterRecommendationResponse.recommendations[].goodSectorTags`: `SectorType` key
