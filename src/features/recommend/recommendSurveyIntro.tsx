@@ -1,3 +1,6 @@
+'use client';
+
+import { useGetUserInfo } from '@/api/generated/endpoints/사용자/사용자';
 import BottomButton from '@/components/bottomButton';
 import { ChartIcon } from '@/components/icons/chartIcon';
 import HeartIcon from '@/components/icons/heartIcon';
@@ -8,6 +11,8 @@ import React from 'react';
 
 const RecommendSurveyIntro = () => {
   const userName = useProfileStore((state) => state.name);
+  const { data: userInfoResponse } = useGetUserInfo();
+  const displayName = userInfoResponse?.data?.nickname || userName || '사용자';
 
   return (
     <div>
@@ -22,7 +27,7 @@ const RecommendSurveyIntro = () => {
           <div className='flex flex-col gap-[0.5rem]'>
             <p className='text-label-md font-extrabold'>오늘의 호주머니</p>
             <p className='text-body-md text-text-main text-center font-semibold'>
-              {userName}님의 호주머니에 넣을 종목을 추천 받아보세요
+              {displayName}님의 호주머니에 넣을 종목을 추천 받아보세요
               <br />
               실시간 시장 데이터와 투자 성향을 토대로 매칭해드려요
             </p>
