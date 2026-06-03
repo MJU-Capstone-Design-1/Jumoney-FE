@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { getAccessToken } from '@/api/custom-instance';
 
-const publicPaths = ['/', '/intro', '/oauth/kakao/callback'];
+const publicPaths = ['/', '/intro', '/oauth/kakao/callback', '/quiz'];
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
