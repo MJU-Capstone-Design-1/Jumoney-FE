@@ -1,8 +1,10 @@
 'use client';
 
+import { useGetUserInfo } from '@/api/generated/endpoints/사용자/사용자';
 import BackButtonField from '@/components/backButtonField';
 import BottomButton from '@/components/bottomButton';
 import { StepIndicator } from '@/features/mockinvestment/intro/stepIndicator';
+import { useProfileStore } from '@/store/useProfileStore';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -30,7 +32,9 @@ const MockInvestmentIntroPage = () => {
   const [step, setStep] = useState(1);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
-  const userName = '사용자';
+  const profileName = useProfileStore((state) => state.name);
+  const { data: userInfoResponse } = useGetUserInfo();
+  const userName = userInfoResponse?.data?.nickname || profileName || '사용자';
 
   const bgColors: Record<number, string> = {
     1: 'bg-main1',
@@ -121,18 +125,16 @@ const MockInvestmentIntroPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: 'easeOut' }}
-            >
-              <div className='bg-sub1 mx-auto mb-[3rem] flex h-[10rem] w-[10rem] items-center rounded-full' />
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: 'easeOut' }}
               className='text-label-md leading-[120%] font-semibold'
             >
-              설명설명설명설명설명설명설명설명
+              어렵게만 느껴졌던 주식 투자
               <br />
-              설명설명설명설명설명설명설명
+              이제 안전하게 시작해 보세요
+              <br />
+              <br />
+              실제 돈을 잃을 걱정 없이 가상의 투자금으로
+              <br />
+              주머니에서 부담 없이 실전 감각을 키워보세요
             </motion.div>
           </>
         )}

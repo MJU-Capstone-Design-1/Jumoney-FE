@@ -12,6 +12,8 @@ interface BottomTabBarProps {
   excludePaths?: string[];
 }
 
+const MOCK_INVESTMENT_VISITED_KEY = 'mockInvestmentVisited';
+
 export const BottomTabBar = ({ excludePaths = [] }: BottomTabBarProps) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -115,7 +117,16 @@ export const BottomTabBar = ({ excludePaths = [] }: BottomTabBarProps) => {
             <button
               type='button'
               onClick={() => {
-                router.push('/mockinvestment');
+                const hasVisitedMockInvestment =
+                  typeof window !== 'undefined' &&
+                  window.localStorage.getItem(MOCK_INVESTMENT_VISITED_KEY) ===
+                    'true';
+
+                router.push(
+                  hasVisitedMockInvestment
+                    ? '/mockinvestment'
+                    : '/mockinvestment/intro',
+                );
               }}
               className='pointer-events-auto relative flex h-6 w-6 items-center justify-center focus:outline-none'
             >

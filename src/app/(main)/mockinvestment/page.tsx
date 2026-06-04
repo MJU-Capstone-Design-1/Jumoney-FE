@@ -36,6 +36,8 @@ const SECTOR_ID_MAP: Record<FieldType, number> = {
   staples: 10,
 };
 
+const MOCK_INVESTMENT_VISITED_KEY = 'mockInvestmentVisited';
+
 const MockInvestmentPage = () => {
   const displayFields: FieldType[] = [
     'it',
@@ -111,6 +113,8 @@ const MockInvestmentPage = () => {
   };
 
   useEffect(() => {
+    window.localStorage.setItem(MOCK_INVESTMENT_VISITED_KEY, 'true');
+
     initializeAccount(undefined, {
       onSuccess: (res) => {
         const accountData = res.data;
